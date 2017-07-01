@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/7/1 0001.
  */
@@ -16,6 +18,11 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
     @Query("select c from Contact c where (?1 is null or c.name like ?1)" +
             " and (?2 is null or c.phone like ?2)")
     Page<Contact> findPage(String name, String phone, Pageable p);
+
+
+    @Query("select c from Contact c where c.id in (?1)")
+    List<Contact> findByIds(List<Integer> contactIds);
+
 
 
 //    Contact checkExsits(String phone, Integer bookId);

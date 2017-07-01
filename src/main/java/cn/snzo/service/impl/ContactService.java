@@ -1,7 +1,10 @@
 package cn.snzo.service.impl;
 
+import cn.snzo.common.CommonRepository;
 import cn.snzo.common.CommonUtils;
 import cn.snzo.entity.Contact;
+import cn.snzo.entity.ContactGroupRelative;
+import cn.snzo.repository.ContactGroupRelativeRepository;
 import cn.snzo.repository.ContactRepository;
 import cn.snzo.service.IContactService;
 import cn.snzo.vo.ContactShow;
@@ -12,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -24,10 +29,14 @@ public class ContactService implements IContactService {
     @Autowired
     private ContactRepository contactRepository;
 
+    @Autowired
+    private CommonRepository commonRepository;
+
+    @Autowired
+    private ContactGroupRelativeRepository contactGroupRelativeRepository;
 
     @Override
-    public Page<ContactShow> getPage(String name, String phone, Integer groupId, Integer bookId,
-                                     Integer currentPage, Integer pageSize) {
+    public Page<ContactShow> getPage(String name, String phone, Integer currentPage, Integer pageSize) {
         Pageable p = CommonUtils.createPage(currentPage, pageSize);
         name = CommonUtils.fuzzyString(name);
         phone = CommonUtils.fuzzyString(phone);
@@ -45,14 +54,16 @@ public class ContactService implements IContactService {
 
     @Override
     public int add(ContactShow contactShow) {
-        String phone = contactShow.getPhone();
+        String  phone  = contactShow.getPhone();
         Integer bookId = contactShow.getBookId();
-//        Contact contact = contactRepository.checkExsits(phone, bookId);
+        Integer groupId = contactShow.getGroupId();
+        Contact c = new Contact(contactShow);
+        c = contactRepository.save(c);
+        if (groupId != null) {
+            ContactGroupRelative cgr = new ContactGroupRelative();
+            cgr.setGroupId(groupId);
 
-//        //号码已存在
-//        if (contact != null) {
-//            return 2;
-//        }
+        }
 
         return 0;
     }
@@ -66,5 +77,42 @@ public class ContactService implements IContactService {
     @Override
     public int modify(int id, ContactShow contactShow) {
         return 0;
+    }
+
+    @Override
+    public List<ContactShow> findByGroup(Integer groupId) {
+
+        List<Contact> contacts = new ArrayList<>();
+
+        List<Integer> contactIds = contactGroupRelativeRepository.findContactIds(groupId);
+
+        if (contactIds != null && !contactIds.isEmpty()) {
+            contacts = contactRepository.findByIds(contactIds);
+        }
+
+        List<ContactShow> contactShows = new ArrayList<>();
+        for (Contact c : contacts) {
+            ContactShow s = new ContactShow(c);
+            contactShows.add(s);
+        }
+        return contactShows;
+    }
+
+    @Override
+    public List<ContactShow> findNotInGroup(Integer bookId) {
+        List<ContactShow> contactShows = new ArrayList<>();
+        String sql = "select * from t_contact c " +
+                " where c.id in (select cb.contact_id from t_contact_book_relative cb where cb.book_id = :bookId)" +
+                " and c.id not in (select cb.contact_id from t_contact_group_relative cg where cg.group_id in (" +
+                "select xc.id from t_group  xc where xc.book_id = :bookId)) "
+                ;
+        Map<String, Object> params = new HashMap<>();
+        @SuppressWarnings("unchecked")
+        List<Contact> contacts = (List<Contact>) commonRepository.queryResultToBeanList(sql, params, ContactShow.class);
+        for(Contact c : contacts) {
+            ContactShow show = new ContactShow(c);
+            contactShows.add(show);
+        }
+        return contactShows;
     }
 }

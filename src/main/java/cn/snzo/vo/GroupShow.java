@@ -1,6 +1,9 @@
 package cn.snzo.vo;
 
+import cn.snzo.entity.Group;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +18,14 @@ public class GroupShow {
 
     @NotNull(message = "所在电话簿")
     private Integer bookId;  //所在电话簿
+
+    public GroupShow() {
+    }
+
+    public GroupShow(Group group) {
+        Assert.notNull(group);
+        BeanUtils.copyProperties(group, this);
+    }
 
     public Integer getId() {
         return id;
