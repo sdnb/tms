@@ -1,0 +1,47 @@
+#server
+server.port: 8080
+
+# spring
+spring:
+    profiles.active: dev
+    resources.cache-period: 0
+    datasource:
+#see more properties at http://commons.apache.org/proper/commons-dbcp/configuration.html
+         type: org.apache.commons.dbcp.BasicDataSource
+         driver-class-name: com.mysql.jdbc.Driver
+         url: jdbc:mysql://127.0.0.1:3306/tms?characterEncoding=utf8&autoReconnect=true
+         username: javApp
+         password:
+         maxActive: 20
+         minIdle: 5
+         maxIdle: 15
+         initialSize: 15
+         removeAbandoned: true
+         removeAbandonedTimeout: 300
+         logAbandoned: true
+         testOnBorrow: true
+         testOnReturn: true
+         testWhileIdle: true
+         validationQuery: SELECT 1 FROM DUAL
+    mvc.view:
+        prefix: /WEB-INF/jsp/
+        suffix: .jsp
+
+    jpa:
+        hibernate:
+            show-sql: true
+            # Hibernate DDL  auto: create, create-drop, update, validate
+            ddl-auto: validate
+            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+            properties:
+                hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+    redis:
+        host: 127.0.0.1
+        database: 2
+
+# Logging level (TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF)
+logging:
+    level:
+        org.hibernate: WARN
+        org.springframework: WARN
+    file: tms.log
