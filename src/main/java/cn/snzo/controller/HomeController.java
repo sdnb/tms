@@ -13,6 +13,6 @@ public class HomeController {
 
     @RequestMapping(value = {"/","/mge/**"},method = RequestMethod.GET)
     public String mgePage(){
-        return "forward:/sz-gly.html";
+        return "forward:/sz-index.html";
     }
 }
