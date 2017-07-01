@@ -1,0 +1,40 @@
+<style type="text/css">
+    body {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-orient: vertical;-moz-box-orient: vertical;-o-box-orient: vertical;-ms-box-orient: vertical;
+    }
+
+    .glyCon {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-flex:1;-moz-box-flex:1;-o-box-flex:1;-ms-box-flex:1;
+    }
+</style>
+<div class="w1000 glyCon" ng-controller="glyCtrl as gly">
+
+    <div class="glyLeft">
+        <a href="/tms/xt/zcr">会议主持人管理</a>
+        <a href="/tms/xt/hys">会议室管理</a>
+        <a href="/tms/xt/gly" class="glyCur">管理员密码修改</a>
+        <a href="/tms/xt/rz">系统日志</a>
+        <a href="/tms/xt/lj">存储路径</a>
+    </div>
+
+    <div class="glyRight">
+
+        <form>
+
+            <div style="margin:0 0 20px; font-size:18px">新建联系人</div>
+
+            <div class="xjLI"><i style="padding: 0 .5em"></i>原密码：<input type="password" class="wbk3" /></div>
+
+            <div class="xjLI"><i style="padding: 0 .5em"></i>新密码：<input type="password" class="wbk3" /></div>
+
+            <div class="xjLI">确认密码：<input type="password" class="wbk3" /></div>
+
+            <div><input type="submit" value="保存" class="btn-xj" /><a href="" class="btn-xj" style="margin-left: 20px">取消</a></div>
+
+        </form>
+
+    </div>
+
+</div>

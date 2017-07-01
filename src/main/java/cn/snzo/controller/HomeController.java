@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 
 
-    @RequestMapping(value = {"/","/mge/**"},method = RequestMethod.GET)
+    @RequestMapping(value = {"/","/tms/**"},method = RequestMethod.GET)
     public String mgePage(){
         return "forward:/sz-index.html";
     }
+
+    @RequestMapping(value = {"/login"},method = RequestMethod.GET)
+    public String loginPage() { return "forward:/sz.html"; }
 }

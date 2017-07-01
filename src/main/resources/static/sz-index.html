@@ -3,10 +3,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>无标题文档</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <base href="/sz-index.html"/>
 </head>
 
-<body style="background: #eee" ng-controller="indexCtrl">
+<body style="background: #eee" ng-controller="indexCtrl as ic">
 
 <div class="top">
     <div class="w1000">
@@ -22,11 +23,11 @@
 
         <img src="images/logo.png" />
 
-        <div class="nav">
-            <a href="" class="navCur">会议管理</a>
-            <a href="">电话簿</a>
-            <a href="">录音</a>
-            <a href="">系统管理</a>
+        <div class="nav" id="menu">
+            <a href="/tms/hy" ng-class="{true:'navCur', false:''}[activeIndex===0]" ng-click="ic.activeMenu(0)">会议管理</a>
+            <a href="/tms/dhb" ng-class="{true:'navCur', false:''}[activeIndex===1]" ng-click="ic.activeMenu(1)">电话簿</a>
+            <a href="/tms/ly" ng-class="{true:'navCur', false:''}[activeIndex===2]" ng-click="ic.activeMenu(2)">录音</a>
+            <a href="/tms/xt" ng-class="{true:'navCur', false:''}[activeIndex===3]" ng-click="ic.activeMenu(3)">系统管理</a>
         </div>
 
     </div>
