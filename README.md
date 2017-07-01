@@ -1,5 +1,5 @@
 # tms
-电话会议管理系统
+电话会议管理系统(Teleconference management system)
 
 ## 前提条件
 - [Git 1.9+](http://git-scm.com/downloads)
