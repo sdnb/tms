@@ -18,7 +18,6 @@ public class ContactShow {
     @NotBlank(message = "名字不能为空")
     private String name;
 
-    @NotNull(message = "所属分组不能为空")
     private Integer groupId;
 
     @NotNull(message = "所属电话簿不能为空")

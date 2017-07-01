@@ -29,7 +29,7 @@ public interface IGroupService {
      * @param pageSize
      * @return
      */
-    Page<GroupShow> getPage(Integer currentPage, Integer pageSize);
+    Page<GroupShow> getPage(String name, Integer currentPage, Integer pageSize);
 
 
     /**
