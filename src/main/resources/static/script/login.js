@@ -16,7 +16,7 @@ app.controller('loginCtrl', function($scope, $resource, loginService){
         this.message.show = false;
     };
 
-    $('.hide').removeClass('.hide');
+    $('.hide').removeClass('hide');
 
     this.loginData = {};
 

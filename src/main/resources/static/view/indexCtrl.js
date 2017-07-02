@@ -3,7 +3,8 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
         var _this = this;
 
         var loginCookie = commonService.getCookie('staff_token');
-        if(!loginCookie){
+        console.log(loginCookie);
+        if(loginCookie == ''){
             window.location.href = '/login';
         }else{
             $rootScope.loginCookie = loginCookie;
