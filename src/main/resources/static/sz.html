@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="loginApp">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
@@ -13,18 +13,39 @@ body { background: #1d76b3 url(images/bg.jpg) no-repeat center top; background-s
 
 <body>
 
-<div class="lgCon">
+<div class="lgCon" ng-controller="loginCtrl as ls">
 	
 	<div class="lgCon2">
 
-		<form>
-		<div class="inpCon"><input type="text" placeholder="请输入用户名" /></div>
-		<div class="inpCon" style="background-image: url(images/key.png);"><input type="password" placeholder="请输入密码" /></div>
-		<a href="" class="btn-exit">退出</a> <input type="submit" value="立即登录" class="btn-login" />
+		<form name="loginForm">
+		<div class="inpCon"><input type="text" placeholder="请输入用户名" ng-model="ls.loginData.username" required/></div>
+		<div class="inpCon" style="background-image: url(images/key.png);"><input type="password" placeholder="请输入密码" ng-model="ls.loginData.password" required/></div>
+		<a href="" class="btn-exit">退出</a> <input type="submit" value="立即登录" class="btn-login" ng-click="ls.login(loginForm.$valid)"/>
 		</form>
 
 	</div>
 
+	<div class="modalbg">
+		<div class="luyin">
+
+			<span class="lyClose"></span>
+			<div style="clear: both;"></div>
+
+			<div class="lyCen">是否对此次会议进行录音？</div>
+
+			<div class="lyBtn">
+				<a href="" style="margin-left:135px;"><img src="images/no.png" /></a>
+				<a href="" style="margin-left:8px;"><img src="images/yes.png" /></a>
+			</div>
+
+		</div>
+	</div>
+
 </div>
+<script src="/script/lib/jquery/dist/jquery.min.js"></script>
+<script src="/script/lib/angular/angular.min.js"></script>
+<script src="/script/lib/angular-resource/angular-resource.min.js"></script>
+<script src="/script/lib/js-md5/js/md5.min.js"></script>
+<script src="/script/login.js"></script>
 </body>
 </html>
