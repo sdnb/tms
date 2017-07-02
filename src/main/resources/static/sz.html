@@ -25,17 +25,17 @@ body { background: #1d76b3 url(images/bg.jpg) no-repeat center top; background-s
 
 	</div>
 
-	<div class="modalbg">
-		<div class="luyin">
+	<div class="modalbg" ng-show="ls.message.show">
+		<div class="luyin hide">
 
-			<span class="lyClose"></span>
+			<span class="lyClose" ng-click="ls.hideMessage()"></span>
 			<div style="clear: both;"></div>
 
-			<div class="lyCen">是否对此次会议进行录音？</div>
+			<div class="lyCen" ng-bind="ls.message.text"></div>
 
 			<div class="lyBtn">
-				<a href="" style="margin-left:135px;"><img src="images/no.png" /></a>
-				<a href="" style="margin-left:8px;"><img src="images/yes.png" /></a>
+				<a href="" style="margin-left:135px;" ng-click="ls.hideMessage()"><img src="images/no.png" /></a>
+				<a href="" style="margin-left:8px;" ng-click="ls.hideMessage()"><img src="images/yes.png" /></a>
 			</div>
 
 		</div>

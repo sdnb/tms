@@ -12,8 +12,8 @@
 <div class="top">
     <div class="w1000">
         <font color="#666">欢迎进入神州电话会议！</font>
-        <a href="" class="topExit"><img src="images/exit.png" />退出</a>
-        <span style="float: right;">您好！XXX</span>
+        <a href="" class="topExit" ng-click="ic.logout()"><img src="images/exit.png" />退出</a>
+        <span style="float: right;" ng-cloak="ng-cloak">您好！{{loginUser.username}}</span>
     </div>
 </div>
 <div style="clear:both"></div>
