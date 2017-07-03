@@ -69,8 +69,10 @@ public class ConferenceRoomController extends BaseController{
                                 @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                 @RequestParam(value = "pageSize", required = false)Integer pageSize,
                                 HttpServletResponse response) {
-        Page<ConferenceRoomShow> page = conferenceRoomService.findPage(ivr, number, name, pageSize, currentPage);
+        Page<ConferenceRoomShow> page = conferenceRoomService.findPage(ivr, number, name, currentPage, pageSize);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
+        response.addHeader("Page", String.valueOf(page.getNumber()+1));
+        response.addHeader("Page-Count", String.valueOf(page.getTotalPages()));
         return new ObjectResult("true", page.getContent());
     }
 

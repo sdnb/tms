@@ -468,3 +468,7 @@ a.btn-jy1 { border-color:#3686dc; color:#3686dc; background-image: url(../images
 .modalbg {background:url(../images/modalbg.png) 100% 100%;width:100%;height:100%;position:fixed;left:0;top:0;right:0;left:0;z-index:1000;overflow-y: auto;}
 
 [ng-cloak] {display:none;}
+
+.fenye a.enable:hover{cursor:not-allowed;color:#ccc !important;}
+
+.cur{color:#3686dc !important; font-weight: bold !important;}
