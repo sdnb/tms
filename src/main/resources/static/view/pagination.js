@@ -116,7 +116,7 @@ define(['../script/tms','jquery'],function(module,$){
 
                 //选择尾页
                 scope.selectLastPage = function(){
-                    scope.pageObject.currentPage = scope.pageObject.totalPage;
+                    scope.pageObject.currentPage = scope.pageObject.totalPage == 0 ? 1 : scope.pageObject.totalPage;
                     scope.checkLimit(scope.pageObject.currentPage);
                 };
 

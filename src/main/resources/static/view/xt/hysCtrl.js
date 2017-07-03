@@ -40,7 +40,6 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
             this.template = 'listTemplate';
         };
 
-
         $scope.pageObject = {
             currentPage: 1,
             totalPage: 0,
@@ -58,6 +57,10 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
             this.filter.currentPage = $scope.pageObject.currentPage;
             this.filter.pageSize = $scope.pageObject.pageSize;
 
+            for(var k in this.filter){
+                if(!this.filter[k]) this.filter[k] = null;
+            }
+
             this.loading = true;
             conferenceRoomService.pageList(this.filter, function(data, header){
                 _this.loading = false;
@@ -68,7 +71,6 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
                     for(var i=1;i<=$scope.pageObject.totalPage;i++){
                         $scope.pageObject.pages.push(i);
                     }
-                    console.log(_this.rooms);
                 }else{
                     _this.rooms = [];
                     console.log(data);
