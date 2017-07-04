@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,10 +21,17 @@ public interface ContactGroupRelativeRepository extends JpaRepository<ContactGro
     void deleteByGroupId(int id);
 
     @Modifying
+    @Transactional
     @Query("delete from ContactGroupRelative c where c.groupId = ?1 and c.contactId = ?2")
-    void deleteContact(int groupId, int contactId);
+    int deleteContact(int groupId, int contactId);
 
 
-    @Query("select c.contactId from ContactGroupRelative c where c.groupId=?1")
-    List<Integer> findContactIds(Integer groupId);
+//    @Query("select c.contactId from ContactGroupRelative c where c.groupId=?1")
+//    List<Integer> findContactIds(Integer groupId);
+
+
+    @Modifying
+    @Transactional
+    @Query("delete from ContactGroupRelative c where c.contactId = ?1")
+    int deleteByContactId(int cid);
 }

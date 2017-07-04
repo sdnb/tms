@@ -6,12 +6,14 @@ import cn.snzo.entity.Group;
 import cn.snzo.repository.ContactGroupRelativeRepository;
 import cn.snzo.repository.GroupRepository;
 import cn.snzo.service.IGroupService;
+import cn.snzo.vo.ContactGroupRelativeShow;
 import cn.snzo.vo.GroupShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +51,16 @@ public class GroupService implements IGroupService {
 
 
     @Override
+    @Transactional
     public int delete(int id) {
         groupRepository.delete(id);
         contactGroupRelativeRepository.deleteByGroupId(id);
-        return 0;
+        return 1;
     }
 
     @Override
     public Page<GroupShow> getPage( String name, Integer currentPage, Integer pageSize) {
+        name = CommonUtils.fuzzyString(name);
         Pageable p = CommonUtils.createPage(currentPage, pageSize);
         Page<Group> groups = groupRepository.findPage(name, p);
         List<Group> groupsList = groups.getContent();
@@ -69,17 +73,20 @@ public class GroupService implements IGroupService {
     }
 
     @Override
-    public int addContact(int groupId, int contactId) {
-        ContactGroupRelative contactGroupRelative = new ContactGroupRelative();
-        contactGroupRelative.setContactId(contactId);
-        contactGroupRelative.setGroupId(groupId);
-        contactGroupRelativeRepository.save(contactGroupRelative);
+    public int addContact(ContactGroupRelativeShow contactGroupRelativeShow) {
+        List<Integer> contactIds = contactGroupRelativeShow.getContactIds();
+        for (Integer id : contactIds) {
+            ContactGroupRelative contactGroupRelative = new ContactGroupRelative();
+            contactGroupRelative.setContactId(id);
+            contactGroupRelative.setGroupId(contactGroupRelativeShow.getGroupId());
+            contactGroupRelativeRepository.save(contactGroupRelative);
+        }
         return 1;
     }
 
     @Override
     public int removeContact(int groupId, int contactId) {
-        contactGroupRelativeRepository.deleteContact(groupId, contactId);
-        return 1;
+        int ret = contactGroupRelativeRepository.deleteContact(groupId, contactId);
+        return ret;
     }
 }

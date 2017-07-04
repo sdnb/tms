@@ -2,7 +2,9 @@ package cn.snzo.service;
 
 import cn.snzo.vo.ContactShow;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,24 +21,42 @@ public interface IContactService {
      * @param pageSize
      * @return
      */
-    Page<ContactShow> getPage(String name, String phone, Integer currentPage, Integer pageSize);
-
-
-    int add(ContactShow contactShow);
-
-
-    int delete(int id);
-
-
-    int modify(int id, ContactShow contactShow);
+    Page<ContactShow> getPage(Integer groupId, Integer bookId,
+                              String name, String phone, Integer currentPage, Integer pageSize);
 
 
     /**
-     * 根据分组查联系人
-     * @param groupId
+     * 新增联系人
+     * @param contactShow
      * @return
      */
-    List<ContactShow> findByGroup(Integer groupId);
+    int add(ContactShow contactShow);
+
+
+    /**
+     * 删除联系人
+     * @param cid 联系人id
+     * @return
+     */
+    int delete(int cid);
+
+
+
+    /**
+     * 修改联系人
+     * @param id
+     * @param contactShow
+     * @return
+     */
+    int modify(int id, ContactShow contactShow);
+
+
+//    /**
+//     * 根据分组查联系人
+//     * @param groupId
+//     * @return
+//     */
+//    List<ContactShow> findByGroup(int groupId);
 
 
     /**
@@ -44,6 +64,13 @@ public interface IContactService {
      * @param bookId
      * @return
      */
-    List<ContactShow> findNotInGroup(Integer bookId);
+    List<ContactShow> findNotInGroup(int bookId);
 
+
+    /**
+     * 通过excel文件导入联系人
+     * @param file
+     * @return
+     */
+    int importFromExcel(MultipartFile file, int bookId) throws IOException;
 }
