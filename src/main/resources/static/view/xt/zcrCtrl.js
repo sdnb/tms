@@ -60,6 +60,10 @@ define(['../../script/tms', 'jquery', '../../script/service/conductorService', '
             this.filter.currentPage = $scope.pageObject.currentPage;
             this.filter.pageSize = $scope.pageObject.pageSize;
 
+            for(var k in this.filter){
+                if(!this.filter[k]) this.filter[k] = null;
+            }
+
             this.loading = true;
             conductorService.pageList(this.filter, function(data, header){
                 _this.loading = false;

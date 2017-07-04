@@ -1,4 +1,5 @@
-define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomService', '../../view/pagination'], function(module, $, ConferenceRoomService){
+define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomService', '../../script/service/conductorService', '../../view/pagination'],
+    function(module, $, ConferenceRoomService, ConductorService){
     module.controller('hysCtrl', function($scope, $location, $resource, commonService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
@@ -17,6 +18,7 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
             this.message.show = false;
         };
         var conferenceRoomService = new ConferenceRoomService($resource);
+        var conductorService = new ConductorService($resource);
 
         this.template = 'listTemplate';
         this.room = null;
@@ -28,9 +30,12 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
                     this.template = 'listTemplate';
                     break;
                 case 'add':
+                    this.room = {};
+                    this.room.isRecordEnable = 0;
                     this.template = 'addTemplate';
                     break;
                 case 'update':
+                    this.conductor = this.getConductor(this.room.conductorId, this.conductors);
                     this.template = 'updateTemplate';
                     break;
             }
@@ -82,16 +87,66 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
             _this.getAllRooms();
         });
 
+        this.ivrPattern = commonService.regex('ivr'); //ivr
+        this.numberPattern = commonService.regex('mustPositiveNumber'); //正整数
+
+        this.conductor = null;
+        this.conductors = [];
+        this.getConductors = function(){
+            conductorService.pageList({currentPage:1,pageSize:1000},function(data){
+                if(data.status == 'true'){
+                    _this.conductors = data.message;
+                }else{
+                    _this.conductros = [];
+                }
+            });
+        };
+        this.getConductors();
+
+        this.getConductor = function(id, conductorArray){
+            for(var i=0;i<conductorArray.length;i++){
+                if(conductorArray[i].id == id){
+                    return conductorArray[i];
+                }
+            }
+        };
+
 
         this.addRoom = function(flag){
             this.isNull = true;
             if(!flag) return;
+            this.room.conductorId = this.conductor.id;
+            this.room.conductorName = this.conductor.realname;
+            this.loading = true;
+            conferenceRoomService.save(this.room, function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                    _this.cancel();
+                    _this.getAllRooms('reload');
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                }
+            });
         };
 
 
         this.updateRoom = function(flag){
             this.isNull = true;
             if(!flag) return;
+            this.room.conductorId = this.conductor.id;
+            this.room.conductorName = this.conductor.realname;
+            this.loading = true;
+            conferenceRoomService.update(this.room.id, this.room, function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                    _this.cancel();
+                    _this.getAllRooms();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                }
+            });
         };
 
 
@@ -101,11 +156,11 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
         //操作确认
         $scope.confirmDialogShow = false;
         $scope.confirmOper = function(type, obj){
-            this.room = obj;
+            _this.room = obj;
             $scope.confirmTips = "";
             $scope.confirmTips = confirmInfo[type].tips;
             $scope.confirmType = type;
-            $scope.confirmDialogShow = false;
+            $scope.confirmDialogShow = true;
         };
 
         $scope.cancelConfirm = function(){
@@ -116,13 +171,23 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
         $scope.confirmCommit = function(type){
             $scope.cancelConfirm();
             if(type == "delete"){
-                this.deleteRoom();
+                _this.deleteRoom();
             }
         };
 
 
         this.deleteRoom = function(){
             this.loading = true;
+            conferenceRoomService.delete(this.room.id, function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                    _this.getAllRooms();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                    console.log(data);
+                }
+            });
         };
     });
 });

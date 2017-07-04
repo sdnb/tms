@@ -40,10 +40,10 @@
                     <td ng-bind="room.conductorName"></td>
                     <td ng-bind="room.ivrPassword"></td>
                     <td ng-bind="room.maxParticipant"></td>
-                    <td><a href="" ng-class="{cur:room.isRecordEnable===0}">是</a></td>
-                    <td><a href="" ng-class="{cur:room.isRecordEnable===1}">否</a></td>
+                    <td><a href="" ng-class="{cur:room.isRecordEnable===1}">是</a></td>
+                    <td><a href="" ng-class="{cur:room.isRecordEnable===0}">否</a></td>
                     <td><a href="" ng-click="hys.changeView('update', room)"><img src="images/icon-edit.png"/></a></td>
-                    <td><a href="" ng-click="hys.confirmOper('delete', room)"><img src="images/icon-del.png" /></a></td>
+                    <td><a href="" ng-click="confirmOper('delete', room)"><img src="images/icon-del.png" /></a></td>
                 </tr>
 
             </table>
@@ -60,14 +60,21 @@
 
             <form name="addForm">
             <div class="xjLI">
-                <span class="xjLI-l">主持人：</span><select> <option>A组</option> <option>B组</option> </select>
+                <span class="xjLI-l">主持人：</span><select name="conductor" ng-model="hys.conductor" ng-options="conductor as conductor.realname for conductor in hys.conductors" required><option value="">请选择</option></select>
+                <i class="mgr-x-tips" ng-show="addForm.conductor.$error.required && hys.isNull">主持人不能为空</i>
             </div>
 
-            <div class="xjLI"><span class="xjLI-l">IVR参会密码：</span><input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" /></div>
+            <div class="xjLI"><span class="xjLI-l">IVR参会密码：</span><input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" name="ivrPassword" ng-model="hys.room.ivrPassword" ng-pattern="hys.ivrPattern"  required/>
+                <i class="mgr-x-tips" ng-show="addForm.ivrPassword.$error.required && hys.isNull">IVR参会密码不能为空</i>
+                <i class="mgr-x-tips" ng-show="addForm.ivrPassword.$error.pattern">4位数字字母的组合</i>
+            </div>
 
-            <div class="xjLI"><span class="xjLI-l">参会人数：</span><input type="text" class="wbk2" /></div>
+            <div class="xjLI"><span class="xjLI-l">参会人数：</span><input type="text" class="wbk2" name="maxParticipant" ng-model="hys.room.maxParticipant" ng-pattern="hys.numberPattern" required maxlength="5"/>
+                <i class="mgr-x-tips" ng-show="addForm.maxParticipant.$error.required && hys.isNull">参会人数不能为空</i>
+                <i class="mgr-x-tips" ng-show="addForm.maxParticipant.$error.pattern">参会人数只能为正整数</i>
+            </div>
 
-            <div class="xjLI"><span class="xjLI-l">是否录音：</span><input type="radio" /> 是<input type="radio" style="margin-left: 35px" /> 否</div>
+            <div class="xjLI"><span class="xjLI-l">是否录音：</span><input type="radio" name="isRecordEnable" value="1" ng-model="hys.room.isRecordEnable" /> 是<input type="radio" style="margin-left: 35px" name="isRecordEnable" value="0" ng-model="hys.room.isRecordEnable" /> 否</div>
 
             <div><input type="submit" value="保存" class="btn-xj" ng-click="hys.addRoom(addForm.$valid)"/><a href="" class="btn-xj" style="margin-left: 20px" ng-click="hys.cancel()">取消</a></div>
 
@@ -84,14 +91,21 @@
 
             <form name="updateForm">
                 <div class="xjLI">
-                    <span class="xjLI-l">主持人：</span><select> <option>A组</option> <option>B组</option> </select>
+                    <span class="xjLI-l">主持人：</span><select name="conductor" ng-model="hys.conductor" ng-options="conductor as conductor.realname for conductor in hys.conductors" required><option value="">请选择</option></select>
+                    <i class="mgr-x-tips" ng-show="updateForm.conductor.$error.required && hys.isNull">主持人不能为空</i>
                 </div>
 
-                <div class="xjLI"><span class="xjLI-l">IVR参会密码：</span><input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" /></div>
+                <div class="xjLI"><span class="xjLI-l">IVR参会密码：</span><input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" name="ivrPassword" ng-model="hys.room.ivrPassword" ng-pattern="hys.ivrPattern"  required/>
+                    <i class="mgr-x-tips" ng-show="updateForm.ivrPassword.$error.required && hys.isNull">IVR参会密码不能为空</i>
+                    <i class="mgr-x-tips" ng-show="updateForm.ivrPassword.$error.pattern">4位数字字母的组合</i>
+                </div>
 
-                <div class="xjLI"><span class="xjLI-l">参会人数：</span><input type="text" class="wbk2" /></div>
+                <div class="xjLI"><span class="xjLI-l">参会人数：</span><input type="text" class="wbk2" name="maxParticipant" ng-model="hys.room.maxParticipant" ng-pattern="hys.numberPattern" required maxlength="5"/>
+                    <i class="mgr-x-tips" ng-show="updateForm.maxParticipant.$error.required && hys.isNull">参会人数不能为空</i>
+                    <i class="mgr-x-tips" ng-show="updateForm.maxParticipant.$error.pattern">参会人数只能为正整数</i>
+                </div>
 
-                <div class="xjLI"><span class="xjLI-l">是否录音：</span><input type="radio" /> 是<input type="radio" style="margin-left: 35px" /> 否</div>
+                <div class="xjLI"><span class="xjLI-l">是否录音：</span><input type="radio" name="isRecordEnable" value="1" ng-model="hys.room.isRecordEnable" /> 是<input type="radio" style="margin-left: 35px" name="isRecordEnable" value="0" ng-model="hys.room.isRecordEnable" /> 否</div>
 
                 <div><input type="submit" value="保存" class="btn-xj" ng-click="hys.updateRoom(updateForm.$valid)"/><a href="" class="btn-xj" style="margin-left: 20px" ng-click="hys.cancel()">取消</a></div>
 
