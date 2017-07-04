@@ -15,13 +15,25 @@ import java.util.List;
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
-    @Query("select c from Contact c where (?1 is null or c.name like ?1)" +
+    @Query("select c from Contact c where" +
+            " (?1 is null or c.name like ?1)" +
             " and (?2 is null or c.phone like ?2)")
-    Page<Contact> findPage(String name, String phone, Pageable p);
+    Page<Contact> findPage(Integer groupId, Integer bookId, String name, String phone, Pageable p);
 
 
     @Query("select c from Contact c where c.id in (?1)")
     List<Contact> findByIds(List<Integer> contactIds);
+
+
+    @Query(value = "select * from t_contact c where c.book_id = ?2 and c.phone = ?1"
+            ,nativeQuery = true)
+    List<Contact> checkPhone(String phone, Integer bookId);
+
+    Contact findByPhone(String phone);
+
+
+    @Query(value = "select c.phone from Contact c where c.bookId = ?2 and c.phone in (?1)")
+    List<String> checkPhones(List<String> phones, int bookId);
 
 
 

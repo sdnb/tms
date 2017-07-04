@@ -1,5 +1,6 @@
 package cn.snzo.service;
 
+import cn.snzo.vo.ContactGroupRelativeShow;
 import cn.snzo.vo.GroupShow;
 import org.springframework.data.domain.Page;
 
@@ -18,7 +19,7 @@ public interface IGroupService {
     /**
      * 删除分组
      * @param id
-     * @return
+     * @return 1 成功  2
      */
     int delete(int id);
 
@@ -34,11 +35,10 @@ public interface IGroupService {
 
     /**
      * 新增联系人
-     * @param groupId
-     * @param contactId
+     * @param contactGroupRelativeShow
      * @return
      */
-    int addContact(int groupId, int contactId);
+    int addContact(ContactGroupRelativeShow contactGroupRelativeShow);
 
 
     /**

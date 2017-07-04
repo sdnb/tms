@@ -23,6 +23,8 @@ public class ContactShow {
     @NotNull(message = "所属电话簿不能为空")
     private Integer bookId;
 
+    private String groupName;
+
     public ContactShow() {
 
     }
@@ -67,5 +69,13 @@ public class ContactShow {
 
     public void setBookId(Integer bookId) {
         this.bookId = bookId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }
