@@ -6,11 +6,9 @@ import cn.snzo.common.NumberGenerator;
 import cn.snzo.entity.Conductor;
 import cn.snzo.entity.ConferenceRoom;
 import cn.snzo.entity.PhoneBook;
-import cn.snzo.entity.RoomConductorRelative;
 import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.repository.PhoneBookRepository;
-import cn.snzo.repository.RoomCondutorRelativeRepository;
 import cn.snzo.service.IConferenceRoomService;
 import cn.snzo.vo.ConferenceRoomShow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +31,6 @@ public class ConferenceRoomService implements IConferenceRoomService {
     @Autowired
     private ConferenceRoomRepository conferenceRoomRepository;
 
-    @Autowired
-    private RoomCondutorRelativeRepository roomCondutorRelativeRepository;
 
     @Autowired
     private ConductorRepository conductorRepository;
@@ -57,20 +53,21 @@ public class ConferenceRoomService implements IConferenceRoomService {
         conferenceRoom = new ConferenceRoom(conferenceRoomShow);
         conferenceRoom.setIsInUse(0);
         conferenceRoom.setNumber(NumberGenerator.randomNumber());
-        conferenceRoom = conferenceRoomRepository.save(conferenceRoom);
+
         //主持人不为空
         Integer conductId = conferenceRoomShow.getConductorId();
         if (conductId != null) {
             Conductor conductor = conductorRepository.findOne(conductId);
             if (conductor != null) {
-                RoomConductorRelative roomConductorRelative = new RoomConductorRelative();
-                roomConductorRelative.setConductorId(conductId);
-                roomConductorRelative.setConductorName(conductor.getRealname());
-                roomConductorRelative.setRoomId(conferenceRoom.getId());
-                roomCondutorRelativeRepository.save(roomConductorRelative);
+                int check = conferenceRoomRepository.checkConductorIsBind(conductId);
+                //该主持人已有会议室
+                if (check > 0) {
+                    return 3;
+                }
+                conferenceRoom.setConductorName(conductor.getRealname());
             }
         }
-
+        conferenceRoom = conferenceRoomRepository.save(conferenceRoom);
         //新增电话簿
         PhoneBook phoneBook = new PhoneBook();
         phoneBook.setRoomId(conferenceRoom.getId());
@@ -103,13 +100,25 @@ public class ConferenceRoomService implements IConferenceRoomService {
             }
         }
 
-        List<RoomConductorRelative> roomConductorRelatives = roomCondutorRelativeRepository.findByRoomId(id);
-        if (!roomConductorRelatives.isEmpty()) {
-            RoomConductorRelative roomConductorRelative = roomConductorRelatives.get(0);
-            //修改会议室主持人
-            if (!roomConductorRelative.getConductorId().equals(conferenceRoomShow.getConductorId())) {
-                roomConductorRelative.setConductorId(conferenceRoomShow.getConductorId());
-                roomCondutorRelativeRepository.save(roomConductorRelative);
+        //修改会议室主持人
+        Integer newCondutor = conferenceRoomShow.getConductorId();
+        Integer oldCondutor = conferenceRoom.getConductorId();
+        if (newCondutor == null) {
+            //将主持人设置为空
+            if (oldCondutor != null) {
+                conferenceRoomShow.setConductorName(null);
+            }
+        } else {
+            //绑定到新主持人
+            if (oldCondutor == null || !oldCondutor.equals(newCondutor)) {
+                int check = conferenceRoomRepository.checkConductorIsBind(newCondutor);
+                //该主持人已经和别的会议室绑定
+                if (check > 0) {
+                    return 5;
+                } else {
+                    Conductor conductor = conductorRepository.findOne(newCondutor);
+                    conferenceRoomShow.setConductorName(conductor.getRealname());
+                }
             }
         }
         conferenceRoom = new ConferenceRoom(conferenceRoomShow);
@@ -130,7 +139,6 @@ public class ConferenceRoomService implements IConferenceRoomService {
             return 3;
         }
         conferenceRoomRepository.delete(id);
-        roomCondutorRelativeRepository.deleteByRoomId(id);
         return 1;
     }
 

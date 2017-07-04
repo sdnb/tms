@@ -1,6 +1,15 @@
 #server
 server.port: 8080
 
+#properties
+com.snzo:
+    sftp:
+         host: 182.61.35.59
+         username: root
+         password:
+         port: 22
+         path:
+              user: /home/sftp/
 # spring
 spring:
     profiles.active: dev

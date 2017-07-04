@@ -6,3 +6,5 @@ CREATE TABLE IF NOT EXISTS t_phone_book (
   create_date     DATETIME                  COMMENT '创建时间',
   PRIMARY KEY (id)
 ) COMMENT='电话簿表';
+
+INSERT INTO t_phone_book (id, type, room_id,modify_date,create_date) VALUE (1, 1, null,now(), now());

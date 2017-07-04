@@ -19,7 +19,8 @@ public class ConferenceRoom extends BaseEntity {
     private   Integer   isRecordEnable; //是否可录音   1 可录音 0 不可录音
     private   String    ivrPassword;    //会议参会密码
     private   Integer   maxParticipant; //最大参会人数
-
+    private   Integer   conductorId;    //主持人id
+    private   String    conductorName;  //主持人姓名
 
     public ConferenceRoom() {
     }
@@ -67,5 +68,22 @@ public class ConferenceRoom extends BaseEntity {
 
     public void setMaxParticipant(Integer maxParticipant) {
         this.maxParticipant = maxParticipant;
+    }
+
+
+    public Integer getConductorId() {
+        return conductorId;
+    }
+
+    public void setConductorId(Integer conductorId) {
+        this.conductorId = conductorId;
+    }
+
+    public String getConductorName() {
+        return conductorName;
+    }
+
+    public void setConductorName(String conductorName) {
+        this.conductorName = conductorName;
     }
 }

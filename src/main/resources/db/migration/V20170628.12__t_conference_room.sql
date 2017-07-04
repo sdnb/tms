@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS t_conference_room (
   is_record_enable   INT(1)           UNSIGNED      COMMENT '是否可录音',
   ivr_password       VARCHAR (30)                   COMMENT '会议参会密码',
   max_participant    INT(5)           UNSIGNED      COMMENT '最大参会人数',
+  conductor_id       INT(5)           UNSIGNED      COMMENT '主持人id',
+  conductor_name     VARCHAR(30)                    COMMENT '主持人姓名',
   modify_date        DATETIME                       COMMENT '更新时间',
   create_date        DATETIME                       COMMENT '创建时间',
   PRIMARY KEY (id),

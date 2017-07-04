@@ -4,11 +4,9 @@ import cn.snzo.common.CommonUtils;
 import cn.snzo.entity.Account;
 import cn.snzo.entity.Conductor;
 import cn.snzo.entity.ConferenceRoom;
-import cn.snzo.entity.RoomConductorRelative;
 import cn.snzo.repository.AccountRepository;
 import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
-import cn.snzo.repository.RoomCondutorRelativeRepository;
 import cn.snzo.service.IAccountService;
 import cn.snzo.service.IConductorService;
 import cn.snzo.vo.AccountShow;
@@ -34,9 +32,6 @@ public class ConductorService implements IConductorService {
 
     @Autowired
     private ConductorRepository conductorRepository;
-
-    @Autowired
-    private RoomCondutorRelativeRepository roomCondutorRelativeRepository;
 
     @Autowired
     private ConferenceRoomRepository conferenceRoomRepository;
@@ -88,18 +83,17 @@ public class ConductorService implements IConductorService {
         }
         //删除主持人所绑定的会议室
         //如果会议室状态为使用中，则无法删除该主持人
-        List<RoomConductorRelative> roomConductorRelatives = roomCondutorRelativeRepository.findByConductorId(id);
+        List<ConferenceRoom> conferenceRooms = conferenceRoomRepository.findByConductorId(id);
 
-        if (!roomConductorRelatives.isEmpty()) {
-            RoomConductorRelative roomConductorRelative = roomConductorRelatives.get(0);
-            ConferenceRoom room = conferenceRoomRepository.findOne(roomConductorRelative.getRoomId());
-            if (room != null) {
-                if (room.getIsInUse() == 1) {
-                    return 2;
-                } else {
-                    roomCondutorRelativeRepository.deleteByCondutorId(id);
-                }
+        if (!conferenceRooms.isEmpty()) {
+            ConferenceRoom room = conferenceRooms.get(0);
+            if (room.getIsInUse() == 1) {
+                return 2;
+            } else {
+                room.setConductorName(null);
+                room.setConductorId(null);
             }
+            conferenceRoomRepository.save(room);
         }
 
         //删除主持人对应的账号

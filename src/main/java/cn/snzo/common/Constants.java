@@ -15,4 +15,6 @@ public class Constants {
     public static final String     FORMATE_yyyy_MM_dd     = "yyyy-MM-dd";
     public static final String     FORMATE_CUSTOM_TIME    = "yyyy-MM-dd HH:mm:ss";
     public static final String     STAFF_TOKEN            = "staff_token"   ;
+    public static final CharSequence PREFIX_SFTP_PATH     = "/home/sftp/";
+
 }

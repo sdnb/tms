@@ -41,6 +41,8 @@ public class ConferenceRoomController extends BaseController{
                 return successRes("新增成功");
             } else if (ret == 2) {
                 return failureRes("ivr密码重复");
+            } else if (ret == 3) {
+                return failureRes("该主持人已经和别的会议室绑定");
             } else {
                 return failureRes("新增失败");
             }
@@ -101,6 +103,8 @@ public class ConferenceRoomController extends BaseController{
                 return failureRes("会议室正在使用，请稍后重试");
             } else if (ret == 4) {
                 return failureRes("ivr密码重复");
+            } else if (ret == 5) {
+                return failureRes("该主持人已经和别的会议室绑定");
             } else {
                 return failureRes("修改失败");
             }
