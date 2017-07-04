@@ -73,6 +73,17 @@ public class GroupService implements IGroupService {
     }
 
     @Override
+    public List<GroupShow> getTotal() {
+        List<Group> groupsList = groupRepository.findTotal();
+        List<GroupShow> groupsShowList = new ArrayList<>();
+        for(Group group : groupsList){
+            GroupShow groupShow = new GroupShow(group);
+            groupsShowList.add(groupShow);
+        }
+        return groupsShowList;
+    }
+
+    @Override
     public int addContact(ContactGroupRelativeShow contactGroupRelativeShow) {
         List<Integer> contactIds = contactGroupRelativeShow.getContactIds();
         for (Integer id : contactIds) {

@@ -1,6 +1,7 @@
 define([],function(){
     function GroupService($resource){
         this.pageListApi = $resource('/api/group/page'); //分页查询
+        this.totalListApi = $resource('/api/group/total'); //查询所有下拉框用
         this.saveApi = $resource('/api/group'); //新建分组
         this.deleteApi = $resource('/api/group/:id'); //删除分组
 
@@ -12,6 +13,14 @@ define([],function(){
         this.pageListApi.get(group, function(data, header){
             cb(data, header);
         }, function(errData){
+            cb(errData.data.error);
+        });
+    };
+
+    GroupService.prototype.totalList = function(cb){
+        this.totalListApi.get(function(data){
+            cb(data);
+        },function(errData){
             cb(errData.data.error);
         });
     };

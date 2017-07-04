@@ -4,6 +4,8 @@ import cn.snzo.vo.ContactGroupRelativeShow;
 import cn.snzo.vo.GroupShow;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/7/1 0001.
  */
@@ -32,6 +34,12 @@ public interface IGroupService {
      */
     Page<GroupShow> getPage(String name, Integer currentPage, Integer pageSize);
 
+    /**
+     * 查询所有分组
+     * @return
+     */
+    List<GroupShow> getTotal();
+
 
     /**
      * 新增联系人
@@ -39,7 +47,6 @@ public interface IGroupService {
      * @return
      */
     int addContact(ContactGroupRelativeShow contactGroupRelativeShow);
-
 
     /**
      * 移出分组
