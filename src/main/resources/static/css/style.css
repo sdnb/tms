@@ -472,3 +472,7 @@ a.btn-jy1 { border-color:#3686dc; color:#3686dc; background-image: url(../images
 .fenye a.enable:hover{cursor:not-allowed;color:#ccc !important;}
 
 .cur{color:#3686dc !important; font-weight: bold !important;}
+
+.center{margin:0 auto;}
+
+.mgr-x-tips { line-height: 34px; margin-left: 1em; color: red;}

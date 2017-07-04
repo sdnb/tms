@@ -94,18 +94,34 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
             if(!flag) return;
         };
 
-        this.isDelete = false;
-        this.showDelete = function(room){
-            this.room = room;
-            this.isDelete = true;
+
+        //定义确认弹出框提示问题
+        var confirmInfo = {"delete":{tips:"请问是否删除该会议室?"}};
+
+        //操作确认
+        $scope.confirmDialogShow = false;
+        $scope.confirmOper = function(type, obj){
+            this.room = obj;
+            $scope.confirmTips = "";
+            $scope.confirmTips = confirmInfo[type].tips;
+            $scope.confirmType = type;
+            $scope.confirmDialogShow = false;
         };
 
-        this.hideDelete = function(){
-            this.isDelete = false;
+        $scope.cancelConfirm = function(){
+            $scope.confirmDialogShow = false;
         };
+
+        //操作提交
+        $scope.confirmCommit = function(type){
+            $scope.cancelConfirm();
+            if(type == "delete"){
+                this.deleteRoom();
+            }
+        };
+
 
         this.deleteRoom = function(){
-            this.hideDelete();
             this.loading = true;
         };
     });

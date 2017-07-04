@@ -21,10 +21,10 @@
     <script type="text/ng-template" id="listTemplate">
         <div class="glyRight">
 
-            <div class="dhb-sch">
-                <form autocomplete="off">
+            <div class="dhb-sch" style="margin-top:0">
+                <form >
                     主持人：<input type="text" class="wbk1" ng-model="hys.filter.name"/>
-                    IVR密码：<input type="password" class="wbk1" style="background-image: url(images/icon-pwd.png);" ng-model="hys.filter.ivr" />
+                    IVR密码：<input type="text" class="wbk1" style="background-image: url(images/icon-pwd.png);" ng-model="hys.filter.ivr"/>
                     <input type="submit" value="搜索" class="btn-dhbs" ng-click="hys.getAllRooms('reload')"/>
 
                     <a href="" class="btn-xz" ng-click="hys.changeView('add',null)">新增会议室</a>
@@ -43,7 +43,7 @@
                     <td><a href="" ng-class="{cur:room.isRecordEnable===0}">是</a></td>
                     <td><a href="" ng-class="{cur:room.isRecordEnable===1}">否</a></td>
                     <td><a href="" ng-click="hys.changeView('update', room)"><img src="images/icon-edit.png"/></a></td>
-                    <td><a href="" ng-click="hys.showDelete(room)"><img src="images/icon-del.png" /></a></td>
+                    <td><a href="" ng-click="hys.confirmOper('delete', room)"><img src="images/icon-del.png" /></a></td>
                 </tr>
 
             </table>
@@ -117,18 +117,23 @@
         </div>
     </div>
 
-    <div class="modalbg" ng-show="hys.isDelete">
+    <div class="modalbg" ng-show="confirmDialogShow">
         <div class="luyin">
-            <span class="lyClose" ng-click="hys.hideDelete()"></span>
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
             <div style="clear: both;"></div>
 
-            <div class="lyCen">请问是否删除该会议室？</div>
+            <div class="lyCen" ng-bind="confirmTips"></div>
 
             <div class="lyBtn">
-                <a href="" style="margin-left:135px;" ng-click="hys.hideDelete()"><img src="images/no.png" /></a>
-                <a href="" style="margin-left:8px;" ng-click="hys.deleteRoom()"><img src="images/yes.png" /></a>
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/yes.png" /></a>
             </div>
 
         </div>
     </div>
+
+    <div class="modalbg" style="text-align: center;" ng-show="ls.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
+    </div>
+
 </div>
