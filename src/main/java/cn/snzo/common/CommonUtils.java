@@ -1,12 +1,13 @@
 package cn.snzo.common;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import cn.snzo.utils.BeanUtil;
+import org.springframework.data.domain.*;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/6/29 0029.
@@ -46,4 +47,7 @@ public class CommonUtils {
         cookie.setPath(path);
         return cookie;
     }
+
+
+
 }
