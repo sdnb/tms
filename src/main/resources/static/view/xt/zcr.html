@@ -1,0 +1,67 @@
+<style type="text/css">
+    body {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-orient: vertical;-moz-box-orient: vertical;-o-box-orient: vertical;-ms-box-orient: vertical;
+    }
+
+    .glyCon {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-flex:1;-moz-box-flex:1;-o-box-flex:1;-ms-box-flex:1;
+    }
+</style>
+<div class="w1000 glyCon" ng-controller="zcrCtrl as zcr">
+
+    <div class="glyLeft">
+        <a href="/tms/xt/zcr" class="glyCur">会议主持人管理</a>
+        <a href="/tms/xt/hys">会议室管理</a>
+        <a href="/tms/xt/gly">管理员密码修改</a>
+        <a href="/tms/xt/rz">系统日志</a>
+        <a href="/tms/xt/lj">存储路径</a>
+    </div>
+
+    <div class="glyRight">
+
+        <div class="dhb-sch" style="margin-top:0">
+            <form>
+                姓名：<input type="text" class="wbk1" />
+                联系电话：<input type="text" class="wbk1" style="background-image: url(images/icon-tel.png);" />
+                <input type="submit" value="搜索" class="btn-dhbs" />
+
+                <a href="" class="btn-xz">新增主持人</a>
+            </form>
+        </div>
+        <div style="clear: both;"></div>
+
+        <table cellpadding="0" cellspacing="0" class="hysTB">
+
+            <tr> <th>账号</th> <th>姓名</th> <th>电话</th> <th>会议室</th> <th>操作</th> </tr>
+
+            <tr>
+                <td>152478</td>
+                <td>张三</td>
+                <td>13999999999</td>
+                <td>v5847</td>
+                <td><a href=""><img src="images/icon-del.png" /></a></td>
+            </tr>
+
+            <tr>
+                <td>152478</td>
+                <td>张三</td>
+                <td>13999999999</td>
+                <td>v5847</td>
+                <td><a href=""><img src="images/icon-del.png" /></a></td>
+            </tr>
+
+        </table>
+
+        <div class="fenye">
+            <a href="" style="color:#3686dc; width:35px; border-radius: 4px 0 0 4px">首页</a>
+            <a href="" style="color:#3686dc; width:45px;">上一页</a>
+            <a href="" class="fyCur">1</a><a href="">2</a><a href="">3</a><a href="">4</a><a href="">5</a><a href="">6</a><a href="">7</a><a href="">8</a><a href="">9</a><a href="">10</a>
+            <a href="" style="color:#3686dc; width:45px;">下一页</a>
+            <a href="" style="color:#3686dc; width:35px; border-radius: 0 4px 4px 0; border-right: solid 1px #ccc;">尾页</a>
+        </div>
+
+    </div>
+
+</div>

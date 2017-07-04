@@ -63,7 +63,17 @@
             <version>1.5.2.RELEASE</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional> <!-- 这个需要为 true 热部署才有效 -->
+        </dependency>
+        <!-- 读取2003 2007 excel poi-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.10-FINAL</version>
+        </dependency>
         <!--thymeleaf模板jar，是很不错的html数据传递取值，类似jsp的jstl-->
         <!--<dependency>-->
             <!--<groupId>org.springframework.boot</groupId>-->

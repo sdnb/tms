@@ -1,0 +1,29 @@
+{
+  "name": "rental653",
+  "private": true,
+  "dependencies": {
+    "requirejs": "~2.2.0",
+    "jquery": "~1.12.4",
+    "bootstrap": "~3.3.6",
+    "angular": "~1.2.29",
+    "angular-route": "~1.2.29",
+    "angular-resource": "~1.2.29",
+    "js-md5": "~2.1.0",
+    "font-awesome": "fontawesome#^4.5.0",
+    "bootstrap-datetimepicker": "https://github.com/Septemberwh/bootstrap-datetimepicker.git#^2.3.12",
+    "ajaxfileupload": "^1.0.0",
+    "flot": "flot#^0.8.3",
+    "zTree_v3": "https://github.com/zTree/zTree_v3.git#^3.5.24",
+    "respond": "^1.4.2",
+    "es5-shim": "^4.5.9",
+    "highcharts": "https://github.com/highcharts/highcharts.git#^4.2.6",
+    "qrcodejs": "https://github.com/CatTail/qrcodejs.git#^0.1.0",
+    "mobiscroll": "^2.17.2"
+  },
+  "devDependencies": {
+    "chai": "~3.4.2"
+  },
+  "resolutions": {
+    "jquery": "^1.12.4"
+  }
+}

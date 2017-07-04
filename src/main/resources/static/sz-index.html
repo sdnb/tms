@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <base href="/sz-index.html"/>
+</head>
+
+<body style="background: #eee" ng-controller="indexCtrl as ic">
+
+<div class="top">
+    <div class="w1000">
+        <font color="#666">欢迎进入神州电话会议！</font>
+        <a href="" class="topExit" ng-click="ic.logout()"><img src="images/exit.png" />退出</a>
+        <span style="float: right;" ng-cloak="ng-cloak">您好！{{loginUser.username}}</span>
+    </div>
+</div>
+<div style="clear:both"></div>
+
+<div class="header">
+    <div class="w1000">
+
+        <img src="images/logo.png" />
+
+        <div class="nav" id="menu">
+            <a href="/tms/hy" ng-class="{true:'navCur', false:''}[activeIndex===0]" ng-click="ic.activeMenu(0)">会议管理</a>
+            <a href="/tms/dhb" ng-class="{true:'navCur', false:''}[activeIndex===1]" ng-click="ic.activeMenu(1)">电话簿</a>
+            <a href="/tms/ly" ng-class="{true:'navCur', false:''}[activeIndex===2]" ng-click="ic.activeMenu(2)">录音</a>
+            <a href="/tms/xt" ng-class="{true:'navCur', false:''}[activeIndex===3]" ng-click="ic.activeMenu(3)">系统管理</a>
+        </div>
+
+    </div>
+</div>
+<div style="clear:both"></div>
+
+<div class="w1000" style="margin-top:60px" ng-view="">
+</div>
+
+<div style="clear: both;"></div>
+
+<div class="padbottom"></div>
+<div class="footer">京公网安备110105001147&nbsp;&nbsp;&nbsp;&nbsp;京ICP备10003940号&nbsp;&nbsp;&nbsp;&nbsp;版权所有：神州通信集团有限公司</div>
+
+</body>
+<script data-main="/script/app.js" src="/script/lib/requirejs/require.js"></script>
+</html>

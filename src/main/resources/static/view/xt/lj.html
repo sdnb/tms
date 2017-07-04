@@ -1,0 +1,35 @@
+<style type="text/css">
+    body {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-orient: vertical;-moz-box-orient: vertical;-o-box-orient: vertical;-ms-box-orient: vertical;
+    }
+
+    .glyCon {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-flex:1;-moz-box-flex:1;-o-box-flex:1;-ms-box-flex:1;
+    }
+</style>
+<div class="w1000 glyCon" ng-controller="ljCtrl as lj">
+
+    <div class="glyLeft">
+        <a href="/tms/xt/zcr">会议主持人管理</a>
+        <a href="/tms/xt/hys">会议室管理</a>
+        <a href="/tms/xt/gly">管理员密码修改</a>
+        <a href="/tms/xt/rz">系统日志</a>
+        <a href="/tms/xt/lj" class="glyCur">存储路径</a>
+    </div>
+
+    <div class="glyRight">
+
+        <div class="zcchr">
+            <span>文件存储路径：</span>
+            <div class="zcchwbk" style="width:270px">
+                <input type="text" />
+                <a href="" style="background-image: url(images/wjj.png); width:40px"></a>
+            </div>
+            <input type="submit" value="修 改" class="btn-xg" />
+        </div>
+
+    </div>
+
+</div>

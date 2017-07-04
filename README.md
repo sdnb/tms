@@ -1,10 +1,10 @@
 # tms
-电话会议管理系统
+电话会议管理系统(Teleconference management system)
 
 ## 前提条件
 - [Git 1.9+](http://git-scm.com/downloads)
 - [JDK 1.8+](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-- [mvn 3.3+](http://maven.apache.org/download.cgi/)
+- [maven 3.3+](http://maven.apache.org/download.cgi/)
 
 ### 前提条件 - 环境配置
 执行以下命令,确认版本符合前提条件中指定的要求
