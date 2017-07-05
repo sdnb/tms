@@ -123,6 +123,10 @@ define(['../tms', 'jquery', 'angular'], function(module, $, angular){
                 regex = /^\S{1,80}$/;
             }else if(type=="handleUnit50"){ //长度不能超过100
                 regex = /^\S{1,50}$/;
+            }else if(type=="account"){
+                regex = /^[a-zA-Z][a-zA-Z_0-9]{1,9}$/;
+            }else if(type=="ivr"){
+                regex = /^[a-zA-Z0-9]{1,4}$/
             }
 
             return regex;

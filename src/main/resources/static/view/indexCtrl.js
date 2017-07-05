@@ -3,11 +3,22 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
         var _this = this;
 
         var loginCookie = commonService.getCookie('staff_token');
-        console.log(loginCookie);
+        var loginService = new LoginService($resource);
+        //获取用户信息
+        this.getLoginUser = function(){
+            loginService.loginToken(function(data){
+                if(data.status == 'true'){
+                    $rootScope.loginUser = data.message;
+                }else{
+                    console.log(data);
+                }
+            });
+        };
         if(loginCookie == ''){
             window.location.href = '/login';
         }else{
             $rootScope.loginCookie = loginCookie;
+            this.getLoginUser();
         }
 
         //监控浏览器地址栏变化，如果变化刷新页面。解决点击浏览器的回退，前进按钮页面不刷新的问题
@@ -39,10 +50,8 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
 
         this.activeMenuByRoute();
 
-        var loginService = new LoginService($resource);
         //登出
         this.logout = function(){
-            console.log(13);
             loginService.logout(function(data){
                 if(data.status == 'false'){
                     commonService.deleteCookie('staff_token');
@@ -51,17 +60,5 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
             });
         };
 
-        //获取用户信息
-        this.getLoginUser = function(){
-            loginService.loginToken(function(data){
-                if(data.status == 'true'){
-                    $rootScope.loginUser = data.message;
-                }else{
-                    console.log(data);
-                }
-            });
-        };
-
-        this.getLoginUser();
     });
 });

@@ -19,49 +19,106 @@
         <a href="/tms/xt/lj">存储路径</a>
     </div>
 
-    <div class="glyRight">
+    <div ng-include="zcr.template"></div>
 
-        <div class="dhb-sch" style="margin-top:0">
-            <form>
-                姓名：<input type="text" class="wbk1" />
-                联系电话：<input type="text" class="wbk1" style="background-image: url(images/icon-tel.png);" />
-                <input type="submit" value="搜索" class="btn-dhbs" />
+    <script type="text/ng-template" id="listTemplate">
+        <div class="glyRight">
 
-                <a href="" class="btn-xz">新增主持人</a>
+            <div class="dhb-sch" style="margin-top:0">
+                <form>
+                    姓名：<input type="text" class="wbk1" ng-model="zcr.filter.name"/>
+                    联系电话：<input type="text" class="wbk1" style="background-image: url(images/icon-tel.png);" ng-model="zcr.filter.phone"/>
+                    <input type="submit" value="搜索" class="btn-dhbs" ng-click="zcr.getConductors('reload')"/>
+
+                    <a href="" class="btn-xz" ng-click="zcr.changeView('add',null)">新增主持人</a>
+                </form>
+            </div>
+            <div style="clear: both;"></div>
+
+            <table cellpadding="0" cellspacing="0" class="hysTB">
+
+                <tr> <th>账号</th> <th>姓名</th> <th>电话</th> <th>创建时间</th> <th>操作</th> </tr>
+
+                <tr ng-repeat="conductor in zcr.conductors">
+                    <td ng-bind="conductor.username"></td>
+                    <td ng-bind="conductor.realname"></td>
+                    <td ng-bind="conductor.phone"></td>
+                    <td ng-bind="conductor.createDate | date:'yyyy-MM-dd HH:mm'"></td>
+                    <td><a href="" ng-click="confirmOper('delete', conductor)"><img src="images/icon-del.png" /></a></td>
+                </tr>
+
+            </table>
+
+            <div pagination page-object="pageObject"></div>
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="addTemplate">
+        <div class="glyRight">
+
+            <div style="margin:0 0 20px">新增主持人</div>
+            <form name="addForm">
+            <div class="xjLI"><em style="padding: 0 .5em"></em>姓名：<input type="text" class="wbk2" name="realname" ng-model="zcr.conductor.realname" ng-pattern="zcr.realnamePattern" required/>
+                <i class="mgr-x-tips" ng-show="addForm.realname.$error.required && zcr.isNull">姓名不能为空!</i>
+                <i class="mgr-x-tips" ng-show="addForm.realname.$error.pattern">请输入正确的中文姓名!</i>
+            </div>
+
+            <div class="xjLI"><em style="padding: 0 .5em"></em>电话：<input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" name="phone" ng-model="zcr.conductor.phone" ng-pattern="zcr.phonePattern" required/>
+                <i class="mgr-x-tips" ng-show="addForm.phone.$error.required && zcr.isNull">电话不能为空!</i>
+                <i class="mgr-x-tips" ng-show="addForm.phone.$error.pattern">电话号码格式不对!</i>
+            </div>
+
+            <div class="xjLI"><em style="padding: 0 .5em"></em>账号：<input type="text" class="wbk2" style="background-image: url(images/icon-edit.png);" name="username" ng-model="zcr.conductor.username" ng-pattern="zcr.usernamePattern" required/>
+                <i class="mgr-x-tips" ng-show="addForm.username.$error.required && zcr.isNull">账号不能为空!</i>
+                <i class="mgr-x-tips" ng-show="addForm.username.$error.pattern">账号由字母数字下划线组成以字母开头且不能超过10位!</i>
+            </div>
+
+            <div class="xjLI"><em style="padding: 0 .5em"></em>密码：<input type="password" class="wbk2" style="background-image: url(images/icon-pwd.png);" name="password" ng-model="zcr.conductor.accountShow.password" ng-pattern="zcr.passwordPattern" required/>
+                <i class="mgr-x-tips" ng-show="addForm.password.$error.required && zcr.isNull">密码不能为空!</i>
+                <i class="mgr-x-tips" ng-show="addForm.password.$error.pattern">密码格式不对!</i>
+            </div>
+
+            <div><input type="submit" value="保存" class="btn-xj" ng-click="zcr.saveConductor(addForm.$valid)" /><a href="" class="btn-xj" style="margin-left: 20px" ng-click="zcr.cancel()">取消</a></div>
+
             </form>
+            <div style="clear:both"></div>
+
         </div>
-        <div style="clear: both;"></div>
+    </script>
 
-        <table cellpadding="0" cellspacing="0" class="hysTB">
+    <div class="modalbg" ng-show="zcr.message.show">
+        <div class="luyin">
 
-            <tr> <th>账号</th> <th>姓名</th> <th>电话</th> <th>会议室</th> <th>操作</th> </tr>
+            <span class="lyClose" ng-click="zcr.hideMessage()"></span>
+            <div style="clear: both;"></div>
 
-            <tr>
-                <td>152478</td>
-                <td>张三</td>
-                <td>13999999999</td>
-                <td>v5847</td>
-                <td><a href=""><img src="images/icon-del.png" /></a></td>
-            </tr>
+            <div class="lyCen" ng-bind="zcr.message.text"></div>
 
-            <tr>
-                <td>152478</td>
-                <td>张三</td>
-                <td>13999999999</td>
-                <td>v5847</td>
-                <td><a href=""><img src="images/icon-del.png" /></a></td>
-            </tr>
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="zcr.hideMessage()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="zcr.hideMessage()"><img src="images/yes.png" /></a>
+            </div>
 
-        </table>
-
-        <div class="fenye">
-            <a href="" style="color:#3686dc; width:35px; border-radius: 4px 0 0 4px">首页</a>
-            <a href="" style="color:#3686dc; width:45px;">上一页</a>
-            <a href="" class="fyCur">1</a><a href="">2</a><a href="">3</a><a href="">4</a><a href="">5</a><a href="">6</a><a href="">7</a><a href="">8</a><a href="">9</a><a href="">10</a>
-            <a href="" style="color:#3686dc; width:45px;">下一页</a>
-            <a href="" style="color:#3686dc; width:35px; border-radius: 0 4px 4px 0; border-right: solid 1px #ccc;">尾页</a>
         </div>
-
     </div>
 
+    <div class="modalbg" ng-show="confirmDialogShow">
+        <div class="luyin">
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="confirmTips"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/yes.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" style="text-align: center;" ng-show="ls.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
+    </div>
 </div>
