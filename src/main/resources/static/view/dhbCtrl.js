@@ -61,10 +61,14 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                 case 'add': //联系人新增
                     this.contact = {};
                     this.group = null;
+					this.totalGroups = [];
+					this.getTotalGroups();
                     this.template = 'addTemplate';
                     break;
                 case 'update': //联系人更新
-                    this.group = this.getGroup(this.contact.groupId,this.totalGroups);
+					this.getTotalGroups(function(totalGroups){
+						_this.group = _this.getGroup(_this.contact.groupId,_this.totalGroups);
+					});
                     this.template = 'updateTemplate';
                     break;
                 case 'addGroup':
@@ -100,8 +104,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.groups = data.message;
-                    $scope.groupPageObject.totalPage = header('page-count');
-                    if(!$scope.groupPageObject.totalPage) $scope.groupPageObject.totalPage = 0;
+                    $scope.groupPageObject.totalPage = header('page_count');
                     $scope.groupPageObject.pages = [];
                     for(var i=1;i<=$scope.groupPageObject.totalPage;i++){
                         $scope.groupPageObject.pages.push(i);
@@ -153,7 +156,10 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
         this.totalGroups = [];
         this.totalGroupsA = [];
         this.totalGroupsB = [];
-        this.getTotalGroups = function(){
+        this.getTotalGroups = function(cb){
+			this.totalGroups = [];
+			this.totalGroupsA = [];
+			this.totalGroupsB = [];
             groupService.totalList(function(data){
                 if(data.status == 'true'){
                     _this.totalGroups = data.message;
@@ -165,6 +171,9 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                             _this.totalGroupsB.push(group);
                         }
                     });
+					if(typeof cb == 'function'){
+						cb(_this.totalGropus);
+					}
                 }else{
                     _this.totalGropus = [];
                     _this.totalGroupsA = [];
@@ -188,7 +197,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                    _this.phoneBooks = data.message;
                    if(type == 1 && _this.phoneBooks.length == 1){
                        _this.phoneBook = _this.phoneBooks[0];
-                       if(_this.totalGroups.length <= 0) _this.getTotalGroups();
+                       //if(_this.totalGroups.length <= 0) _this.getTotalGroups();
                    }
                } else{
                    _this.phoneBookds = [];
