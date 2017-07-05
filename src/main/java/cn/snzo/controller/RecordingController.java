@@ -87,9 +87,43 @@ public class RecordingController extends BaseController{
                                  @RequestParam(name = "currentPage", required = false)Integer currentPage,
                                  @RequestParam(name = "pageSize", required = false)Integer pageSize,
                                  HttpServletResponse response){
-        Page<RecordingShow> page = recordingService.getPage( filename, createStart, createEnd,currentPage, pageSize);
+        Page<RecordingShow> page = recordingService.getPage(filename, createStart, createEnd, currentPage, pageSize);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
         System.out.println(page.getContent());
         return successRes(page.getContent());
+    }
+
+
+
+
+    /**
+     * 下载问题图片
+     * @param pictureName 图片名称
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/downloadPic" ,method = RequestMethod.GET)
+    public ObjectResult downloadPic(@RequestParam(value = "pictureName",required = true)String pictureName,
+                                    @RequestParam(value = "filePath",required = true)String filePath,
+                                    HttpServletResponse response) {
+        /*boolean resCheck = authorityService.checkAuthority("/model/downloadPicture","GET",token);
+        if(!resCheck){
+           // response.setStatus(401);
+            return failureRes("对不起，您无此权限");
+        }*/
+        if(pictureName.contains("../")){
+            return failureRes("文件名包含非法字符");
+        }
+        try{
+            boolean success = imageService.downloadImage(pictureName, response.getOutputStream(), filePath);
+            if(success){
+                response.flushBuffer();
+                response.setContentType("application/octet-stream");
+                return successRes("下载成功");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return failureRes("获取失败");
     }
 }
