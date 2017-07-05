@@ -3,6 +3,7 @@ package cn.snzo.controller;
 import cn.snzo.common.BaseController;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.service.ISysSettingService;
+import cn.snzo.vo.AccountShow;
 import cn.snzo.vo.SysSettingShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,18 @@ public class SysSettingController extends BaseController{
             return failureRes("修改失败");
         }
 
+    }
+
+
+    //todo
+    @RequestMapping(value = "/setting/pwd", method = RequestMethod.PUT)
+    public ObjectResult updatePwd(@RequestBody AccountShow accountShow) {
+        int ret = sysSettingService.modifyPwd(accountShow);
+        if (ret == 1) {
+            return successRes("修改成功");
+        } else {
+            return failureRes("修改失败");
+        }
     }
 
 }
