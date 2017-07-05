@@ -6,7 +6,7 @@
         <span>文件名：</span>
 
         <div class="wbk3">
-            <input type="text" />
+            <input type="text" ng-model="ly.filter.filename">
             <a href="" style="background-image: url(images/wjm.png);"></a>
         </div>
 
@@ -17,7 +17,7 @@
         <span>创建开始时间：</span>
 
         <div class="wbk3">
-            <input type="text" />
+            <input type="text"  id="createStart" ng-model="ly.filter.createStart"/>
             <a href=""></a>
         </div>
 
@@ -28,7 +28,7 @@
         <span>创建结束时间：</span>
 
         <div class="wbk3">
-            <input type="text" />
+            <input type="text" id="createEnd" ng-model="ly.filter.createEnd" ng-init="ly.initDatePicker()"/>
             <a href=""></a>
         </div>
 
@@ -41,54 +41,51 @@
 
         <tr> <th>文件名</th> <th>所属会议室</th> <th>起始时间</th> <th>结束时间</th> <th>总时长</th> <th colspan="2">操作</th> </tr>
 
-        <tr>
-            <td>201706242213</td>
-            <td>T3会议室</td>
-            <td>2017-12-12 12:23</td>
-            <td>2017-12-12 12:23</td>
-            <td>37分</td>
-            <td><a href=""><img src="images/icon-xiaz.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
+        <tr ng-repeat="record in ly.recordings">
+            <td ng-bind="record.filename"></td>
+            <td ng-bind="record.roomNo"></td>
+            <td ng-bind="record.startTime | date:'yyyy-MM-dd HH:mm'"></td>
+            <td ng-bind="record.endTime | date:'yyyy-MM-dd HH:mm'"></td>
+            <td>{{((record.endTime - record.startTime) / (60*1000))|number:0}}分</td>
+            <td><a href="" ng-click="ly.download(record)"><img src="images/icon-xiaz.png" /></a></td>
+            <td><a href="" ng-click="confirmOper('delete', record)"><img src="images/icon-del.png" /></a></td>
         </tr>
-
-        <tr>
-            <td>201706242213</td>
-            <td>T3会议室</td>
-            <td>2017-12-12 12:23</td>
-            <td>2017-12-12 12:23</td>
-            <td>37分</td>
-            <td><a href=""><img src="images/icon-xiaz.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
-        <tr>
-            <td>201706242213</td>
-            <td>T3会议室</td>
-            <td>2017-12-12 12:23</td>
-            <td>2017-12-12 12:23</td>
-            <td>37分</td>
-            <td><a href=""><img src="images/icon-xiaz.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
-        <tr>
-            <td>201706242213</td>
-            <td>T3会议室</td>
-            <td>2017-12-12 12:23</td>
-            <td>2017-12-12 12:23</td>
-            <td>37分</td>
-            <td><a href=""><img src="images/icon-xiaz.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
     </table>
 
-    <div class="fenye" style="margin-top:65px">
-        <a href="" style="color:#3686dc; width:35px; border-radius: 4px 0 0 4px">首页</a>
-        <a href="" style="color:#3686dc; width:45px;">上一页</a>
-        <a href="" class="fyCur">1</a><a href="">2</a><a href="">3</a><a href="">4</a><a href="">5</a><a href="">6</a><a href="">7</a><a href="">8</a><a href="">9</a><a href="">10</a>
-        <a href="" style="color:#3686dc; width:45px;">下一页</a>
-        <a href="" style="color:#3686dc; width:35px; border-radius: 0 4px 4px 0; border-right: solid 1px #ccc;">尾页</a>
+    <div pagination page-object="pageObject"></div>
+
+    <div class="modalbg" ng-show="dhb.message.show">
+        <div class="luyin">
+
+            <span class="lyClose" ng-click="ly.hideMessage()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="ly.message.text"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="ly.hideMessage()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="ly.hideMessage()"><img src="images/yes.png" /></a>
+            </div>
+
+        </div>
     </div>
 
+    <div class="modalbg" ng-show="confirmDialogShow">
+        <div class="luyin">
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="confirmTips"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/yes.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" style="text-align: center;" ng-show="ly.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
+    </div>
 </div>
