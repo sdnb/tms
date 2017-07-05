@@ -181,15 +181,17 @@
         </div>
         <div style="clear:both"></div>
 
-        <form>
+        <form name="importForm">
 
             <div style="margin:25px 0 20px">导入联系人</div>
 
-            <div class="xjLI" style="margin-bottom: 0">上传联系人：<input type="file" /></div>
+            <div class="xjLI" style="margin-bottom: 0">上传联系人：<input type="file" id="doc" name="file" onchange="if(angular.element(this).scope()==undefined){return};angular.element(this).scope().checkFile()" required/>
+                <i class="mgr-x-tips" ng-show="importForm.file.$error.required && dhb.isNull">上传文件不能为空</i>
+            </div>
 
             <div style="font-size:12px; color:#999; margin-left:90px">（公支持.xls、.xlsx格式）</div>
 
-            <div><input type="submit" value="保存" class="btn-xj" /><a href="" class="btn-xj" style="margin-left: 20px" ng-click="dhb.cancel()">取消</a></div>
+            <div><input type="submit" value="保存" class="btn-xj" ng-click="dhb.uploadFile(importForm.$valid)" /><a href="" class="btn-xj" style="margin-left: 20px" ng-click="dhb.cancel()">取消</a></div>
 
         </form>
         <div style="clear:both"></div>

@@ -1,5 +1,5 @@
 define(['../script/tms', 'jquery', '../script/service/groupService', '../script/service/contactService',
-    '../script/service/phoneBookService', './pagination'], function(module, $, GroupService, ContactService, PhoneBookService){
+    '../script/service/phoneBookService', './pagination', 'ajaxfileupload'], function(module, $, GroupService, ContactService, PhoneBookService){
     module.controller('dhbCtrl', function($scope, $location, $resource, commonService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
@@ -149,8 +149,10 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             });
         };
 
+
         this.selectGroup = function(group){
-            this.group = group;
+            this.group = this.group == group ? null : group;
+            this.getContacts('reload');
         };
 
         this.totalGroups = [];
@@ -224,7 +226,11 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             }
             this.filter.currentPage = $scope.pageObject.currentPage;
             this.filter.pageSize = $scope.pageObject.pageSize;
-
+            if(this.group) {
+                this.filter.groupId = this.group.id;
+            }else{
+                this.filter.groupId = null;
+            }
             for(var k in this.filter){
                 if(!this.filter[k]) this.filter[k] = null;
             }
@@ -330,6 +336,61 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                     console.log(data);
                 }
             });
+        };
+
+
+        //--------------------------上传联系人---------------------------------
+
+        $scope.checkFile = function(){
+            var docObj = document.getElementById("doc");
+            var fileSize = docObj.files[0].size;
+            var size = fileSize/1024;
+            if(!/\.(xls|xlsx|XLS|XLSX)$/.test(docObj.value)){
+                alert("文件类型必须是.xls,xlsx格式");
+                docObj.outerHTML = docObj.outerHTML;
+                return false;
+            }
+            if(size>5000){
+                alert("文件大小不能超过5MB");
+                docObj.outerHTML = docObj.outerHTML;
+                return false;
+            }
+            return true;
+        };
+
+        this.uploadFile=function(flag){
+            this.isNull = true;
+            if(!flag) return;
+            var docObj=document.getElementById("doc");
+            if(docObj.files[0]!=undefined){
+                ajaxFileUpload();
+            }else{
+                alert("未选择上传文件，请选择后再上传！");
+            }
+            function ajaxFileUpload() {
+                _this.loading = true;
+                $.ajaxFileUpload({
+                    url: '/api/contact/excel/1',
+                    type: 'post',
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: 'doc', // 上传文件的id、name属性名
+                    dataType: 'json', //返回值类型，一般设置为json、application/json
+                    success: function(data, status){
+                        $scope.$apply(function(){
+                            _this.loading = false;
+                            _this.cancel();
+                            _this.getContacts('reload');
+                        });
+                    },
+                    error: function(data, status, e){
+                        $scope.$apply(function(){
+                            _this.loading = false;
+                            _this.cancel();
+                            _this.getContacts('reload');
+                        });
+                    }
+                });
+            }
         };
     });
 });
