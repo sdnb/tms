@@ -4,6 +4,7 @@ import cn.snzo.entity.SysSetting;
 import cn.snzo.repository.SysSettingRepository;
 import cn.snzo.service.ISysSettingService;
 import cn.snzo.utils.BeanUtil;
+import cn.snzo.vo.AccountShow;
 import cn.snzo.vo.SysSettingShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,10 @@ public class SysSettingService implements ISysSettingService {
         BeanUtil.showToEntity(sysSettingShow, sysSetting);
         sysSettingRepository.save(sysSetting);
         return 1;
+    }
+
+    @Override
+    public int modifyPwd(AccountShow accountShow) {
+        return 0;
     }
 }

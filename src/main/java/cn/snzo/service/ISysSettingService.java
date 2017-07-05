@@ -1,5 +1,6 @@
 package cn.snzo.service;
 
+import cn.snzo.vo.AccountShow;
 import cn.snzo.vo.SysSettingShow;
 
 /**
@@ -10,4 +11,7 @@ public interface ISysSettingService {
     int add(SysSettingShow sysSettingShow);
 
     int modify(int id, SysSettingShow sysSettingShow);
+
+    int modifyPwd(AccountShow accountShow);
+
 }

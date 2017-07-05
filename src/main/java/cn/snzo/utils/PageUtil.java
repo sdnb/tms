@@ -1,11 +1,10 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/4 0004.
@@ -28,15 +27,4 @@ public class PageUtil {
         return createPage(currentPage, pageSize, null, null);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <E, S> Page<S> entityToShowPage(Page<E> e, Pageable pageable) {
-        List<E> es = e.getContent();
-        List<S> ss = new ArrayList<>();
-        for (E one : e) {
-            S s = (S) new Object();
-            BeanUtil.entityToShow(e, (S)s);
-            ss.add(s);
-        }
-        return new PageImpl<S>(ss, pageable, e.getTotalElements());
-    }
 }

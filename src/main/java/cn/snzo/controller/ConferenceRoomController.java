@@ -143,4 +143,18 @@ public class ConferenceRoomController extends BaseController{
     }
 
 
+    /**
+     * 查会议室所有联系人（包括系统电话簿中的联系人） todo
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/conferenceRoom/{id}/contact", method = RequestMethod.GET)
+    public ObjectResult getAllContactOfRoom(@PathVariable("id")int id) {
+        return successRes(null);
+    }
+
+
+
+
+
 }
