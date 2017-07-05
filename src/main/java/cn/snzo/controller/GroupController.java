@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/1 0001.
@@ -76,9 +77,21 @@ public class GroupController extends BaseController{
                                    @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                    @RequestParam(value = "pageSize", required = false)Integer pageSize,
                                   HttpServletResponse response) {
-        Page<GroupShow> page = groupService.getPage(name, pageSize, currentPage);
+        Page<GroupShow> page = groupService.getPage(name, currentPage, pageSize);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
         return new ObjectResult("true", page.getContent());
+    }
+
+
+    /**
+     * 查询所有分组
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/group/total", method = RequestMethod.GET)
+    public ObjectResult getGroups(HttpServletResponse response) {
+        List<GroupShow> groupsShowList = groupService.getTotal();
+        return new ObjectResult("true", groupsShowList);
     }
 
 

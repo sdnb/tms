@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/7/1 0001.
  */
@@ -19,4 +21,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     @Query("select xc from Group xc where (?1 is null or xc.name like ?1)")
     Page<Group> findPage(String name, Pageable p);
+
+    @Query("select xc from Group xc")
+    List<Group> findTotal();
 }

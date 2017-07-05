@@ -31,6 +31,7 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
                     break;
                 case 'add':
                     this.room = {};
+                    this.conductor = null;
                     this.room.isRecordEnable = 0;
                     this.template = 'addTemplate';
                     break;
@@ -126,6 +127,7 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
+                    console.log(data);
                 }
             });
         };

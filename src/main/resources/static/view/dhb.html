@@ -1,89 +1,232 @@
-<div class="w1000">
+<div class="w1000" ng-controller="dhbCtrl as dhb">
+    <div ng-include="dhb.template"></div>
 
-    <div class="dhb-top">
-        <a href="" style="background: #3686dc">系统电话簿</a>
-        <a href="">会议电话簿</a>
-    </div>
-    <div style="clear:both"></div>
+    <script type="text/ng-template" id="listTemplate">
+        <div class="dhb-top">
+            <a href="" ng-class="{cur2:dhb.type==1}" ng-click="dhb.changeType(1)">系统电话簿</a>
+            <a href="" ng-class="{cur2:dhb.type==2}" ng-click="dhb.changeType(2)">会议电话簿</a>
+        </div>
+        <div style="clear:both"></div>
 
-    <div class="tjfz">
-        <a href="" style="color:#3686dc"><img src="images/icon-tianjiaH.png" />添加</a>
-        <a href=""><img src="images/icon-fenzu.png" />分组</a>
-    </div>
-    <div style="clear:both"></div>
+        <div class="tjfz">
+            <a href="" ng-class="{cur:dhb.operationPanel.index==1}" ng-click="dhb.showPanel(1)">
+                <img src="images/icon-tianjiaH.png" ng-show="dhb.operationPanel.index==1" /><img src="images/icon-tianjia.png" ng-show="dhb.operationPanel.index!=1" />添加
+            </a>
+            <a href="" ng-class="{cur:dhb.operationPanel.index==2}" ng-click="dhb.showPanel(2)"><img src="images/icon-fenzu.png" />分组</a>
+        </div>
+        <div style="clear:both"></div>
 
-    <div class="fenzu">
-        <a href="">新建联系人</a><a href="">导入联系人</a><a href="">新建分组</a>
-    </div>
+        <div class="fenzu" ng-show="dhb.operationPanel.show">
+            <div ng-show="dhb.operationPanel.index==1">
+                <a href="" ng-click="dhb.changeView('add',null,'contact')">新建联系人</a><a href="" ng-click="dhb.changeView('import',null,'contact')">导入联系人</a><a href="" ng-click="dhb.changeView('addGroup',null,'group')">新建分组</a>
+            </div>
 
-    <div class="dhb-sch">
-        <form>
-            姓名：<input type="text" class="wbk1" />
-            联系电话：<input type="text" class="wbk1" style="width:115px; background-image: url(images/icon-tel.png);background-position: 120px center" />
-            <input type="submit" value="搜索" class="btn-dhbs" />
+            <div ng-show="dhb.operationPanel.index==2">
+                <a href="" ng-repeat="group in dhb.groups" ng-bind="group.name" ng-class="{cur:dhb.group.id==group.id}" ng-click="dhb.selectGroup(group)"></a>
+                <a href="" class="cur" ng-hide="groupPageObject.currentPage == 1" ng-click="prev()">&lt;</a>
+                <a href="" class="cur" ng-hide="groupPageObject.currentPage==groupPageObject.totalPage || groupPageObject.totalPage==0" ng-click="next()">&gt;</a>
+            </div>
+        </div>
+
+        <div class="dhb-sch">
+            <form>
+                姓名：<input type="text" class="wbk1" ng-model="dhb.filter.name"/>
+                联系电话：<input type="text" class="wbk1" style="width:115px; background-image: url(images/icon-tel.png);background-position: 120px center" ng-model="dhb.filter.phone" />
+                <input type="submit" value="搜索" class="btn-dhbs" ng-click="dhb.getContacts('reload')"/>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+
+        <table cellspacing="0" cellpadding="0" class="dhbTB">
+
+            <tr>
+                <th>序号</th> <th>姓名</th> <th>联系电话</th> <th>组类</th> <th>修改</th> <th>删除</th>
+            </tr>
+
+            <tr ng-repeat="contact in dhb.contacts">
+                <td ng-bind="contact.id"></td>
+                <td ng-bind="contact.name"></td>
+                <td ng-bind="contact.phone"></td>
+                <td ng-bind="contact.groupName"></td>
+                <td><a href="" ng-click="dhb.changeView('update',contact,'contact')"><img src="images/icon-edit.png" /></a></td>
+                <td><a href="" ng-click="confirmOper('delete',contact)"><img src="images/icon-del.png" /></a></td>
+            </tr>
+        </table>
+
+        <div pagination page-object="pageObject"></div>
+    </script>
+
+    <script type="text/ng-template" id="addTemplate">
+        <div class="dhb-top">
+            <a href="" class="cur2" ng-if="dhb.type==1">系统电话簿</a>
+            <a href="" class="cur2" ng-if="dhb.type==2">会议电话簿</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <div class="tjfz">
+            <a href="" class="cur"><img src="images/icon-tianjiaH.png"/>添加</a>
+            <a href=""><img src="images/icon-fenzu.png" />分组</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <form name="addForm">
+
+            <div style="margin:25px 0 20px">新建联系人</div>
+
+            <div class="xjLI">姓名：<input type="text" class="wbk2" name="name" ng-model="dhb.contact.name" ng-pattern="dhb.namePattern" required/>
+                <i class="mgr-x-tips" ng-show="addForm.name.$error.required && dhb.isNull">姓名不能为空</i>
+                <i class="mgr-x-tips" ng-show="addForm.name.$error.pattern">请输入正确的中文姓名</i>
+            </div>
+
+            <div class="xjLI">电话：<input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" name="phone" ng-model="dhb.contact.phone" ng-pattern="dhb.phonePattern" required/>
+                <i class="mgr-x-tips" ng-show="addForm.phone.$error.required && dhb.isNull">电话不能为空</i>
+                <i class="mgr-x-tips" ng-show="addForm.phone.$error.pattern">电话号码格式不对</i>
+            </div>
+
+            <div class="xjLI" ng-if="dhb.type==1">
+                分组：<select ng-model="dhb.group" ng-options="group as group.name for group in dhb.totalGroupsA" name="group" required><option value="">请选择</option></select>
+                <i class="mgr-x-tips" ng-show="addForm.group.$error.required && dhb.isNull">分组不能为空</i>
+            </div>
+
+            <div class="xjLI" ng-if="dhb.type==2">
+                分组：<select ng-model="dhb.group" ng-options="group as group.name for group in dhb.totalGroupsB" name="group" required><option value="">请选择</option></select>
+                <i class="mgr-x-tips" ng-show="addForm.group.$error.required && dhb.isNull">分组不能为空</i>
+            </div>
+
+            <div><input type="submit" value="保存" class="btn-xj" ng-click="dhb.addContact(addForm.$valid)"/><a href="" class="btn-xj" style="margin-left: 20px" ng-click="dhb.cancel()">取消</a></div>
+
         </form>
+        <div style="clear:both"></div>
+    </script>
+
+    <script type="text/ng-template" id="updateTemplate">
+        <div class="dhb-top">
+            <a href="" class="cur2" ng-if="dhb.type==1">系统电话簿</a>
+            <a href="" class="cur2" ng-if="dhb.type==2">会议电话簿</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <div class="tjfz">
+            <a href="" class="cur"><img src="images/icon-tianjiaH.png"/>添加</a>
+            <a href=""><img src="images/icon-fenzu.png" />分组</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <form name="updateForm">
+
+            <div style="margin:25px 0 20px">编辑联系人</div>
+
+            <div class="xjLI">姓名：<input type="text" class="wbk2" name="name" ng-model="dhb.contact.name" ng-pattern="dhb.namePattern" required/>
+                <i class="mgr-x-tips" ng-show="updateForm.name.$error.required && dhb.isNull">姓名不能为空</i>
+                <i class="mgr-x-tips" ng-show="updateForm.name.$error.pattern">请输入正确的中文姓名</i>
+            </div>
+
+            <div class="xjLI">电话：<input type="text" class="wbk2" style="background-image: url(images/icon-tel.png);" name="phone" ng-model="dhb.contact.phone" ng-pattern="dhb.phonePattern" required/>
+                <i class="mgr-x-tips" ng-show="updateForm.phone.$error.required && dhb.isNull">电话不能为空</i>
+                <i class="mgr-x-tips" ng-show="updateForm.phone.$error.pattern">电话号码格式不对</i>
+            </div>
+
+            <div class="xjLI">
+                分组：<select ng-model="dhb.group" ng-options="group as group.name for group in dhb.totalGroups" name="group" required><option value="">请选择</option></select>
+                <i class="mgr-x-tips" ng-show="updateForm.group.$error.required && dhb.isNull">分组不能为空</i>
+            </div>
+
+            <div><input type="submit" value="保存" class="btn-xj" ng-click="dhb.updateContact(updateForm.$valid)"/><a href="" class="btn-xj" style="margin-left: 20px" ng-click="dhb.cancel()">取消</a></div>
+
+        </form>
+        <div style="clear:both"></div>
+    </script>
+
+    <script type="text/ng-template" id="addGroupTemplate">
+        <div class="dhb-top">
+            <a href="" class="cur2" ng-if="dhb.type==1">系统电话簿</a>
+            <a href="" class="cur2" ng-if="dhb.type==2">会议电话簿</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <div class="tjfz">
+            <a href="" class="cur"><img src="images/icon-tianjiaH.png"/>添加</a>
+            <a href=""><img src="images/icon-fenzu.png" />分组</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <form name="addGroupForm">
+
+            <div style="margin:25px 0 20px">新建分组</div>
+
+            <div class="xjLI">分组名：<input type="text" class="wbk3" name="name" ng-model="dhb.group.name" required/>
+                <i class="mgr-x-tips" ng-show="addGroupForm.name.$error.required && dhb.isNull">分组名不能为空</i>
+            </div>
+
+            <div class="xjLI" ng-if="dhb.type==2">电话簿：<select ng-model="dhb.group.bookId" name="bookId" ng-options="phoneBook.id as phoneBook.id for phoneBook in dhb.phoneBooks" required><option value="">请选择</option></select>
+                <i class="mgr-x-tips" ng-show="addGroupForm.bookId.$error.required && dhb.isNull">电话簿不能为空</i>
+            </div>
+
+            <div><input type="submit" value="保存" class="btn-xj" ng-click="dhb.addGroup(addGroupForm.$valid)" /><a href="" class="btn-xj" style="margin-left: 20px" ng-click="dhb.cancel()">取消</a></div>
+
+        </form>
+        <div style="clear:both"></div>
+    </script>
+
+    <script type="text/ng-template" id="importTemplate">
+        <div class="dhb-top">
+            <a href="" class="cur2" ng-if="dhb.type==1">系统电话簿</a>
+            <a href="" class="cur2" ng-if="dhb.type==2">会议电话簿</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <div class="tjfz">
+            <a href="" class="cur"><img src="images/icon-tianjiaH.png"/>添加</a>
+            <a href=""><img src="images/icon-fenzu.png" />分组</a>
+        </div>
+        <div style="clear:both"></div>
+
+        <form>
+
+            <div style="margin:25px 0 20px">导入联系人</div>
+
+            <div class="xjLI" style="margin-bottom: 0">上传联系人：<input type="file" /></div>
+
+            <div style="font-size:12px; color:#999; margin-left:90px">（公支持.xls、.xlsx格式）</div>
+
+            <div><input type="submit" value="保存" class="btn-xj" /><a href="" class="btn-xj" style="margin-left: 20px" ng-click="dhb.cancel()">取消</a></div>
+
+        </form>
+        <div style="clear:both"></div>
+    </script>
+
+    <div class="modalbg" ng-show="dhb.message.show">
+        <div class="luyin">
+
+            <span class="lyClose" ng-click="dhb.hideMessage()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="dhb.message.text"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="dhb.hideMessage()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="dhb.hideMessage()"><img src="images/yes.png" /></a>
+            </div>
+
+        </div>
     </div>
-    <div style="clear:both"></div>
 
-    <table cellspacing="0" cellpadding="0" class="dhbTB">
+    <div class="modalbg" ng-show="confirmDialogShow">
+        <div class="luyin">
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
+            <div style="clear: both;"></div>
 
-        <tr>
-            <th>序号</th> <th>姓名</th> <th>联系电话</th> <th>组类</th> <th>修改</th> <th>删除</th>
-        </tr>
+            <div class="lyCen" ng-bind="confirmTips"></div>
 
-        <tr>
-            <td>001</td>
-            <td>张三</td>
-            <td>13525458542</td>
-            <td>A类</td>
-            <td><a href=""><img src="images/icon-edit.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/yes.png" /></a>
+            </div>
 
-        <tr>
-            <td>001</td>
-            <td>张三</td>
-            <td>13525458542</td>
-            <td>A类</td>
-            <td><a href=""><img src="images/icon-edit.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
-        <tr>
-            <td>001</td>
-            <td>张三</td>
-            <td>13525458542</td>
-            <td>A类</td>
-            <td><a href=""><img src="images/icon-edit.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
-        <tr>
-            <td>001</td>
-            <td>张三</td>
-            <td>13525458542</td>
-            <td>A类</td>
-            <td><a href=""><img src="images/icon-edit.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
-        <tr>
-            <td>001</td>
-            <td>张三</td>
-            <td>13525458542</td>
-            <td>A类</td>
-            <td><a href=""><img src="images/icon-edit.png" /></a></td>
-            <td><a href=""><img src="images/icon-del.png" /></a></td>
-        </tr>
-
-    </table>
-
-    <div class="fenye">
-        <a href="" style="color:#3686dc; width:35px; border-radius: 4px 0 0 4px">首页</a>
-        <a href="" style="color:#3686dc; width:45px;">上一页</a>
-        <a href="" class="fyCur">1</a><a href="">2</a><a href="">3</a><a href="">4</a><a href="">5</a><a href="">6</a><a href="">7</a><a href="">8</a><a href="">9</a><a href="">10</a>
-        <a href="" style="color:#3686dc; width:45px;">下一页</a>
-        <a href="" style="color:#3686dc; width:35px; border-radius: 0 4px 4px 0; border-right: solid 1px #ccc;">尾页</a>
+        </div>
     </div>
 
+    <div class="modalbg" style="text-align: center;" ng-show="dhb.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
+    </div>
 </div>
