@@ -4,9 +4,9 @@ server.port: 8080
 #properties
 com.snzo:
     sftp:
-         host: 182.61.35.59
-         username: root
-         password:
+         host: 202.165.191.9
+         username: mysftp
+         password: kerber@2017
          port: 22
          path:
               user: /home/sftp/

@@ -41,33 +41,39 @@ public class ContactService implements IContactService {
     private ContactGroupRelativeRepository contactGroupRelativeRepository;
 
     @Override
-    public Page<ContactShow> getPage(Integer groupId, Integer bookId, String name, String phone, Integer currentPage, Integer pageSize) {
+    public Page<ContactShow> getPage(Integer groupId, Integer bookId, String name, String phone, Integer bookType, Integer currentPage, Integer pageSize) {
         Pageable p = CommonUtils.createPage(currentPage, pageSize);
         Map<String, Object> params = new HashMap<>();
         params.put("name", CommonUtils.fuzzyString(name));
         params.put("phone", CommonUtils.fuzzyString(phone));
         params.put("groupId", groupId);
         params.put("bookId", bookId);
+        params.put("bookType", bookType);
         String pageSql = "select c.id,c.phone,c.name,cg.group_id as group_id," +
                 " g.name as group_name,c.book_id " +
                 " from t_contact c " +
                 " left join t_contact_group_relative cg on" +
                 " c.id = cg.contact_id " +
                 " left join t_group g on cg.group_id = g.id" +
+                " left join t_phone_book pb on pb.id = c.book_id" +
                 " where (:groupId is null or cg.group_id = :groupId) and" +
                 " (:bookId is null or c.book_id = :bookId) and" +
                 " (:name is null or c.name like :name) and" +
-                " (:phone is null or c.phone like :phone)";
+                " (:phone is null or c.phone like :phone) and "+
+                " (:bookType is null or pb.type = :bookType)";
 
         String countSql = "select count(*) " +
                 " from t_contact c " +
                 " left join t_contact_group_relative cg on" +
                 " c.id = cg.contact_id " +
                 " left join t_group g on cg.group_id = g.id" +
+                " left join t_phone_book pb on pb.id = c.book_id" +
                 " where (:groupId is null or cg.group_id = :groupId) and" +
                 " (:bookId is null or c.book_id = :bookId) and" +
                 " (:name is null or c.name like :name) and" +
-                " (:phone is null or c.phone like :phone)";
+                " (:phone is null or c.phone like :phone) and " +
+                " (:bookType is null or pb.type = :bookType)";
+
 
         return commonRepository.queryPage(pageSql, countSql, params, ContactShow.class, p);
     }
