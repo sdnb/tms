@@ -53,8 +53,9 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
         //登出
         this.logout = function(){
             loginService.logout(function(data){
+				commonService.deleteCookie('staff_token');
                 if(data.status == 'false'){
-                    commonService.deleteCookie('staff_token');
+                    
                 }
                 window.location.href = '/login';
             });
