@@ -4,4 +4,4 @@ CREATE TABLE IF NOT EXISTS t_sys_setting (
   create_date        DATETIME                       COMMENT '创建时间',
   modify_date        DATETIME                       COMMENT '修改时间',
   PRIMARY KEY (id)
-) COMMENT='系统设置表';
+) COMMENT='系统设置表' DEFAULT CHARSET=utf8;

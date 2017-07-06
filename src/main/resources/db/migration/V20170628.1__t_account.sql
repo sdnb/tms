@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS t_account (
   create_date  DATETIME                     COMMENT '创建时间',
   PRIMARY KEY (id),
   UNIQUE KEY unique_username (username)
-) COMMENT='账户表';
+) COMMENT='账户表' DEFAULT CHARSET=utf8;
 
 INSERT INTO t_account(username,password,salt,create_date) VALUES('admin','faa83f722f4165fe2a37da657fb52f5f','DJng',SYSDATE());

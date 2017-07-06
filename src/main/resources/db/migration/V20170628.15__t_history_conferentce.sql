@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS t_history_conference (
   modify_date        DATETIME                       COMMENT '修改时间',
   PRIMARY KEY (id),
   UNIQUE KEY (number)
-) COMMENT='会议记录表';
+) COMMENT='会议记录表' DEFAULT CHARSET=utf8;
