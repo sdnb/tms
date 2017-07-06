@@ -52,13 +52,13 @@ a.btn-exit:hover { background-color:#a21f01; }
 
 .btn-login:hover { background-color:#0c3462; }
 
-.top { background: #e5e5e5; margin:auto; line-height: 35px; font-size:12px; }
+.top { background: #e5e5e5; /*margin:auto;*/ line-height: 35px; font-size:12px; }
 
 a.topExit { float: right; color:#333; margin-left: 35px; }
 
 a.topExit img { float: left; margin:8px 5px 0 0; }
 
-.header { background-color: #004ea2; height: 80px; margin:auto; }
+.header { background-color: #004ea2; height: 80px;/* margin:auto;*/ }
 
 .header img { float: left; margin-top:19px; }
 
