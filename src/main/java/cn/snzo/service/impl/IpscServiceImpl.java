@@ -32,6 +32,8 @@ public class IpscServiceImpl implements IpscService {
 
     @Autowired
     private ConferenceRepository conferenceRepository;
+
+    private String conferenceId = "";
     @Override
     public void startConference(ConferenceStartShow conferenceStartShow) {
         try {
@@ -45,7 +47,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("录音文件存放路径：" + recordPath);
                 params.put("record_file", recordPath); /// 会议录音存放路径
             }
-            String conferenceId = "";
+
             Commander commander = Main2.makeCommander(conferenceId);
             commander.createResource(
                     Main2.busAddress,
@@ -55,7 +57,7 @@ public class IpscServiceImpl implements IpscService {
                         @Override
                         protected void onResult(Object o) {
                             Map<String, Object> result = (Map<String, Object>) o;
-                            String conferenceId = (String) result.get("res_id");
+                            conferenceId = (String) result.get("res_id");
                             Conference conference = new Conference();
                             conference.setConductorId(conferenceStartShow.getConductorId());
                             conference.setRoomId(conferenceStartShow.getRoomId());
