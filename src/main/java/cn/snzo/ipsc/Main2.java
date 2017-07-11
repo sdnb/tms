@@ -19,10 +19,11 @@ public class Main2 {
     private static final byte   commanderId = 10;
 
     private static Commander  commander    = null;
-    private static String     conferenceId = "";
-    private static BusAddress busAddress   = null;
+    public static String     conferenceId = "";
+    public static BusAddress busAddress   = null;
 
-    private static void init() {
+
+    public static void init() {
         logger.info("Data Bus 客户端单元初始化");
         Unit.initiate(localId, new UnitCallbacks() {
             public void connectSucceed(Client client) {
@@ -39,12 +40,11 @@ public class Main2 {
             }
 
             public void globalConnectStateChanged(byte b, byte b1, byte b2, byte b3, String s) {
-
             }
         });
     }
 
-    private static Commander makeCommander() throws InterruptedException, IOException {
+    public static Commander makeCommander(final String conferenceId) throws InterruptedException, IOException {
         /// 新建一个命令发送者
         return  Unit.createCommander(
                 commanderId,
@@ -144,9 +144,9 @@ public class Main2 {
                             String confId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
                                 logger.warn("会议 {} 已经释放", confId);
-                                if (confId.equals(conferenceId)) {
-                                    conferenceId = "";
-                                }
+//                                if (confId.equals(conferenceId)) {
+//                                    conferenceId = "";
+//                                }
                             }
                         }
                     }
@@ -154,9 +154,9 @@ public class Main2 {
     }
     public static void excute() throws InterruptedException, IOException {
 
-        init();
-
-        commander = makeCommander();
+//        init();
+//
+//        commander = makeCommander();
 
         /// 开始执行
         String inputStr;

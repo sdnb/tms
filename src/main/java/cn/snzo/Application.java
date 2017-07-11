@@ -32,6 +32,6 @@ public class Application implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
-        Main2.excute();
+        Main2.init();
     }
 }
