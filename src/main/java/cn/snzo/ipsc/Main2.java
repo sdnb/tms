@@ -18,7 +18,7 @@ public class Main2 {
     private static final byte   localId     = 24;
     private static final byte   commanderId = 10;
 
-    private static Commander  commander    = null;
+    public static Commander  commander    = null;
     public static String     conferenceId = "";
     public static BusAddress busAddress   = null;
 
@@ -44,9 +44,9 @@ public class Main2 {
         });
     }
 
-    public static Commander makeCommander() throws InterruptedException, IOException {
+    public static void makeCommander() throws InterruptedException, IOException {
         /// 新建一个命令发送者
-        return  Unit.createCommander(
+        commander =  Unit.createCommander(
                 commanderId,
                 ipscIpAddr,
                 /// 事件监听器

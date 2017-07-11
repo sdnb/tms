@@ -47,7 +47,7 @@ public class IpscServiceImpl implements IpscService {
                 params.put("record_file", recordPath); /// 会议录音存放路径
             }
 
-            Commander commander = Main2.makeCommander();
+            Commander commander = Main2.commander;
             logger.info("busAddress {}", Main2.busAddress);
             logger.info("params {}", params);
             logger.info("conferenceId {}", Main2.conferenceId);
@@ -97,9 +97,7 @@ public class IpscServiceImpl implements IpscService {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        } 
 
     }
 
