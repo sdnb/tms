@@ -44,7 +44,7 @@ public class Main2 {
         });
     }
 
-    public static Commander makeCommander(final String conferenceId) throws InterruptedException, IOException {
+    public static Commander makeCommander() throws InterruptedException, IOException {
         /// 新建一个命令发送者
         return  Unit.createCommander(
                 commanderId,

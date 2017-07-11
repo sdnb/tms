@@ -33,7 +33,6 @@ public class IpscServiceImpl implements IpscService {
     @Autowired
     private ConferenceRepository conferenceRepository;
 
-    private String conferenceId = "";
     @Override
     public void startConference(ConferenceStartShow conferenceStartShow) {
         try {
@@ -48,10 +47,10 @@ public class IpscServiceImpl implements IpscService {
                 params.put("record_file", recordPath); /// 会议录音存放路径
             }
 
-            Commander commander = Main2.makeCommander(conferenceId);
+            Commander commander = Main2.makeCommander();
             logger.info("busAddress {}", Main2.busAddress);
             logger.info("params {}", params);
-            logger.info("conferenceId {}", conferenceId);
+            logger.info("conferenceId {}", Main2.conferenceId);
             commander.createResource(
                     Main2.busAddress,
                     "sys.conf",
@@ -61,22 +60,22 @@ public class IpscServiceImpl implements IpscService {
                         protected void onResult(Object o) {
 
                             Map<String, Object> result = (Map<String, Object>) o;
-                            conferenceId = (String) result.get("res_id");
-                            logger.info(">>>>>>会议资源建立成功：confId={}", conferenceId);
+                            Main2.conferenceId = (String) result.get("res_id");
+                            logger.info(">>>>>>会议资源建立成功：confId={}", Main2.conferenceId);
                             Conference conference = new Conference();
                             conference.setConductorId(conferenceStartShow.getConductorId());
                             conference.setRoomId(conferenceStartShow.getRoomId());
-                            conference.setResId(conferenceId);
+                            conference.setResId(Main2.conferenceId);
                             conference.setStartAt(new Date());
                             conference.setEndAt(new Date());
                             conference.setStatus(1);
                             conferenceRepository.save(conference);
-                            logger.info("<<<<<<会议资源建立成功，ID={}", conferenceId);
+                            logger.info("<<<<<<会议资源建立成功，ID={}", Main2.conferenceId);
 
                             //外呼
-                            logger.info("进行外呼", conferenceId);
+                            logger.info("进行外呼", Main2.conferenceId);
                             try {
-                                callOut(conferenceId, conferenceStartShow.getPhones(), VOIP);
+                                callOut(commander, conferenceStartShow.getPhones(), VOIP);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
@@ -110,14 +109,14 @@ public class IpscServiceImpl implements IpscService {
     }
 
 
-    public void callOut(String conferenceId, List<String> phones, String ip) throws IOException, InterruptedException {
+    public void callOut(Commander commander, List<String> phones, String ip) throws IOException, InterruptedException {
         logger.info("呼叫 {}", phones);
         phones = phones.stream().map(e -> e+"@"+ip).collect(Collectors.toList());
         for (String te : phones) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("to_uri", te); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", 300); /// 该呼叫最长通话允许时间
-            Main2.makeCommander(conferenceId).createResource(
+            commander.createResource(
                     Main2.busAddress,
                     "sys.call",
                     params,
