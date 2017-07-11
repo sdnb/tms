@@ -44,9 +44,9 @@ public class Main2 {
         });
     }
 
-    public static void makeCommander() throws InterruptedException, IOException {
+    public static Commander makeCommander() throws InterruptedException, IOException {
         /// 新建一个命令发送者
-        commander =  Unit.createCommander(
+        return Unit.createCommander(
                 commanderId,
                 ipscIpAddr,
                 /// 事件监听器
@@ -154,9 +154,9 @@ public class Main2 {
     }
     public static void excute() throws InterruptedException, IOException {
 
-//        init();
-//
-//        commander = makeCommander();
+        init();
+
+        commander = makeCommander();
 
         /// 开始执行
         String inputStr;
