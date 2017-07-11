@@ -49,6 +49,9 @@ public class IpscServiceImpl implements IpscService {
             }
 
             Commander commander = Main2.makeCommander(conferenceId);
+            logger.info("busAddress {}", Main2.busAddress);
+            logger.info("params {}", params);
+            logger.info("conferenceId {}", conferenceId);
             commander.createResource(
                     Main2.busAddress,
                     "sys.conf",
@@ -56,8 +59,10 @@ public class IpscServiceImpl implements IpscService {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
+
                             Map<String, Object> result = (Map<String, Object>) o;
                             conferenceId = (String) result.get("res_id");
+                            logger.info(">>>>>>会议资源建立成功：confId={}", conferenceId);
                             Conference conference = new Conference();
                             conference.setConductorId(conferenceStartShow.getConductorId());
                             conference.setRoomId(conferenceStartShow.getRoomId());
@@ -66,7 +71,7 @@ public class IpscServiceImpl implements IpscService {
                             conference.setEndAt(new Date());
                             conference.setStatus(1);
                             conferenceRepository.save(conference);
-                            logger.info("会议资源建立成功，ID={}", conferenceId);
+                            logger.info("<<<<<<会议资源建立成功，ID={}", conferenceId);
 
                             //外呼
                             logger.info("进行外呼", conferenceId);
