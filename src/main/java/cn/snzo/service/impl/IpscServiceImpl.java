@@ -1,7 +1,6 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.entity.Conference;
-import cn.snzo.ipsc.Main2;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.service.IpscService;
 import cn.snzo.vo.ConferenceStartShow;
@@ -222,7 +221,7 @@ public class IpscServiceImpl implements IpscService {
             params.put("to_uri", te); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", 300); /// 该呼叫最长通话允许时间
             commander.createResource(
-                    Main2.busAddress,
+                    busAddress,
                     "sys.call",
                     params,
                     new RpcResultListener() {
