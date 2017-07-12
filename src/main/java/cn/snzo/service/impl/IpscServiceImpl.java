@@ -75,6 +75,7 @@ public class IpscServiceImpl implements IpscService {
                             /// 呼叫事件
                             String methodName = fullMethodName.substring(9);
                             final String callId = (String) rpcRequest.getParams().get("res_id");
+                            logger.info("sys.call rpcRequest里面的参数{}", rpcRequest.getParams());
                             if (methodName.equals("on_released")) {
                                 logger.warn("呼叫 {} 已经释放", callId);
                             } else if (methodName.equals("on_ringing")) {
