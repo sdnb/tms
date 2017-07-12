@@ -98,43 +98,45 @@ public class Main2 {
                                 } else {
                                     logger.error("呼叫 {} 拨号失败：{}", callId, error);
                                 }
-                            } else if (methodName.equals("on_incoming")) {
-                                logger.warn("呼入 {}", callId);
-                                try {
-                                    String error = (String) rpcRequest.getParams().get("error");
-                                    Map<String, Object> params = new HashMap<String, Object>();
-                                    params.put("max_answer_seconds", 10000);
-                                    params.put("res_id", callId);
-                                    if (error == null) {
-
-                                        commander.operateResource(
-                                                busAddress,
-                                                callId,
-                                                "sys.call.answer",
-                                                params,
-                                                new RpcResultListener() {
-                                                    @Override
-                                                    protected void onResult(Object o) {
-                                                        logger.info("应答呼入 {} 操作完毕", callId, conferenceId);
-                                                    }
-
-                                                    @Override
-                                                    protected void onError(RpcError rpcError) {
-                                                        logger.error("应答呼入 操作错误: {}", callId, conferenceId, rpcError.getMessage());
-                                                    }
-
-                                                    @Override
-                                                    protected void onTimeout() {
-                                                        logger.error("应答呼入 操作超时无响应", callId, conferenceId);
-                                                    }
-                                                }
-                                        );
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                            } else if (methodName.equals("on_record_completed")) {
+                            }
+//                            else if (methodName.equals("on_incoming")) {
+//                                logger.warn("呼入 {}", callId);
+//                                try {
+//                                    String error = (String) rpcRequest.getParams().get("error");
+//                                    Map<String, Object> params = new HashMap<String, Object>();
+//                                    params.put("max_answer_seconds", 10000);
+//                                    params.put("res_id", callId);
+//                                    if (error == null) {
+//
+//                                        commander.operateResource(
+//                                                busAddress,
+//                                                callId,
+//                                                "sys.call.answer",
+//                                                params,
+//                                                new RpcResultListener() {
+//                                                    @Override
+//                                                    protected void onResult(Object o) {
+//                                                        logger.info("应答呼入 {} 操作完毕", callId, conferenceId);
+//                                                    }
+//
+//                                                    @Override
+//                                                    protected void onError(RpcError rpcError) {
+//                                                        logger.error("应答呼入 操作错误: {}", callId, conferenceId, rpcError.getMessage());
+//                                                    }
+//
+//                                                    @Override
+//                                                    protected void onTimeout() {
+//                                                        logger.error("应答呼入 操作超时无响应", callId, conferenceId);
+//                                                    }
+//                                                }
+//                                        );
+//                                    }
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+                            else if (methodName.equals("on_record_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 logger.info("录音停止callId: {} error: {}", callId, error);
                             }

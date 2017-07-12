@@ -25,8 +25,12 @@ public class ConferenceController extends BaseController {
     @RequestMapping(value = "/conference/start", method = RequestMethod.POST)
     public ObjectResult add(@RequestBody ConferenceStartShow conferenceStartShow)
     {
-        ipscService.startConference(conferenceStartShow);
-        return successRes(null);
+        try {
+            ipscService.startConference(conferenceStartShow);
+        } catch (InterruptedException e) {
+            return failureRes("发起会议失败");
+        }
+        return successRes("发起会议成功");
     }
 
 
