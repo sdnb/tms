@@ -35,10 +35,10 @@ public class Application implements CommandLineRunner{
     @Override
     public void run(String... strings) throws Exception {
         conferenceCreator.init();
-        while (ConferenceCreator.busAddress == null) {
-            Thread.sleep(1000);
-            System.out.println("初始化。。。");
-        }
+//        while (ConferenceCreator.busAddress == null) {
+//            Thread.sleep(1000);
+//            System.out.println("初始化。。。");
+//        }
         conferenceCreator.createCommander();
     }
 }
