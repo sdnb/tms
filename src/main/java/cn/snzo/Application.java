@@ -1,6 +1,6 @@
 package cn.snzo;
 
-import cn.snzo.service.impl.IpscServiceImpl;
+import cn.snzo.ipsc.ConferenceCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,6 +22,8 @@ public class Application implements CommandLineRunner{
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
 
+    @Autowired
+    private ConferenceCreator conferenceCreator;
 
     @Bean
     public RedisTemplate<String, Object> objectRedisTemplate(){
@@ -32,12 +34,10 @@ public class Application implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
-//        Main2.init();
-//        Main2.makeCommander();
-//        Main2.excute();
-//        Main2.init();
-//        Main2.makeCommander();
-        IpscServiceImpl.init();
-        IpscServiceImpl.createCommander();
+        conferenceCreator.init();
+        while (ConferenceCreator.busAddress == null) {
+            Thread.sleep(1000);
+        }
+        conferenceCreator.createCommander();
     }
 }

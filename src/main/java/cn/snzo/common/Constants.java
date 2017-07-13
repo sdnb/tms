@@ -16,5 +16,8 @@ public class Constants {
     public static final String     FORMATE_CUSTOM_TIME    = "yyyy-MM-dd HH:mm:ss";
     public static final String     STAFF_TOKEN            = "staff_token"   ;
     public static final CharSequence PREFIX_SFTP_PATH     = "/home/sftp/";
-
+    public static final String     VOIP                   = "10.1.2.152";
+    public static final String    ipscIpAddr             = "127.0.0.1"; /// IPSC 服务器的内网地址
+    public static final byte      localId                = 24;
+    public static final byte      commanderId            = 10;
 }
