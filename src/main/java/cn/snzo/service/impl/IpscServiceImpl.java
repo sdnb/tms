@@ -30,7 +30,7 @@ public class IpscServiceImpl implements IpscService {
     //    private static final String ipscIpAddr = "192.168.2.100"; /// IPSC 服务器的内网地址
     private static final String ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
     private static final byte   localId     = 24;
-    private static final byte   commanderId = 10;
+    private static final byte   commanderId = 11;
 
     public static Commander  commander    = null;
     public static String     conferenceId = "";
