@@ -41,6 +41,6 @@ public class Application implements CommandLineRunner{
 //            System.out.println("初始化。。。");
 //        }
         Commander commander = conferenceCreator.createCommander();
-        System.out.println(commander);
+        System.out.println("==============commander="+commander);
     }
 }

@@ -25,7 +25,7 @@ public class ConferenceCreator {
 
     private static Logger logger = LoggerFactory.getLogger(ConferenceCreator.class);
 
-    public        Commander  commander    = null;
+    public static Commander  commander    = null;
     public static String     conferenceId = "";
     public static BusAddress busAddress   = null;
 
