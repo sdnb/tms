@@ -32,7 +32,7 @@ public class ConferenceCreator {
     @Autowired
     private ConferenceRepository conferenceRepository;
 
-    public void init() {
+    public static void init() {
         logger.info("Data Bus 客户端单元初始化");
         Unit.initiate(Constants.localId, new UnitCallbacks() {
             public void connectSucceed(Client client) {
@@ -53,7 +53,7 @@ public class ConferenceCreator {
         });
     }
 
-    public  Commander createCommander() throws InterruptedException {
+    public static Commander createCommander() throws InterruptedException {
         /// 新建一个命令发送者
         commander = Unit.createCommander(
                 Constants.commanderId,
@@ -100,7 +100,7 @@ public class ConferenceCreator {
     }
 
 
-    private void addCallToConf(String callId, String conferenceId) {
+    private static void addCallToConf(String callId, String conferenceId) {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
