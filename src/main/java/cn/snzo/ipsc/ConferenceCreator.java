@@ -53,7 +53,7 @@ public class ConferenceCreator {
         });
     }
 
-    public  void createCommander() throws InterruptedException {
+    public  Commander createCommander() throws InterruptedException {
         /// 新建一个命令发送者
         commander = Unit.createCommander(
                 Constants.commanderId,
@@ -96,6 +96,7 @@ public class ConferenceCreator {
                         }
                     }
                 });
+        return commander;
     }
 
 

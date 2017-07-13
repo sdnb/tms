@@ -1,6 +1,7 @@
 package cn.snzo;
 
 import cn.snzo.ipsc.ConferenceCreator;
+import com.hesong.ipsc.ccf.Commander;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -39,6 +40,7 @@ public class Application implements CommandLineRunner{
 //            Thread.sleep(1000);
 //            System.out.println("初始化。。。");
 //        }
-        conferenceCreator.createCommander();
+        Commander commander = conferenceCreator.createCommander();
+        System.out.println(commander);
     }
 }
