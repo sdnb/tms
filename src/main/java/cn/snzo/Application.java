@@ -37,6 +37,7 @@ public class Application implements CommandLineRunner{
         conferenceCreator.init();
         while (ConferenceCreator.busAddress == null) {
             Thread.sleep(1000);
+            System.out.println("初始化。。。");
         }
         conferenceCreator.createCommander();
     }
