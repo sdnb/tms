@@ -50,6 +50,7 @@ public class IpscUtil {
             }
         });
 
+        Thread.sleep(3000);
         //创建commander
         logger.info("初始化commander");
         createCommander();
