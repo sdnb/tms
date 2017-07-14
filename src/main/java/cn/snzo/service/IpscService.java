@@ -13,9 +13,5 @@ public interface IpscService {
 
     void startConference(ConferenceStartShow conferenceStartShow) throws InterruptedException;
 
-
     void stopConference(String conferenceId);
-
-
-
 }

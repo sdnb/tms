@@ -1,6 +1,6 @@
 package cn.snzo;
 
-import cn.snzo.ipsc.Main2;
+import cn.snzo.utils.IpscUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,13 +32,15 @@ public class Application implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
-//        Main2.init();
-//        Main2.makeCommander();
-
-//        Main2.init();
-//        Main2.makeCommander();
-//        IpscServiceImpl.init();
-//        IpscServiceImpl.createCommander();
-        Main2.excute();
+////        Main2.init();
+////        Main2.makeCommander();
+//
+////        Main2.init();
+////        Main2.makeCommander();
+////        IpscServiceImpl.init();
+////        IpscServiceImpl.createCommander();
+//        Main2.excute();
+        IpscUtil.init();
+        IpscUtil.createCommander();
     }
 }
