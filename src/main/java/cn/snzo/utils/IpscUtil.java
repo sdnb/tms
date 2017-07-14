@@ -22,7 +22,7 @@ public class IpscUtil {
     //    private static final String ipscIpAddr = "192.168.2.100"; /// IPSC 服务器的内网地址
     private static final String              ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
     private static final byte                localId     = 24;
-    private static final byte                commanderId = 12;
+    private static final byte                commanderId = 10;
     public static        Commander           commander   = null;
     public static        BusAddress          busAddress  = null;
     public static       Map<String, String> callConfMap = new HashMap<>();
@@ -112,7 +112,7 @@ public class IpscUtil {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);
-            params.put("max_seconds", 300);
+            params.put("max_seconds", Constants.MAX_CONF_SECONDS);
             commander.operateResource(
                     busAddress,
                     callId,
@@ -148,8 +148,8 @@ public class IpscUtil {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("to_uri", te); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
-            IpscUtil.commander.createResource(
-                    IpscUtil.busAddress,
+            commander.createResource(
+                    busAddress,
                     "sys.call",
                     params,
                     new RpcResultListener() {
@@ -179,7 +179,7 @@ public class IpscUtil {
     public static void createConference(Map<String, Object> params, RpcResultListener rpcResultListener) throws IOException {
         if (commander != null) {
             commander.createResource(
-                    IpscUtil.busAddress,
+                    busAddress,
                     "sys.conf",
                     params,
                     rpcResultListener);
@@ -192,7 +192,7 @@ public class IpscUtil {
     public static void stopConference(String confId, RpcResultListener listener) throws IOException {
         if (commander != null) {
             commander.operateResource(
-                    IpscUtil.busAddress,
+                    busAddress,
                     confId,
                     "sys.conf",
                     null,
@@ -211,7 +211,7 @@ public class IpscUtil {
             params.put("mode", mode);
             logger.info("修改与会者声音收放模式，confid={},callId={},mode={}", confId, callId, mode);
             commander.operateResource(
-                    IpscUtil.busAddress,
+                    busAddress,
                     confId,
                     "sys.conf.set_part_voice_mode",
                     params,
@@ -228,7 +228,7 @@ public class IpscUtil {
             params.put("call_res_id", callId);
             logger.info("退出会议，confid={},callId={}", confId, callId);
             commander.operateResource(
-                    IpscUtil.busAddress,
+                    busAddress,
                     callId,
                     "sys.call.conf_exit",
                     params,
@@ -246,7 +246,7 @@ public class IpscUtil {
             params.put("record_file", path);
             params.put("record_format", 3);
             commander.operateResource(
-                    IpscUtil.busAddress,
+                    busAddress,
                     conferenceId,
                     "sys.conf.record_start",
                     params,
