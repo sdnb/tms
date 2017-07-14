@@ -19,7 +19,7 @@
 //    private static final byte   commanderId = 10;
 //
 //    private static Commander  commander    = null;
-////    public static  String     conferenceId = "";
+//    public static  String     conferenceId = "";
 //    public static  BusAddress busAddress   = null;
 //
 ////    public static Commander getCommander() throws IOException, InterruptedException {

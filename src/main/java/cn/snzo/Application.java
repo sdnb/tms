@@ -1,6 +1,6 @@
 package cn.snzo;
 
-import cn.snzo.ipsc.Main;
+import cn.snzo.ipsc.Main2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -39,6 +39,6 @@ public class Application implements CommandLineRunner{
 //        Main2.makeCommander();
 //        IpscServiceImpl.init();
 //        IpscServiceImpl.createCommander();
-        Main.excute(null);
+        Main2.excute();
     }
 }
