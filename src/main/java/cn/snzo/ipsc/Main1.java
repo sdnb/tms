@@ -11,7 +11,7 @@
 // * Created by tanbr on 2017/5/10.
 // */
 //public class Main1 {
-//    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+//    private static final Logger logger = LoggerFactory.getLogger(Main1.class);
 //
 //    //    private static final String ipscIpAddr = "192.168.2.100"; /// IPSC 服务器的内网地址
 //    private static final String ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
