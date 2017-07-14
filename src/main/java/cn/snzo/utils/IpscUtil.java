@@ -1,5 +1,6 @@
 package cn.snzo.utils;
 
+import cn.snzo.common.Constants;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,8 @@ public class IpscUtil {
 //                                if (confId.equals(conferenceId)) {
 //                                    conferenceId = "";
 //                                }
+                            } else if (methodName.equals("on_record_completed")) {
+                                logger.warn("会议 {} 录音已结束", confId);
                             }
                         }
                     }
@@ -139,12 +142,12 @@ public class IpscUtil {
 
 
     public static void callOut(String conferenceId, List<String> phones, String ip) throws IOException, InterruptedException {
-        logger.info("呼叫 {}", phones);
+
         phones = phones.stream().map(e -> e+"@"+ip).collect(Collectors.toList());
         for (String te : phones) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("to_uri", te); /// 被叫号码的 SIP URI
-            params.put("max_answer_seconds", 300); /// 该呼叫最长通话允许时间
+            params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
             IpscUtil.commander.createResource(
                     IpscUtil.busAddress,
                     "sys.call",
@@ -180,6 +183,90 @@ public class IpscUtil {
                     "sys.conf",
                     params,
                     rpcResultListener);
+        } else {
+            logger.info("commander客户端 未初始化");
+        }
+    }
+
+
+    public static void stopConference(String confId, RpcResultListener listener) throws IOException {
+        if (commander != null) {
+            commander.operateResource(
+                    IpscUtil.busAddress,
+                    confId,
+                    "sys.conf",
+                    null,
+                    listener);
+        } else {
+            logger.info("commander客户端 未初始化");
+        }
+    }
+
+
+    public static void changePartMode(String confId, String callId, int mode, RpcResultListener listener) throws IOException {
+        if (commander != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("res_id", confId);
+            params.put("call_res_id", callId);
+            params.put("mode", mode);
+            logger.info("修改与会者声音收放模式，confid={},callId={},mode={}", confId, callId, mode);
+            commander.operateResource(
+                    IpscUtil.busAddress,
+                    confId,
+                    "sys.conf.set_part_voice_mode",
+                    params,
+                    listener);
+        } else {
+            logger.info("commander客户端 未初始化");
+        }
+    }
+
+    public static void exitConferece(String confId, String callId, RpcResultListener listener) throws IOException {
+        if (commander != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("res_id", confId);
+            params.put("call_res_id", callId);
+            logger.info("退出会议，confid={},callId={}", confId, callId);
+            commander.operateResource(
+                    IpscUtil.busAddress,
+                    callId,
+                    "sys.call.conf_exit",
+                    params,
+                    listener);
+        } else {
+            logger.info("commander客户端 未初始化");
+        }
+    }
+
+    public static void startRecord(String conferenceId, String path, RpcResultListener listener) throws IOException {
+        if (commander != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("res_id", conferenceId);
+            params.put("max_seconds", Constants.MAX_CONF_SECONDS);
+            params.put("record_file", path);
+            params.put("record_format", 3);
+            commander.operateResource(
+                    IpscUtil.busAddress,
+                    conferenceId,
+                    "sys.conf.record_start",
+                    params,
+                    listener);
+        } else {
+            logger.info("commander客户端 未初始化");
+        }
+
+    }
+
+    public static void stopRecord(String conferenceId, RpcResultListener listener) throws IOException {
+        if (commander != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("res_id", conferenceId);
+            commander.operateResource(
+                    busAddress,
+                    conferenceId,
+                    "sys.conf.record_stop",
+                    params,
+                    listener);
         } else {
             logger.info("commander客户端 未初始化");
         }

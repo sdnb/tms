@@ -32,14 +32,6 @@ public class Application implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
-////        Main2.init();
-////        Main2.makeCommander();
-//
-////        Main2.init();
-////        Main2.makeCommander();
-////        IpscServiceImpl.init();
-////        IpscServiceImpl.createCommander();
-//        Main2.excute();
         IpscUtil.init();
     }
 }

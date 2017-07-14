@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ConferenceRepository extends JpaRepository<Conference, Integer> {
+    Conference findByResId(String resId);
 }

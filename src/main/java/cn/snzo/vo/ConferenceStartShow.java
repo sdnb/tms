@@ -42,4 +42,15 @@ public class ConferenceStartShow {
     public void setConductorId(Integer conductorId) {
         this.conductorId = conductorId;
     }
+
+
+    @Override
+    public String toString() {
+        return "ConferenceStartShow{" +
+                "roomId=" + roomId +
+                ", conductorId=" + conductorId +
+                ", phones=" + phones +
+                ", isRecordEnable=" + isRecordEnable +
+                '}';
+    }
 }

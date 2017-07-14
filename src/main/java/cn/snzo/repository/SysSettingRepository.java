@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SysSettingRepository extends JpaRepository<SysSetting,Integer>{
+
+    SysSetting findFirstByOrderByIdDesc();
+
 }
