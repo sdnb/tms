@@ -8,6 +8,7 @@ import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * Created by chentao on 2017/7/11 0011.
  */
 @Service
+@Scope("prototype")
 public class IpscServiceImpl implements IpscService {
 
     private static Logger logger = LoggerFactory.getLogger(IpscServiceImpl.class);
