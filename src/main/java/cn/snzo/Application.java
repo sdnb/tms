@@ -41,6 +41,5 @@ public class Application implements CommandLineRunner{
 ////        IpscServiceImpl.createCommander();
 //        Main2.excute();
         IpscUtil.init();
-        IpscUtil.createCommander();
     }
 }

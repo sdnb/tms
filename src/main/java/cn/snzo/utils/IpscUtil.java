@@ -50,6 +50,7 @@ public class IpscUtil {
         });
 
         //创建commander
+        logger.info("初始化commander");
         createCommander();
     }
 
