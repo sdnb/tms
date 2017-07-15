@@ -18,7 +18,7 @@ public class Conference extends BaseEntity {
     private String  conductorName;
     private Date    startAt;
     private Date    endAt;
-    private int     status;//状态 1 会议中 2 会议结束
+    private int     status;//状态 1 会议中 2 已结束
     public String getResId() {
         return resId;
     }

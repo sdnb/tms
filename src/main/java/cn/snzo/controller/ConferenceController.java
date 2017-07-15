@@ -4,15 +4,16 @@ import cn.snzo.common.BaseController;
 import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.exception.ServiceException;
+import cn.snzo.service.IConferenceService;
 import cn.snzo.service.ITokenService;
 import cn.snzo.service.impl.IpscServiceImpl;
-import cn.snzo.vo.AddCallShow;
-import cn.snzo.vo.ConferencePart;
-import cn.snzo.vo.ConferenceStartShow;
-import cn.snzo.vo.LoginInfo;
+import cn.snzo.utils.CommonUtils;
+import cn.snzo.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -29,6 +30,9 @@ public class ConferenceController extends BaseController {
     @Autowired
     private ITokenService<LoginInfo> tokenService;
 
+    @Autowired
+    private IConferenceService conferenceService;
+
     /**
      * 发起会议
      * @param conferenceStartShow
@@ -37,7 +41,7 @@ public class ConferenceController extends BaseController {
      */
     @RequestMapping(value = "/conference/start", method = RequestMethod.POST)
     public ObjectResult add(@RequestBody ConferenceStartShow conferenceStartShow,
-                            @CookieValue(value = Constants.STAFF_TOKEN, required = false)String token)
+                            @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token)
 
     {
         try {
@@ -276,5 +280,31 @@ public class ConferenceController extends BaseController {
     }
 
 
+
+    /**
+     * 查询会议
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/conference/page", method = RequestMethod.GET)
+    public ObjectResult getConferencePage(@RequestParam(value = "id", required = false) Integer id,
+                                          @RequestParam(value = "roomId", required = false) Integer roomId,
+                                          @RequestParam(value = "status", required = false) Integer status,
+                                          @RequestParam(value = "conductorId", required = false) Integer conductorId,
+                                          @RequestParam(value = "confResId", required = false) String confResId,
+                                          @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                          @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                          HttpServletResponse response) {
+
+        try {
+            Page<ConferenceShow> parts = conferenceService.findPage(id, roomId, status, conductorId, confResId, currentPage, pageSize);
+            CommonUtils.setResponseHeaders(parts.getTotalElements(),  parts.getTotalPages(), parts.getNumber(), response);
+            return successRes(parts.getContent());
+        } catch (ServiceException e) {
+            return failureRes(e.getMessage());
+        } catch (Exception e) {
+            return failureRes("查询会议异常");
+        }
+    }
 
 }
