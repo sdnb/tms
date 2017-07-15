@@ -6,6 +6,7 @@ import cn.snzo.entity.Conference;
 import cn.snzo.entity.Log;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.repository.ConferenceRepository;
+import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.repository.LogRepository;
 import cn.snzo.service.IConductorService;
 import cn.snzo.service.IConferenceRoomService;
@@ -48,7 +49,10 @@ public class IpscServiceImpl implements IpscService {
     private IConferenceRoomService conferenceRoomService;
 
     @Autowired
-    private IConductorService conductorService;
+    private IConductorService        conductorService;
+
+    @Autowired
+    private ConferenceRoomRepository conferenceRoomRepository;
 
     /**
      * 建立会议
@@ -61,15 +65,14 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public int startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException {
 
-        int roomId = conferenceStartShow.getRoomId();
+        int                roomId             = conferenceStartShow.getRoomId();
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(roomId);
         if (conferenceRoomShow == null) {
             return 3;
         }
         //检查会议室是否在使用中
-        boolean roomIsInUse = conferenceRoomShow.getIsInUse() != null
-                && conferenceRoomShow.getIsInUse() == 1;
-        if (roomIsInUse) {
+        boolean roomIsUse = conferenceRepository.checkConfOfRoom(roomId) > 0;
+        if (roomIsUse) {
             return 4;
         }
         logger.info("建立会议");
@@ -145,8 +148,6 @@ public class IpscServiceImpl implements IpscService {
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(conferenceStartShow.getRoomId());
         if (conferenceRoomShow != null) {
             conference.setRoomNo(conferenceRoomShow.getNumber());
-            //将会议室设置为使用中
-            conferenceRoomService.modifyStatus(conferenceStartShow.getRoomId(), 1);
         }
         Conductor conductor = conductorService.getOne(conferenceStartShow.getConductorId());
         if (conductor != null) {
@@ -180,8 +181,6 @@ public class IpscServiceImpl implements IpscService {
                 Conference conference = conferenceRepository.findByResId(resId);
                 conference.setStatus(2);
                 conferenceRepository.save(conference);
-                //将会议室设置为空置中
-                conferenceRoomService.modifyStatus(conference.getRoomId(), 0);
                 logRepository.save(log);
             }
 

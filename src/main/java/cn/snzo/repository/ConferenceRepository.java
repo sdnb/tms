@@ -2,6 +2,7 @@ package cn.snzo.repository;
 
 import cn.snzo.entity.Conference;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,4 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConferenceRepository extends JpaRepository<Conference, Integer> {
     Conference findByResId(String resId);
+
+    @Query("select count(*) from t_conference c  inner join t_conference_room r on c.room_id=r.id where c.status = 1 and r.id=?1")
+    int checkConfOfRoom(int roomId);
 }
