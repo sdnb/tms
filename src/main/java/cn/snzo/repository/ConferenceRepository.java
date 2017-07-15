@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface ConferenceRepository extends JpaRepository<Conference, Integer> {
     Conference findByResId(String resId);
 
-    @Query("select count(*) from t_conference c  inner join t_conference_room r on c.room_id=r.id where c.status = 1 and r.id=?1")
+    @Query(value = "select count(*) from t_conference c  inner join t_conference_room r on c.room_id=r.id where c.status = 1 and r.id=?1", nativeQuery = true)
     int checkConfOfRoom(int roomId);
 }
