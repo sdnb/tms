@@ -1,5 +1,6 @@
 package cn.snzo;
 
+import cn.snzo.utils.IpscUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -31,6 +32,6 @@ public class Application implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
-//        IpscUtil.init();
+        IpscUtil.init();
     }
 }

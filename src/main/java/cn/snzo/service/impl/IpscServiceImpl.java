@@ -65,7 +65,7 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public int startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException {
 
-        int                roomId             = conferenceStartShow.getRoomId();
+        int roomId = conferenceStartShow.getRoomId();
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(roomId);
         if (conferenceRoomShow == null) {
             return 3;
@@ -175,6 +175,7 @@ public class IpscServiceImpl implements IpscService {
                 "sys.conf.release",
                 "删除会议", tokenName, OperTypeEnum.OPERATE.ordinal(),
                 OperResultEnum.SUCCESS.ordinal());
+        int[] ret = new int[1];
         IpscUtil.stopConference(resId, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
@@ -183,6 +184,8 @@ public class IpscServiceImpl implements IpscService {
                 conference.setStatus(2);
                 conferenceRepository.save(conference);
                 logRepository.save(log);
+                ret[0] = 1;
+
             }
 
             @Override
@@ -190,6 +193,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.error("结束会议{}失败", resId);
                 log.setOperResult(OperResultEnum.ERROR.ordinal());
                 logRepository.save(log);
+                ret[0] = 2;
             }
 
             @Override
@@ -197,10 +201,13 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("结束会议{}超时", resId);
                 log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
                 logRepository.save(log);
+                ret[0] = 3;
             }
         });
-        TimeUnit.SECONDS.sleep(1);
-        return log.getOperResult();
+        while (ret[0] == 0) {
+            TimeUnit.MILLISECONDS.sleep(100);
+        }
+        return ret[0];
     }
 
 
@@ -240,7 +247,6 @@ public class IpscServiceImpl implements IpscService {
                         logRepository.save(log);
                     }
                 });
-        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
@@ -387,7 +393,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("array = {}", array);
                 JSONArray jsonArray = JSON.parseArray(array);
                 List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
-
+                logger.info("PartDatas={}", partDatas);
                 for (PartData partData : partDatas) {
                     ConferencePart part = new ConferencePart();
                     part.setVoiceMode(partData.getVoice_mode());
@@ -412,7 +418,6 @@ public class IpscServiceImpl implements IpscService {
                 logRepository.save(log);
             }
         });
-        TimeUnit.SECONDS.sleep(1);
         return conferenceParts;
     }
 

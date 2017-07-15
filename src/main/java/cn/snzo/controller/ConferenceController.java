@@ -83,11 +83,11 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.stopConference(confId, username);
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("结束会议成功");
-            } else if (code == 1) {
-                return failureRes("结束会议错误");
             } else if (code == 2) {
+                return failureRes("结束会议错误");
+            } else if (code == 3) {
                 return failureRes("结束会议超时");
             } else {
                 return failureRes("结束会议失败");
