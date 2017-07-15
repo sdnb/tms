@@ -14,4 +14,6 @@ public interface ISysSettingService {
 
     int modifyPwd(AccountShow accountShow);
 
+    SysSettingShow getLatestSetting();
+
 }

@@ -85,6 +85,33 @@
             <!--<groupId>org.springframework.boot</groupId>-->
             <!--<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
         <!--</dependency>-->
+
+        <!-- ============================================== -->
+        <!-- 本地依赖jar包 -->
+        <!-- ============================================== -->
+        <dependency>
+            <groupId>com.hesong.ipsc</groupId>
+            <artifactId>ipsc-bus-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ipsc-bus-client-1.0-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.hesong.ipsc</groupId>
+            <artifactId>ipsc-ccf</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ipsc-ccf-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.31</version>
+        </dependency>
+
     </dependencies>
 
     <!--maven的插件-->
@@ -100,9 +127,9 @@
             <version>4.1.0</version>
             <configuration>
                 <user>root</user>
-                <password>123456</password>
+                <password>kerber@2017</password>
                 <driver>com.mysql.jdbc.Driver</driver>
-                <url>jdbc:mysql://localhost:3306/tms</url>
+                <url>jdbc:mysql://127.0.0.1:3306/tms</url>
                 <!--<baseDir>db/migration</baseDir>-->
             </configuration>
 

@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class BaseController {
 
-
     /**
      * 打印错误日志
      * @param e

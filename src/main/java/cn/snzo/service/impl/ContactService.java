@@ -1,7 +1,7 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.CommonRepository;
-import cn.snzo.common.CommonUtils;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.entity.Contact;
 import cn.snzo.entity.ContactGroupRelative;
 import cn.snzo.exception.ServiceException;
