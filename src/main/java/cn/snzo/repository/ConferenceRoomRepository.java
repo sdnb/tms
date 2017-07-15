@@ -1,6 +1,7 @@
 package cn.snzo.repository;
 
 import cn.snzo.entity.ConferenceRoom;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -33,4 +34,8 @@ public interface ConferenceRoomRepository extends CrudRepository<ConferenceRoom,
 
 
     List<ConferenceRoom> findByConductorId(int id);
+
+    @Query("update ConferenceRoom c set status = ?2 where id= ?1")
+    @Modifying
+    int updateStatus(Integer roomId, int status);
 }

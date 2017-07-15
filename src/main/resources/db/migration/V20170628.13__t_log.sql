@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS t_log (
   oper_type          INT(1)           UNSIGNED      COMMENT '操作类型 1 创建 2 操作 3 事件',
   oper_method_id     VARCHAR(100)                   COMMENT '操作资源方法id',
   oper_method_name   VARCHAR(100)                   COMMENT '操作资源方法名称',
+  oper_result        INT(1)           UNSIGNED      COMMENT '操作结果 1 成功 2 失败 3 超时',
   modify_date        DATETIME                       COMMENT '更新时间',
   create_date        DATETIME                       COMMENT '创建时间',
   operator           VARCHAR(50)                    COMMENT '操作人',

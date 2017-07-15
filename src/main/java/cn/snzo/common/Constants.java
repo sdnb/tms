@@ -19,4 +19,5 @@ public class Constants {
     public static final int          MAX_CONF_SECONDS       = 3600;
 
     public static final int          MAX_ANSWER_SECONDS     = 3600;
+    public static final String       RECORD_FILE_SUFFIX     = ".wav";
 }

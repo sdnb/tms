@@ -1,13 +1,15 @@
-package cn.snzo.common;
+package cn.snzo.utils;
 
-import cn.snzo.utils.BeanUtil;
-import org.springframework.data.domain.*;
+import cn.snzo.common.Constants;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by Administrator on 2017/6/29 0029.
@@ -49,5 +51,11 @@ public class CommonUtils {
     }
 
 
+    public static String getRecordFileName(String path) {
+        LocalTime localTime = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.FORMATE_yyyyMMddHHmmss);
+        String recordName = path + localTime.format(formatter) + RandomUtils.getRandomNum(4);
+        return recordName + Constants.RECORD_FILE_SUFFIX;
+    }
 
 }

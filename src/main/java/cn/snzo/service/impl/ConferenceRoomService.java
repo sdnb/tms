@@ -1,7 +1,6 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.CommonRepository;
-import cn.snzo.common.CommonUtils;
 import cn.snzo.common.NumberGenerator;
 import cn.snzo.entity.Conductor;
 import cn.snzo.entity.ConferenceRoom;
@@ -10,6 +9,8 @@ import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.repository.PhoneBookRepository;
 import cn.snzo.service.IConferenceRoomService;
+import cn.snzo.utils.BeanUtil;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.ConferenceRoomShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -162,5 +163,17 @@ public class ConferenceRoomService implements IConferenceRoomService {
     }
 
 
+    @Override
+    public ConferenceRoomShow getOne(int roomId) {
+        ConferenceRoom conferenceRoom = conferenceRoomRepository.findOne(roomId);
+        ConferenceRoomShow conferenceRoomShow = new ConferenceRoomShow();
+        BeanUtil.entityToShow(conferenceRoom, conferenceRoomShow);
+        return conferenceRoomShow;
+    }
 
+    @Override
+    public int modifyStatus(Integer roomId, int status) {
+        int ret = conferenceRoomRepository.updateStatus(roomId, status);
+        return 1;
+    }
 }

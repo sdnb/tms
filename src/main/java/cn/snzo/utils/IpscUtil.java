@@ -142,7 +142,7 @@ public class IpscUtil {
     }
 
 
-    public static void callOut(String conferenceId, List<String> phones, String ip) throws IOException, InterruptedException {
+    public static void callOut(List<String> phones, String ip, RpcResultListener listener) throws IOException, InterruptedException {
 
         phones = phones.stream().map(e -> e+"@"+ip).collect(Collectors.toList());
         for (String te : phones) {
@@ -153,25 +153,7 @@ public class IpscUtil {
                     busAddress,
                     "sys.call",
                     params,
-                    new RpcResultListener() {
-                        @Override
-                        protected void onResult(Object o) {
-                            Map<String, Object> result = (Map<String, Object>) o;
-                            String              callId = (String) result.get("res_id");
-                            callConfMap.put(callId, conferenceId);
-                            logger.info("呼叫资源建立成功，ID={}。系统正在执行外呼……注意这不是呼叫成功！", callId);
-                        }
-
-                        @Override
-                        protected void onError(RpcError rpcError) {
-                            logger.error("创建呼叫资源错误：{} {}", rpcError.getCode(), rpcError.getMessage());
-                        }
-
-                        @Override
-                        protected void onTimeout() {
-                            logger.error("创建呼叫资源超时无响应");
-                        }
-                    }
+                    listener
             );
         }
     }
@@ -266,6 +248,21 @@ public class IpscUtil {
                     busAddress,
                     conferenceId,
                     "sys.conf.record_stop",
+                    params,
+                    listener);
+        } else {
+            logger.info("commander客户端 未初始化");
+        }
+    }
+
+    public static void getConfParts(String confResId, RpcResultListener listener) throws IOException {
+        if (commander != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("res_id", confResId);
+            commander.operateResource(
+                    busAddress,
+                    confResId,
+                    "sys.conf.get_parts",
                     params,
                     listener);
         } else {

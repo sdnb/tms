@@ -15,4 +15,6 @@ public interface IConductorService {
     int delete(int id);
 
     int modify(int id, ConductorShow conductorShow);
+
+    ConductorShow getOne(Integer conductorId);
 }

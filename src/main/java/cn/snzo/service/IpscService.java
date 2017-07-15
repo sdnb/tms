@@ -1,5 +1,6 @@
 package cn.snzo.service;
 
+import cn.snzo.vo.ConferencePart;
 import cn.snzo.vo.ConferenceStartShow;
 
 import java.io.IOException;
@@ -29,4 +30,5 @@ public interface IpscService {
     int changeCallMode(String callId, String confResId,  int mode, String tokenName) throws IOException;
 
 
+    List<ConferencePart> getConfParts(String confResId, String username) throws IOException;
 }

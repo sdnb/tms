@@ -104,6 +104,14 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/ipsc-ccf-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.31</version>
+        </dependency>
+
     </dependencies>
 
     <!--maven的插件-->

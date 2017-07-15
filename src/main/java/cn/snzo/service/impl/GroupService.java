@@ -1,6 +1,6 @@
 package cn.snzo.service.impl;
 
-import cn.snzo.common.CommonUtils;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.entity.ContactGroupRelative;
 import cn.snzo.entity.Group;
 import cn.snzo.repository.ContactGroupRelativeRepository;
