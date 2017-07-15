@@ -1,9 +1,13 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
+import cn.snzo.entity.Conference;
+import cn.snzo.repository.ConferenceRepository;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,10 +17,17 @@ import java.util.Map;
 /**
  * Created by chentao on 2017/7/14 0014.
  */
+@Component
 public class IpscUtil {
 
     private static Logger logger = LoggerFactory.getLogger(IpscUtil.class);
 
+    private static ConferenceRepository conferenceRepository;
+
+    @Autowired
+    public void setConferenceRepository(ConferenceRepository conferenceRepository){
+        this.conferenceRepository = conferenceRepository;
+    }
     public static final String VOIP = "10.1.2.152";
 
     //    private static final String ipscIpAddr = "192.168.2.100"; /// IPSC 服务器的内网地址
@@ -61,7 +72,7 @@ public class IpscUtil {
         commander = Unit.createCommander(
                 commanderId,
                 ipscIpAddr,
-                /// 事件监听器
+                // 事件监听器
                 new RpcEventListener() {
                     public void onEvent(BusAddress busAddress, RpcRequest rpcRequest) {
                         String fullMethodName = rpcRequest.getMethod();
@@ -95,6 +106,11 @@ public class IpscUtil {
                             String confId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
                                 logger.warn("会议 {} 已经释放", confId);
+
+                                //修改为已结束状态
+                                Conference conference = conferenceRepository.findByResId(confId);
+                                conference.setStatus(2);
+                                conferenceRepository.save(conference);
                             } else if (methodName.equals("on_record_completed")) {
                                 logger.warn("会议 {} 录音已结束", confId);
                             }

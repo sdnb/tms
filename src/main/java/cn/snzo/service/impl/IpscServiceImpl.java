@@ -17,8 +17,7 @@ import cn.snzo.utils.IpscUtil;
 import cn.snzo.vo.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.hesong.ipsc.ccf.RpcError;
-import com.hesong.ipsc.ccf.RpcResultListener;
+import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,7 +249,7 @@ public class IpscServiceImpl implements IpscService {
 
         SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
         if (sysSettingShow == null) {
-            return 2;
+            return 3;
         }
         String path = sysSettingShow.getRecordingPath();
         if (path == null || path.isEmpty()) {
