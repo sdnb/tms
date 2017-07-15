@@ -17,18 +17,18 @@ public interface IpscService {
 
     int startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException;
 
-    int stopConference(String confResId, String tokenName) throws IOException;
+    int stopConference(String confResId, String tokenName) throws IOException, InterruptedException;
 
     int addCallToConf(List<String> phones, String conferenceId, String tokenName) throws IOException, InterruptedException;
 
-    int startRecord(String confResId, String tokenName) throws IOException;
+    int startRecord(String confResId, String tokenName) throws IOException, InterruptedException;
 
-    int stopRecord(String confResId, String tokenName) throws IOException;
+    int stopRecord(String confResId, String tokenName) throws IOException, InterruptedException;
 
-    int removeCallFromConf(String callId, String confResId, String tokenName) throws IOException;
+    int removeCallFromConf(String callId, String confResId, String tokenName) throws IOException, InterruptedException;
 
-    int changeCallMode(String callId, String confResId,  int mode, String tokenName) throws IOException;
+    int changeCallMode(String callId, String confResId,  int mode, String tokenName) throws IOException, InterruptedException;
 
 
-    List<ConferencePart> getConfParts(String confResId, String username) throws IOException;
+    List<ConferencePart> getConfParts(String confResId, String username) throws IOException, InterruptedException;
 }

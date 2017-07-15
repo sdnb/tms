@@ -16,7 +16,7 @@ import cn.snzo.utils.CommonUtils;
 import cn.snzo.utils.IpscUtil;
 import cn.snzo.vo.*;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
 import com.hesong.ipsc.ccf.RpcError;
 import com.hesong.ipsc.ccf.RpcResultListener;
 import org.slf4j.Logger;
@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by chentao on 2017/7/11 0011.
@@ -132,6 +133,7 @@ public class IpscServiceImpl implements IpscService {
                         }
                     }
             );
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
@@ -168,7 +170,7 @@ public class IpscServiceImpl implements IpscService {
      * @throws IOException
      */
     @Override
-    public int stopConference(String resId, String tokenName) throws IOException {
+    public int stopConference(String resId, String tokenName) throws IOException, InterruptedException {
         logger.info("结束会议resId:{}", resId);
         Log log = new Log(resId, OperResTypeEnum.CONFERENCE.ordinal(),
                 "sys.conf.release",
@@ -198,6 +200,7 @@ public class IpscServiceImpl implements IpscService {
                 logRepository.save(log);
             }
         });
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
@@ -238,11 +241,12 @@ public class IpscServiceImpl implements IpscService {
                         logRepository.save(log);
                     }
                 });
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
     @Override
-    public int startRecord(String conferenceId, String tokenName) throws IOException {
+    public int startRecord(String conferenceId, String tokenName) throws IOException, InterruptedException {
 
         SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
         if (sysSettingShow == null) {
@@ -278,11 +282,12 @@ public class IpscServiceImpl implements IpscService {
                 logRepository.save(log);
             }
         });
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
     @Override
-    public int stopRecord(String conferenceId, String tokenName) throws IOException {
+    public int stopRecord(String conferenceId, String tokenName) throws IOException, InterruptedException {
         Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.record_stop",
                 "停止录音", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
         IpscUtil.stopRecord(conferenceId, new RpcResultListener() {
@@ -306,11 +311,12 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("会议{}结束录音超时", conferenceId);
             }
         });
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
     @Override
-    public int removeCallFromConf(String callId, String conferenceId, String tokenName) throws IOException {
+    public int removeCallFromConf(String callId, String conferenceId, String tokenName) throws IOException, InterruptedException {
         logger.info("从会议 {} 移除呼叫{}", callId, conferenceId);
         Log log = new Log(callId, OperResTypeEnum.CALL.ordinal(), "sys.call.conf_exit",
                 "退出会议", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
@@ -333,11 +339,12 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("离开会议超时，confId={},callId={}", conferenceId, callId);
             }
         });
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
     @Override
-    public int changeCallMode(String callId, String conferenceId, int mode, String tokenName) throws IOException {
+    public int changeCallMode(String callId, String conferenceId, int mode, String tokenName) throws IOException, InterruptedException {
         logger.info("改变与会者声音模式，callId={},confId={},mode={}", callId, conferenceId, mode);
         Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.set_part_voice_mode",
                 "改变与会者的声音收放模式", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
@@ -362,11 +369,12 @@ public class IpscServiceImpl implements IpscService {
                 logRepository.save(log);
             }
         });
+        TimeUnit.SECONDS.sleep(1);
         return log.getOperResult();
     }
 
     @Override
-    public List<ConferencePart> getConfParts(String confResId, String username) throws IOException {
+    public List<ConferencePart> getConfParts(String confResId, String username) throws IOException, InterruptedException {
         logger.info("获取会议{}与会者列表", confResId);
         Log log = new Log(confResId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.get_parts",
                 "获取会议与会者列表", username, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
@@ -378,13 +386,16 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("Object ={}", o);
                 String array = JSON.toJSONString(o);
                 logger.info("array = {}", array);
-                Iterator<Object> iterator = JSON.parseArray(array).iterator();
-                while (iterator.hasNext()) {
-                    JSONObject obj = (JSONObject) iterator.next();
-                    logger.info("obj = ", obj);
-//                    conferenceParts.add(new ConferencePart(obj));
+                JSONArray jsonArray = JSON.parseArray(array);
+                List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
+
+                for (PartData partData : partDatas) {
+                    ConferencePart part = new ConferencePart();
+                    part.setVoiceMode(partData.getVoice_mode());
+                    part.setConfId(partData.getRes_id());
+                    part.setPhone(partData.getUser_data());
+                    conferenceParts.add(part);
                 }
-                logger.info(array.toString());
                 logRepository.save(log);
             }
 
@@ -402,8 +413,47 @@ public class IpscServiceImpl implements IpscService {
                 logRepository.save(log);
             }
         });
+        TimeUnit.SECONDS.sleep(1);
         return conferenceParts;
     }
 
 
+    private static class PartData{
+        private Integer voice_mode;
+        private String res_id;
+        private Integer chan;
+        private String user_data;
+
+        public Integer getVoice_mode() {
+            return voice_mode;
+        }
+
+        public void setVoice_mode(Integer voice_mode) {
+            this.voice_mode = voice_mode;
+        }
+
+        public String getRes_id() {
+            return res_id;
+        }
+
+        public void setRes_id(String res_id) {
+            this.res_id = res_id;
+        }
+
+        public Integer getChan() {
+            return chan;
+        }
+
+        public void setChan(Integer chan) {
+            this.chan = chan;
+        }
+
+        public String getUser_data() {
+            return user_data;
+        }
+
+        public void setUser_data(String user_data) {
+            this.user_data = user_data;
+        }
+    }
 }

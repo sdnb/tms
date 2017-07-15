@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by chentao on 2017/7/14 0014.
@@ -140,12 +139,11 @@ public class IpscUtil {
 
 
     public static void callOut(List<String> phones, String ip, RpcResultListener listener) throws IOException, InterruptedException {
-
-        phones = phones.stream().map(e -> e+"@"+ip).collect(Collectors.toList());
         for (String te : phones) {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("to_uri", te); /// 被叫号码的 SIP URI
+            params.put("to_uri", te+"@"+ip); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
+            params.put("user_data", te); /// 该呼叫最长通话允许时间
             commander.createResource(
                     busAddress,
                     "sys.call",
