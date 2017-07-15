@@ -81,10 +81,13 @@ public class IpscServiceImpl implements IpscService {
         params.put("max_seconds", Constants.MAX_CONF_SECONDS); /// 会议最长时间，这是必填参数
         if (conferenceStartShow.isRecordEnable()) {
             SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
+            logger.info("sysSettingShow {}", sysSettingShow);
             if (sysSettingShow != null) {
                 String recordPath = sysSettingShow.getRecordingPath();
-                logger.info("录音文件存放路径：" + recordPath);
-                params.put("record_file", recordPath); /// 会议录音存放路径
+                logger.info("录音文件存放目录：{}", recordPath);
+                String fileName = CommonUtils.getRecordFileName(recordPath);
+                logger.info("录音文件名 {}", fileName);
+                params.put("record_file", fileName); /// 会议录音存放路径
             } else {
                 throw new ServiceException("请设置录音存放路径");
             }
