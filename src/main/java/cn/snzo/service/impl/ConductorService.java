@@ -8,7 +8,6 @@ import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.service.IAccountService;
 import cn.snzo.service.IConductorService;
-import cn.snzo.utils.BeanUtil;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.AccountShow;
 import cn.snzo.vo.ConductorShow;
@@ -128,9 +127,7 @@ public class ConductorService implements IConductorService {
     public ConductorShow getOne(Integer conductorId) {
         Conductor conductor = conductorRepository.getOne(conductorId);
         if (conductor != null) {
-            ConductorShow conductorShow = new ConductorShow();
-            BeanUtil.entityToShow(conductor, conductorShow);
-            return conductorShow;
+            return new ConductorShow(conductor);
         }
         return null;
     }
