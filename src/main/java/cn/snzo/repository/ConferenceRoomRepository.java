@@ -6,12 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/6/30 0030.
  */
 @Repository
+@Transactional
 public interface ConferenceRoomRepository extends CrudRepository<ConferenceRoom, Integer> {
     ConferenceRoom findByIvrPassword(String ivr);
 
@@ -35,7 +37,7 @@ public interface ConferenceRoomRepository extends CrudRepository<ConferenceRoom,
 
     List<ConferenceRoom> findByConductorId(int id);
 
-    @Query("update ConferenceRoom  set status = ?2 where id= ?1")
+    @Query("update ConferenceRoom  set isInUse = ?2 where id= ?1")
     @Modifying
     int updateStatus(Integer roomId, int status);
 }
