@@ -8,8 +8,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2017/6/29 0029.
@@ -52,9 +51,7 @@ public class CommonUtils {
 
 
     public static String getRecordFileName(String path) {
-        LocalTime localTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.FORMATE_yyyyMMddHHmmss);
-        String recordName = path + localTime.format(formatter) + RandomUtils.getRandomNum(4);
+        String recordName = path + DateUtil.format(new Date(), Constants.FORMATE_yyyyMMddHHmmss);
         return recordName + Constants.RECORD_FILE_SUFFIX;
     }
 
