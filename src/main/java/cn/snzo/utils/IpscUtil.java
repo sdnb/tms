@@ -1,9 +1,14 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
+import cn.snzo.entity.Conference;
+import cn.snzo.repository.ConferenceRepository;
+import cn.snzo.repository.ConferenceRoomRepository;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,7 +19,16 @@ import java.util.stream.Collectors;
 /**
  * Created by chentao on 2017/7/14 0014.
  */
+@Service
 public class IpscUtil {
+
+    @Autowired
+    private static ConferenceRepository conferenceRepository;
+
+
+    @Autowired
+    private static ConferenceRoomRepository conferenceRoomRepository;
+
     private static Logger logger = LoggerFactory.getLogger(IpscUtil.class);
 
     public static final String VOIP = "10.1.2.152";
@@ -96,6 +110,11 @@ public class IpscUtil {
                             String confId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
                                 logger.warn("会议 {} 已经释放", confId);
+                                Conference conference = conferenceRepository.findByResId(confId);
+                                if (conference != null) {
+                                    int roomId = conference.getRoomId();
+                                    conferenceRoomRepository.updateStatus(roomId, 0);
+                                }
 //                                if (confId.equals(conferenceId)) {
 //                                    conferenceId = "";
 //                                }

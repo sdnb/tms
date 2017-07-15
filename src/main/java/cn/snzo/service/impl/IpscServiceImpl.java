@@ -77,7 +77,6 @@ public class IpscServiceImpl implements IpscService {
         logger.info("参数：{}", conferenceStartShow);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("max_seconds", Constants.MAX_CONF_SECONDS); /// 会议最长时间，这是必填参数
-
         if (conferenceStartShow.isRecordEnable()) {
             SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
             if (sysSettingShow != null) {
@@ -97,6 +96,7 @@ public class IpscServiceImpl implements IpscService {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
+                            @SuppressWarnings("unchecked")
                             Map<String, Object> result       = (Map<String, Object>) o;
                             String              conferenceId = (String) result.get("res_id");
                             logger.info(">>>>>>会议资源建立成功：confId={}", conferenceId);
