@@ -35,7 +35,7 @@ public interface ConferenceRoomRepository extends CrudRepository<ConferenceRoom,
 
     List<ConferenceRoom> findByConductorId(int id);
 
-    @Query("update ConferenceRoom c set status = ?2 where id= ?1")
+    @Query("update ConferenceRoom  set status = ?2 where id= ?1")
     @Modifying
     int updateStatus(Integer roomId, int status);
 }
