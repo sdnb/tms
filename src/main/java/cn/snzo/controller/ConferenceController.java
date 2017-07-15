@@ -48,15 +48,15 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.startConference(conferenceStartShow, username);
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("会议发起成功");
-            } else if (code == 1) {
-                return failureRes("会议发起错误");
             } else if (code == 2) {
+                return failureRes("会议发起错误");
+            } else if (code == 3) {
                 return failureRes("会议发起超时");
-            } else if (code == 3){
-                return failureRes("会议室不存在");
             } else if (code == 4){
+                return failureRes("会议室不存在");
+            } else if (code == 5){
                 return failureRes("会议室在使用中");
             } else {
                 return failureRes("会议发起失败");
@@ -111,11 +111,11 @@ public class ConferenceController extends BaseController {
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.addCallToConf(addCallShow.getPhones(), addCallShow.getConfResId(), username);
 
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("添加呼叫成功");
-            } else if (code == 1) {
-                return failureRes("添加呼叫错误");
             } else if (code == 2) {
+                return failureRes("添加呼叫错误");
+            } else if (code == 3) {
                 return failureRes("添加呼叫超时");
             } else {
                 return failureRes("添加呼叫失败");
@@ -146,11 +146,11 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.changeCallMode(callId, confResId, mode, username);
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("改变成功");
-            } else if (code == 1) {
-                return failureRes("改变错误");
             } else if (code == 2) {
+                return failureRes("改变错误");
+            } else if (code == 3) {
                 return failureRes("改变超时");
             } else {
                 return failureRes("改变失败");
@@ -178,11 +178,11 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.removeCallFromConf(callId, confResId, username);
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("退出成功");
-            } else if (code == 1) {
-                return failureRes("退出错误");
             } else if (code == 2) {
+                return failureRes("退出错误");
+            } else if (code == 3) {
                 return failureRes("退出超时");
             } else {
                 return failureRes("退出失败");
@@ -208,13 +208,13 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.startRecord(confResId, username);
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("开始录音");
-            } else if (code == 1) {
-                return failureRes("开始录音错误");
             } else if (code == 2) {
-                return failureRes("开始录音超时");
+                return failureRes("开始录音错误");
             } else if (code == 3) {
+                return failureRes("开始录音超时");
+            } else if (code == 4) {
                 return failureRes("请设置录音文件存储地址");
             } else {
                 return failureRes("开始录音失败");
@@ -240,11 +240,11 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
            int code = ipscService.stopRecord(confResId, username);
-            if (code == 0) {
+            if (code == 1) {
                 return successRes("停止录音");
-            } else if (code == 1) {
-                return failureRes("停止录音错误");
             } else if (code == 2) {
+                return failureRes("停止录音错误");
+            } else if (code == 3) {
                 return failureRes("停止录音超时");
             } else {
                 return failureRes("停止录音失败");
