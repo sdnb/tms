@@ -15,7 +15,6 @@ import cn.snzo.utils.CommonUtils;
 import cn.snzo.utils.IpscUtil;
 import cn.snzo.vo.*;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hesong.ipsc.ccf.RpcError;
 import com.hesong.ipsc.ccf.RpcResultListener;
@@ -377,9 +376,10 @@ public class IpscServiceImpl implements IpscService {
             @Override
             protected void onResult(Object o) {
                 logger.info("获取与会者列表返回结果：{}", o.toString());
-                JSONArray array = JSON.parseArray(o.toString());
-                Iterator<Object> iterator = array.iterator();
-
+                logger.info("Object ={}", o);
+                String array = JSON.toJSONString(o);
+                logger.info("array = {}", array);
+                Iterator<Object> iterator = JSON.parseArray(array).iterator();
                 while (iterator.hasNext()) {
                     JSONObject obj = (JSONObject) iterator.next();
                     logger.info("obj = ", obj);
