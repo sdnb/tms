@@ -1,6 +1,7 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.Constants;
+import cn.snzo.entity.Conductor;
 import cn.snzo.entity.Conference;
 import cn.snzo.entity.Log;
 import cn.snzo.exception.ServiceException;
@@ -148,9 +149,9 @@ public class IpscServiceImpl implements IpscService {
             //将会议室设置为使用中
             conferenceRoomService.modifyStatus(conferenceStartShow.getRoomId(), 1);
         }
-        ConductorShow conductorShow = conductorService.getOne(conferenceStartShow.getConductorId());
-        if (conductorShow != null) {
-            conference.setConductorName(conductorShow.getUsername());
+        Conductor conductor = conductorService.getOne(conferenceStartShow.getConductorId());
+        if (conductor != null) {
+            conference.setConductorName(conductor.getUsername());
         }
         conference.setStartAt(new Date());
         conference.setEndAt(new Date());

@@ -1,5 +1,6 @@
 package cn.snzo.service;
 
+import cn.snzo.entity.Conductor;
 import cn.snzo.vo.ConductorShow;
 import org.springframework.data.domain.Page;
 
@@ -16,5 +17,5 @@ public interface IConductorService {
 
     int modify(int id, ConductorShow conductorShow);
 
-    ConductorShow getOne(Integer conductorId);
+    Conductor getOne(Integer conductorId);
 }

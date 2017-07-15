@@ -1,5 +1,7 @@
 package cn.snzo.controller;
 
+import cn.snzo.entity.Conductor;
+import cn.snzo.repository.ConductorRepository;
 import cn.snzo.service.IConductorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +15,12 @@ public class TestController {
 
     @Autowired
     private IConductorService conductorService;
+
+    @Autowired
+    private ConductorRepository conductorRepository;
     @RequestMapping("/hwe")
     public String twe(){
-        conductorService.getOne(1);
-        return "Hwe";
+        Conductor conductor = conductorRepository.findOne(1);
+        return conductorService.getOne(1).toString();
     }
 }

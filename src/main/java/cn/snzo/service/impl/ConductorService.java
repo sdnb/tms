@@ -52,8 +52,11 @@ public class ConductorService implements IConductorService {
         if (conductor != null) {
             return 3;
         }
-        accountService.add(accountShow);
+        AccountShow show = accountService.add(accountShow);
         conductor = new Conductor(conductorShow);
+        if (show != null) {
+            conductor.setAccountId(show.getId());
+        }
         conductorRepository.save(conductor);
         return 1;
     }
@@ -124,12 +127,9 @@ public class ConductorService implements IConductorService {
     }
 
     @Override
-    public ConductorShow getOne(Integer conductorId) {
-        Conductor conductor = conductorRepository.getOne(conductorId);
-        if (conductor != null) {
-            return new ConductorShow(conductor);
-        }
-        return null;
+    public Conductor getOne(Integer conductorId) {
+        Conductor conductor = conductorRepository.findOne(conductorId);
+        return conductor;
     }
 
 }
