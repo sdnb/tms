@@ -275,13 +275,15 @@ public class ConferenceController extends BaseController {
     public ObjectResult getParts(@RequestParam(value = "confResId", required = true) String confResId,
                                  @RequestParam(value = "currentPage", required = false) Integer currentPage,
                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                  @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token) {
+                                  @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token,
+                                 HttpServletResponse response) {
 
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             Page<ConferencePart> parts = ipscService.getConfParts(confResId, username, currentPage, pageSize);
-            return successRes(parts);
+            CommonUtils.setResponseHeaders(parts.getTotalElements(), parts.getTotalPages(), parts.getNumber(), response);
+            return successRes(parts.getContent());
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {

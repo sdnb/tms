@@ -195,7 +195,7 @@ public class IpscUtil {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
-            params.put("user_data", te+"-"+te.getName()); /// 该呼叫最长通话允许时间
+            params.put("user_data", te.getPhone()+"-"+te.getName()); ///用户信息
             commander.createResource(
                     busAddress,
                     "sys.call",
