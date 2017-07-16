@@ -74,7 +74,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             });
         };
 
-        $scope.watch('contactPageObject.currentPage',function(){
+        $scope.$watch('contactPageObject.currentPage',function(){
             if(_this.conductor){
                 _this.getContacts();
             }
