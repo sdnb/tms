@@ -1,7 +1,6 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
-import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.service.IContactService;
@@ -128,16 +127,12 @@ public class ContactController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/contact/conf", method = RequestMethod.GET)
-    public ObjectResult getContacts(@CookieValue(Constants.STAFF_TOKEN) String token,
+    public ObjectResult getContacts(@RequestParam(value = "uid", required = true)Integer uid,
                                     @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                     @RequestParam(value = "pageSize", required = false)Integer pageSize,
                                     HttpServletResponse response) {
         try {
-            LoginInfo loginInfo = tokenService.loadToken(token);
-            if (loginInfo == null) {
-                return new ObjectResult("false", "cookie失效，请重新登录");
-            }
-            Page<ContactShow> page = contactService.findContactByCurrUser(loginInfo.getId(), currentPage, pageSize);
+            Page<ContactShow> page = contactService.findContactByCurrUser(uid, currentPage, pageSize);
             CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
             return new ObjectResult("true", page.getContent());
         } catch (Exception e) {

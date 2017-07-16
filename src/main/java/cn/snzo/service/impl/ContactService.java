@@ -1,9 +1,12 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.CommonRepository;
+import cn.snzo.entity.Conductor;
 import cn.snzo.entity.Contact;
 import cn.snzo.entity.ContactGroupRelative;
 import cn.snzo.exception.ServiceException;
+import cn.snzo.repository.AccountRepository;
+import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ContactGroupRelativeRepository;
 import cn.snzo.repository.ContactRepository;
 import cn.snzo.service.IContactService;
@@ -12,6 +15,7 @@ import cn.snzo.utils.ExcelUtils;
 import cn.snzo.vo.ContactShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +44,16 @@ public class ContactService implements IContactService {
     @Autowired
     private ContactGroupRelativeRepository contactGroupRelativeRepository;
 
+    @Autowired
+    private ConductorRepository       conductorRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
     @Override
     public Page<ContactShow> getPage(Integer groupId, Integer bookId, String name, String phone,
                                      Integer bookType, Boolean addSysBook, Integer currentPage, Integer pageSize) {
-        Pageable p = CommonUtils.createPage(currentPage, pageSize);
+        Pageable            p      = CommonUtils.createPage(currentPage, pageSize);
         Map<String, Object> params = new HashMap<>();
         params.put("name", CommonUtils.fuzzyString(name));
         params.put("phone", CommonUtils.fuzzyString(phone));
@@ -60,7 +70,7 @@ public class ContactService implements IContactService {
                 " where (:groupId is null or cg.group_id = :groupId) and" +
                 " (:bookId is null or c.book_id = :bookId) and" +
                 " (:name is null or c.name like :name) and" +
-                " (:phone is null or c.phone like :phone) and "+
+                " (:phone is null or c.phone like :phone) and " +
                 " (:bookType is null or pb.type = :bookType) ";
 
 
@@ -201,12 +211,18 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public Page<ContactShow> findContactByCurrUser(int uid, Integer currentPage, Integer pageSize) {
+    public Page<ContactShow> findContactByCurrUser(Integer uid, Integer currentPage, Integer pageSize) {
         Pageable p = CommonUtils.createPage(currentPage, pageSize);
         Map<String, Object> params = new HashMap<>();
-        params.put("uid", uid);
-
-
+//        Account account = accountRepository.findOne(uid);
+//        if (account == null) {
+//            return new PageImpl<ContactShow>(new ArrayList<>(), p, 0);
+//        }
+        Conductor conductor = conductorRepository.findByAccountid(uid);
+        if (conductor == null) {
+            return new PageImpl<ContactShow>(new ArrayList<>(), p, 0);
+        }
+        params.put("conId", conductor.getId());
         String pageSql = "select c.* " +
                 " FROM" +
                 "  t_contact c" +
@@ -214,7 +230,7 @@ public class ContactService implements IContactService {
                 "  inner JOIN t_conference_room cr ON cr.id = pb.room_id" +
                 "  INNER JOIN t_conductor cd ON cd.id = cr.conductor_id" +
                 " WHERE" +
-                "  cd.id = :uid" +
+                "  cd.id = :conId" +
                 " UNION" +
                 " SELECT" +
                 "  c.* " +
@@ -231,7 +247,7 @@ public class ContactService implements IContactService {
                 "  inner JOIN t_conference_room cr on cr.id = pb.room_id" +
                 "  INNER JOIN t_conductor cd ON cd.id = cr.conductor_id" +
                 " WHERE" +
-                "  cd.id = :uid" +
+                "  cd.id = :conId" +
                 " UNION" +
                 " SELECT" +
                 "  c.*" +

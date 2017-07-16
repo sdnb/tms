@@ -54,9 +54,8 @@ public class ConductorService implements IConductorService {
         }
         AccountShow show = accountService.add(accountShow);
         conductor = new Conductor(conductorShow);
-        if (show != null) {
-            conductor.setAccountId(show.getId());
-        }
+        conductor.setAccountId(show.getId());
+
         conductorRepository.save(conductor);
         return 1;
     }

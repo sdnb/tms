@@ -75,5 +75,5 @@ public interface IContactService {
      */
     int importFromExcel(MultipartFile file, int bookId) throws IOException;
 
-    Page<ContactShow> findContactByCurrUser(int uid, Integer currentPage, Integer pageSize);
+    Page<ContactShow> findContactByCurrUser(Integer uid, Integer currentPage, Integer pageSize);
 }

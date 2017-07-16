@@ -18,4 +18,7 @@ public interface ConductorRepository extends JpaRepository<Conductor, Integer> {
     @Query("select c from Conductor c where (?1 is null or c.realname like ?1)" +
             " and (?2 is null or c.phone like ?2)")
     Page<Conductor> findPage(String name, String phone, Pageable pageable);
+
+    @Query(value = "select c.* from t_conductor c left join t_account a on a.id=c.account_id where a.id=?1", nativeQuery = true)
+    Conductor findByAccountid(Integer uid);
 }
