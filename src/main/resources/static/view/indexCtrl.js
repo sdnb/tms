@@ -21,6 +21,10 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
             this.getLoginUser();
         }
 
+        $rootScope.$on('$locationChangeSuccess', function (e) {
+            $rootScope.path = $location.path();
+        });
+
         //监控浏览器地址栏变化，如果变化刷新页面。解决点击浏览器的回退，前进按钮页面不刷新的问题
         $rootScope.$watch(function () {return $location.path()}, function (newLocation, oldLocation) {
             if($rootScope.path === newLocation) {

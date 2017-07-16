@@ -64,9 +64,9 @@
             </div>
 
             <div class="fenye2">
-                <a href=""><img src="images/arrow-l.png" /></a>
-                <a href="" style="color: #000">1</a> <a href="">2</a> <a href="">3</a> <a href="">4</a> <a href="">5</a>
-                <a href=""><img src="images/arrow-r.png" /></a>
+                <a href=""><img src="images/arrow-l.png" ng-click="hy.changePage('prev')"/></a>
+                <a href="" ng-repeat="page in contactPageObject.pages" ng-bind="page" ng-class="{cur3:page==contactPageObject.currentPage}"></a>
+                <a href=""><img src="images/arrow-r.png" ng-click="hy.changePage('next')"/></a>
             </div>
 
             <a href="" class="btn-fqhy">发起会议</a>
