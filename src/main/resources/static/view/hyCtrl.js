@@ -85,11 +85,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             if(type == 'reload'){
                 $scope.contactPageObject.currentPage = 1;
             }
-            this.contractFilter.currentPage = $scope.contactPageObject.pageSize;
+            this.contractFilter.currentPage = $scope.contactPageObject.currentPage;
             this.contractFilter.pageSize = $scope.contactPageObject.pageSize;
             this.contractFilter.uid = this.conductor.id; //电话簿
             this.loading = true;
-            contactService.pageList(this.contractFilter,function(data,header){
+            contactService.getContacts(this.contractFilter,function(data,header){
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.contacts = data.message;
@@ -152,5 +152,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             console.log(this.checkedContacts);
         };
+
+
     });
 });
