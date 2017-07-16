@@ -196,6 +196,7 @@ public class IpscUtil {
             params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
             String name = te.getName();
+            logger.info("Name ={} ", name);
             String reencode = new String(name.getBytes("gbk"),"utf-8");
             logger.info("reEncode Name ={} ", reencode);
             params.put("user_data", te.getPhone()+"-"+ te.getPhone()); ///用户信息

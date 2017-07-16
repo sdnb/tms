@@ -521,7 +521,6 @@ public class IpscServiceImpl implements IpscService {
                         part.setPhone(strs[0]);
                         part.setName(strs[1]);
                     }
-                    part.setPhone(partData.getUser_data());
                     conferenceParts.add(part);
                 }
                 logRepository.save(log);
