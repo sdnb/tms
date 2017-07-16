@@ -65,7 +65,7 @@
 
             <div class="fenye2">
                 <a href=""><img src="images/arrow-l.png" ng-click="hy.changePage('prev')"/></a>
-                <a href="" ng-repeat="page in contactPageObject.pages" ng-bind="page" ng-class="{cur3:page==contactPageObject.currentPage}"></a>
+                <a href="" ng-repeat="page in contactPageObject.pages" ng-bind="page" ng-click="selectPage(page)" ng-class="{cur3:page==contactPageObject.currentPage}"></a>
                 <a href=""><img src="images/arrow-r.png" ng-click="hy.changePage('next')"/></a>
             </div>
 
@@ -106,4 +106,38 @@
 
     </div>
 
+    <div class="modalbg" ng-show="hy.message.show">
+        <div class="tishi">
+
+            <span class="lyClose" ng-click="hy.hideMessage()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="hy.message.text"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="hy.hideMessage()"><img src="images/qx.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="hy.hideMessage()"><img src="images/qr.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" ng-show="confirmDialogShow">
+        <div class="tishi">
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="confirmTips"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/qx.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/qr.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" style="text-align: center;" ng-show="dhb.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
+    </div>
 </div>
