@@ -2,7 +2,9 @@ package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
 import cn.snzo.entity.Conference;
+import cn.snzo.entity.Recording;
 import cn.snzo.repository.ConferenceRepository;
+import cn.snzo.repository.RecordingRepository;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,17 +27,26 @@ public class IpscUtil {
 
     private static ConferenceRepository conferenceRepository;
 
+
     @Autowired
-    public void setConferenceRepository(ConferenceRepository conferenceRepository){
+    public void setConferenceRepository(ConferenceRepository conferenceRepository) {
         this.conferenceRepository = conferenceRepository;
     }
+
+    private static RecordingRepository  recordingRepository;
+
+    @Autowired
+    public void setRecordingRepository(RecordingRepository recordingRepository) {
+        this.recordingRepository = recordingRepository;
+    }
+
     public static final String VOIP = "10.1.2.152";
 
     //    private static final String ipscIpAddr = "192.168.2.100"; /// IPSC 服务器的内网地址
-    private static final String              ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
-    private static final byte                localId     = 24;
-    private static final byte                commanderId = 10;
-    public static        Commander           commander   = null;
+    private static final String    ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
+    private static final byte      localId     = 24;
+    private static final byte      commanderId = 10;
+    public static        Commander commander   = null;
     public static        BusAddress          busAddress  = null;
     public static        Map<String, String> callConfMap = new HashMap<>();
 
@@ -113,6 +125,29 @@ public class IpscUtil {
                                 conferenceRepository.save(conference);
                             } else if (methodName.equals("on_record_completed")) {
                                 logger.warn("会议 {} 录音已结束", confId);
+                                String error = (String) rpcRequest.getParams().get("error");
+                                if (error == null) {
+                                    logger.warn("保存会议 {} 录音信息", confId);
+                                    Recording recording = new Recording();
+                                    Conference conference = conferenceRepository.findByResId(confId);
+                                    if (conference != null) {
+                                        recording.setConferenceId(conference.getId());
+                                        recording.setConferenceNo(conference.getResId());
+                                        String filename = (String) rpcRequest.getParams().get("record_file");
+                                        int index = filename.lastIndexOf("/");
+                                        if (index != -1) {
+                                            recording.setFilename(filename.substring(index));
+                                            recording.setFilePath(filename.substring(0, index));
+                                        }
+                                        Long start = (Long) rpcRequest.getParams().get("begin_time");
+                                        Long end = (Long) rpcRequest.getParams().get("end_time");
+                                        recording.setStartTime(new Date(start));
+                                        recording.setStartTime(new Date(end));
+                                        recording.setRoomId(conference.getRoomId());
+                                        recording.setRoomNo(conference.getRoomNo());
+                                        recordingRepository.save(recording);
+                                    }
+                                }
                             }
                         }
                     }

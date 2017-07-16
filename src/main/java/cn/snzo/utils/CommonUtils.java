@@ -52,7 +52,7 @@ public class CommonUtils {
 
     public static String getRecordFileName(String path) {
         String recordName = path + DateUtil.format(new Date(), Constants.FORMATE_yyyyMMddHHmmss);
-        return recordName + Constants.RECORD_FILE_SUFFIX;
+        return recordName + RandomUtils.getRandomNum(4) + Constants.RECORD_FILE_SUFFIX;
     }
 
 }
