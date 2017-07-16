@@ -29,6 +29,7 @@ public class ConferenceService implements IConferenceService {
     public Page<ConferenceShow> findPage(Integer id, Integer roomId, Integer status, Integer conductorId, String confResId, Integer currentPage, Integer pageSize) {
         Pageable p = PageUtil.createPage(currentPage, pageSize);
         confResId = CommonUtils.fuzzyString(confResId);
+
         Page<Conference> conferences = conferenceRepository.findPage(id, roomId, status, conductorId, confResId, p);
         List<Conference> conferencesList = conferences.getContent();
         List<ConferenceShow> conferencesShowList = new ArrayList<>();

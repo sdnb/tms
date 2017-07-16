@@ -88,6 +88,11 @@ public class ContactController extends BaseController {
     /**
      * 分页查联系人
      * @param name
+     * @param phone
+     * @param bookId
+     * @param addSysBookId
+     * @param bookType
+     * @param groupId
      * @param currentPage
      * @param pageSize
      * @param response
@@ -97,16 +102,32 @@ public class ContactController extends BaseController {
     public ObjectResult getContacts( @RequestParam(value = "name", required = false)String name,
                                      @RequestParam(value = "phone", required = false)String phone,
                                      @RequestParam(value = "bookId", required = false)Integer bookId,
+                                     @RequestParam(value = "sysBookId", required = false)Boolean addSysBookId,
                                      @RequestParam(value = "bookType", required = false)Integer bookType,
                                      @RequestParam(value = "groupId", required = false)Integer groupId,
                                      @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                      @RequestParam(value = "pageSize", required = false)Integer pageSize,
                                      HttpServletResponse response) {
-        Page<ContactShow> page = contactService.getPage( groupId, bookId, name, phone, bookType, currentPage, pageSize);
+        Page<ContactShow> page = contactService.getPage( groupId, bookId, name, phone, bookType, addSysBookId, currentPage, pageSize);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
         return new ObjectResult("true", page.getContent());
     }
 
+
+//    /**
+//     * 分页查联系人
+//     * @param name
+//     * @param currentPage
+//     * @param pageSize
+//     * @param response
+//     * @return
+//     */
+//    @RequestMapping(value = "/contact/{roomId}", method = RequestMethod.GET)
+//    public ObjectResult getContacts() {
+//        Page<ContactShow> page = contactService.findAllToConference( groupId, bookId, name, phone, bookType, currentPage, pageSize);
+//        CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
+//        return new ObjectResult("true", page.getContent());
+//    }
 
     /**
      * 新增联系人

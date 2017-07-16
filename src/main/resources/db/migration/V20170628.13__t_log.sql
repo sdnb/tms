@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS t_log (
   id                 INT(11)          UNSIGNED      AUTO_INCREMENT,
-  oper_res_id        VARCHAR(50)                    COMMENT '操作资源id',
+  oper_res_id        VARCHAR(200)                   COMMENT '操作资源id',
   oper_res_type      INT(1)           UNSIGNED      COMMENT '操作资源类型 1 会议 2 呼叫',
   oper_type          INT(1)           UNSIGNED      COMMENT '操作类型 1 创建 2 操作 3 事件',
   oper_method_id     VARCHAR(100)                   COMMENT '操作资源方法id',

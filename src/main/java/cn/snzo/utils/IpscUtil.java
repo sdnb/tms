@@ -1,30 +1,52 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
+import cn.snzo.entity.Conference;
+import cn.snzo.entity.Recording;
+import cn.snzo.repository.ConferenceRepository;
+import cn.snzo.repository.RecordingRepository;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by chentao on 2017/7/14 0014.
  */
+@Component
 public class IpscUtil {
 
     private static Logger logger = LoggerFactory.getLogger(IpscUtil.class);
 
+    private static ConferenceRepository conferenceRepository;
+
+
+    @Autowired
+    public void setConferenceRepository(ConferenceRepository conferenceRepository) {
+        this.conferenceRepository = conferenceRepository;
+    }
+
+    private static RecordingRepository  recordingRepository;
+
+    @Autowired
+    public void setRecordingRepository(RecordingRepository recordingRepository) {
+        this.recordingRepository = recordingRepository;
+    }
+
     public static final String VOIP = "10.1.2.152";
 
     //    private static final String ipscIpAddr = "192.168.2.100"; /// IPSC 服务器的内网地址
-    private static final String              ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
-    private static final byte                localId     = 24;
-    private static final byte                commanderId = 10;
-    public static        Commander           commander   = null;
+    private static final String    ipscIpAddr  = "127.0.0.1"; /// IPSC 服务器的内网地址
+    private static final byte      localId     = 24;
+    private static final byte      commanderId = 10;
+    public static        Commander commander   = null;
     public static        BusAddress          busAddress  = null;
     public static        Map<String, String> callConfMap = new HashMap<>();
 
@@ -50,7 +72,7 @@ public class IpscUtil {
             }
         });
 
-        Thread.sleep(5000);
+        Thread.sleep(10000);
         //创建commander
         logger.info("初始化commander");
         createCommander();
@@ -62,7 +84,7 @@ public class IpscUtil {
         commander = Unit.createCommander(
                 commanderId,
                 ipscIpAddr,
-                /// 事件监听器
+                // 事件监听器
                 new RpcEventListener() {
                     public void onEvent(BusAddress busAddress, RpcRequest rpcRequest) {
                         String fullMethodName = rpcRequest.getMethod();
@@ -96,8 +118,36 @@ public class IpscUtil {
                             String confId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
                                 logger.warn("会议 {} 已经释放", confId);
+
+                                //修改为已结束状态
+                                Conference conference = conferenceRepository.findByResId(confId);
+                                conference.setStatus(2);
+                                conferenceRepository.save(conference);
                             } else if (methodName.equals("on_record_completed")) {
                                 logger.warn("会议 {} 录音已结束", confId);
+                                String error = (String) rpcRequest.getParams().get("error");
+                                if (error == null) {
+                                    logger.warn("保存会议 {} 录音信息", confId);
+                                    Recording recording = new Recording();
+                                    Conference conference = conferenceRepository.findByResId(confId);
+                                    if (conference != null) {
+                                        recording.setConferenceId(conference.getId());
+                                        recording.setConferenceNo(conference.getResId());
+                                        String filename = (String) rpcRequest.getParams().get("record_file");
+                                        int index = filename.lastIndexOf("/");
+                                        if (index != -1) {
+                                            recording.setFilename(filename.substring(index+1));
+                                            recording.setFilePath(filename.substring(0, index));
+                                        }
+                                        Integer start = (Integer) rpcRequest.getParams().get("begin_time");
+                                        Integer end = (Integer) rpcRequest.getParams().get("end_time");
+                                        recording.setStartTime(new Date(start));
+                                        recording.setStartTime(new Date(end));
+                                        recording.setRoomId(conference.getRoomId());
+                                        recording.setRoomNo(conference.getRoomNo());
+                                        recordingRepository.save(recording);
+                                    }
+                                }
                             }
                         }
                     }
@@ -140,12 +190,11 @@ public class IpscUtil {
 
 
     public static void callOut(List<String> phones, String ip, RpcResultListener listener) throws IOException, InterruptedException {
-
-        phones = phones.stream().map(e -> e+"@"+ip).collect(Collectors.toList());
         for (String te : phones) {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("to_uri", te); /// 被叫号码的 SIP URI
+            params.put("to_uri", te+"@"+ip); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
+            params.put("user_data", te); /// 该呼叫最长通话允许时间
             commander.createResource(
                     busAddress,
                     "sys.call",
@@ -265,5 +314,36 @@ public class IpscUtil {
         } else {
             logger.info("commander客户端 未初始化");
         }
+    }
+
+    public static void checkConf(String confResId, RpcResultListener listener) throws IOException {
+        if (commander == null) {
+            logger.info("commander客户端 未初始化");
+            return;
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_id", confResId);
+        commander.operateResource(
+                busAddress,
+                confResId,
+                "sys.conf.exists",
+                params,
+                listener);
+
+    }
+
+    public static void checkCall(String callId, RpcResultListener listener) throws IOException {
+        if (commander == null) {
+            logger.info("commander客户端 未初始化");
+            return;
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_id", callId);
+        commander.operateResource(
+                busAddress,
+                callId,
+                "sys.call.exists",
+                params,
+                listener);
     }
 }
