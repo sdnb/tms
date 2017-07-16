@@ -7,7 +7,7 @@
             <span>主持人电话：</span>
             <div class="zcchwbk" style="background: #fff url(images/select.png) no-repeat right 10px center;">
                 <input type="text" placeholder="手机号/固定电话" style="z-index: 2; position: relative;" />
-                <select ng-model="hy.conductor" ng-options="conductor in conductors" ng-change="hy.selectConductor(conductor)" ng-disabled="loginUser.username!='admin'">
+                <select ng-model="hy.conductor" ng-options="conductor in hy.conductors" ng-change="hy.selectConductor(conductor)" ng-disabled="loginUser.username!='admin'">
                     <option value="">请选择</option>
                 </select>
             </div>
