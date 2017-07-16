@@ -50,6 +50,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         this.contractFilter = {};
         this.contracts = [];
+        this.checkedContacts = [];
         this.getContacts = function(type){
             if(type == 'reload'){
                 $scope.contactPageObject.currentPage = 1;
@@ -67,6 +68,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     for(var i=1;i<=$scope.contactPageObject.totalPage;i++){
                         $scope.contactPageObject.pages.push(i);
                     }
+                    angular.forEach(_this.contacts,function(contact){
+                        contact.isChecked = false;
+                        if(_this.checkedContacts.indexOf(contact) != -1)
+                            contact.isChecked = true;
+                    });
                 }else{
                     _this.contracts = [];
                     console.log(data);
@@ -101,5 +107,18 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             $scope.upLimit = parseInt(_page / $scope.contactPageObject.length) * $scope.contactPageObject.length;
             $scope.downLimit = (parseInt(_page / $scope.contactPageObject.length) + 1) * $scope.contactPageObject.length + 1;
         };
+
+        this.selectContact = function(contact){
+            if(contact.isChecked){
+                if(this.checkedContacts.indexOf(contact) == -1){
+                    this.checkedContacts.push(contact);
+                }
+            }else{
+                if(this.checkedContacts.indexOf(contact) != -1){
+                    this.checkedContacts.splice(this.checkedContacts.indexOf(contact),1);
+                }
+            }
+            console.log(this.checkedContacts);
+        }
     });
 });
