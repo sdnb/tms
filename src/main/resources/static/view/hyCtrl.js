@@ -232,6 +232,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             this.conferenceFilter.currentPage = $scope.conferencePageObject.currentPage;
             this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
+            this.conferenceFilter.confId = this.conference.resId;
+            if(!this.conferenceFilter.confId)return;
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
                     _this.members = data.message;
