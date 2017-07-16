@@ -39,6 +39,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }else{ //非主持人直接获取联系人
                         this.conductor = {};
                         this.conductor.id = $scope.loginUser.conductorId;
+                        _this.getRooms(this.conductor.id);
                         _this.getContacts('reload');
                     }
                 }else{
@@ -54,8 +55,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conductorService.pageList({currentPage:1,pageSize:6000},function(data,header){
                 if(data.status == 'true'){
                     _this.conductors = data.message;
-					console.log(_this.conductors);
                     _this.conductor = _this.conductors[0];
+                    _this.getRooms(_this.conductor.id);
                     _this.getContacts('reload');
                 }else{
                     _this.conductors = [];
@@ -65,7 +66,23 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         this.selectConductor = function(conductor){
+            this.rooms = [];
+            this.getRooms(this.conductor.id);
             this.getContacts('reload');
+        };
+
+        //获取会议室
+        this.rooms =  [];
+        this.getRooms = function(conductorId){
+            if(!conductorId) return;
+            conferenceRoomService.getRoomByConductor(conductorId,function(data){
+                if(data.status == 'true'){
+                    _this.rooms = data.message;
+                }else{
+                    _this.rooms = [];
+                    console.log(data);
+                }
+            });
         };
 
         //获取联系人
@@ -153,7 +170,69 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             console.log(this.checkedContacts);
         };
 
-
         //发起会议
+        this.showRecord = false;
+        this.confirmAdd = function(){
+            if(this.checkedContacts.length == 0){
+                this.message.show = true;
+                this.message.text = '请选择联系人后再添加会议';
+                return;
+            }
+            this.showRecord = true;
+            this.conference = {};
+        };
+
+        this.selectRecord = function(operation){
+            if(operation == 'no'){
+                this.conference.isRecordEnable = false;
+            }else{
+                this.conference.isRecordEnable = true;
+            }
+            this.showRecord = false;
+            this.addConference();
+        };
+
+        this.addConference = function(){
+            this.conference.roomId = this.rooms[0].id;
+            this.conference.conductorId = this.conductor.id;
+            var phoneArray =  [];
+            this.checkedContacts.forEach(function(contact){
+                phoneArray.push(contact.phone);
+            });
+            this.conference.phones = phoneArray;
+            console.log(this.conference);
+            this.loading = true;
+            conferenceService.add(this.conference,function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                }else{
+                }
+            });
+        };
+
+
+        //定义确认弹出框提示问题
+        var confirmInfo = {"record":{tips:"是否对此次会议进行录音?"}};
+
+        //操作确认
+        $scope.confirmDialogShow = false;
+        $scope.confirmOper = function(type, obj){
+            _this.recording = obj;
+            $scope.confirmTips = "";
+            $scope.confirmTips = confirmInfo[type].tips;
+            $scope.confirmType = type;
+        };
+
+        $scope.cancelConfirm = function(){
+            $scope.confirmDialogShow = false;
+        };
+
+        //操作提交
+        $scope.confirmCommit = function(type){
+            $scope.cancelConfirm();
+            if(type == "delete"){
+                _this.deleteRecording();
+            }
+        };
     });
 });

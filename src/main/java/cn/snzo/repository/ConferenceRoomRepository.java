@@ -25,6 +25,11 @@ public interface ConferenceRoomRepository extends CrudRepository<ConferenceRoom,
             " and (:ivr is null or cr.ivr_password like :ivr)" +
             " and (:name is null or cr.conductor_name like :name)";
 
+    String findListByConductorId = "select cr.id, cr.number, cr.is_in_use, cr.is_record_enable, " +
+            " cr.ivr_password, cr.max_participant, cr.conductor_id, cr.conductor_name" +
+            " from t_conference_room cr " +
+            " where (:conductorId is null or cr.conductor_id like :conductorId)";
+
     String getCount = "select count(*)" +
             " from t_conference_room cr" +
             " where (:number is null or cr.number like :number)" +

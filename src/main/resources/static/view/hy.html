@@ -114,7 +114,21 @@
 
         </div>
     </div>
+    <div class="modalbg" ng-show="hy.showRecord">
+        <div class="luyin">
 
+            <span class="lyClose" ng-click="hy.selectRecord('no')"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen">是否对此次会议进行录音？</div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="hy.selectRecord('no')"><img src="images/no.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="hy.selectRecord('yes')"><img src="images/yes.png" /></a>
+            </div>
+
+        </div>
+    </div>
     <div class="modalbg" ng-show="confirmDialogShow">
         <div class="tishi">
             <span class="lyClose" ng-click="cancelConfirm()"></span>

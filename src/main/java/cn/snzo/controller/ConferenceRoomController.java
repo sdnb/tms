@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/1 0001.
@@ -78,6 +79,18 @@ public class ConferenceRoomController extends BaseController{
         return new ObjectResult("true", page.getContent());
     }
 
+    /**
+     *
+     * @param conductorId 主持人Id
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/conferenceRoom/conductor",method = RequestMethod.GET)
+    public ObjectResult getRoomByConductor(@RequestParam(value = "conductorId", required = false)Integer conductorId,
+                                HttpServletResponse response) {
+        List<ConferenceRoomShow> list = conferenceRoomService.findByConductorId(conductorId);
+        return new ObjectResult("true", list);
+    }
 
     /**
      * 修改会议室

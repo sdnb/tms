@@ -162,6 +162,16 @@ public class ConferenceRoomService implements IConferenceRoomService {
         return new PageImpl<>(conferenceRoomShows, pageable, count);
     }
 
+    @Override
+    public List<ConferenceRoomShow> findByConductorId(Integer conductorId) {
+        Map<String,Object> params = new HashMap<>();
+        params.put("conductorId", conductorId);
+        List<ConferenceRoomShow> conferenceRoomShows =
+                (List<ConferenceRoomShow>)commonRepository
+                    .queryResultToBeanList(ConferenceRoomRepository.findListByConductorId,params, ConferenceRoomShow.class);
+        return conferenceRoomShows;
+    }
+
 
     @Override
     public ConferenceRoomShow getOne(int roomId) {
