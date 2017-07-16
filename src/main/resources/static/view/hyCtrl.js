@@ -133,7 +133,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         $scope.$watch('contactPageObject.currentPage',function(){
-            if(_this.conductor){
+            if(_this.conductor != undefined && _this.conductor.id){
                 _this.getContacts();
             }
         });
@@ -232,8 +232,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             this.conferenceFilter.currentPage = $scope.conferencePageObject.currentPage;
             this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
-            this.conferenceFilter.confId = this.conference.resId;
-            if(!this.conferenceFilter.confId)return;
+            this.conferenceFilter.confResId = this.conference.resId;
+            if(!this.conferenceFilter.confResId)return;
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
                     _this.members = data.message;
@@ -249,7 +249,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             });
         };
         $scope.$watch('conferencePageObject.currentPage',function(){
-            if(_this.conference.resId){
+            if(_this.conference != undefined && _this.conference.resId){
                 _this.getMembers();
             }
         });
@@ -260,15 +260,19 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 if(data.status == 'true'){
                     _this.conferences = data.message;
                     _this.conference = _this.conferences[0];
-                    _this.getMembers();
+                    _this.getMembers('reload');
                 }else{
                     _this.conferences = [];
                 }
             });
         };
 
+        this.endConference = function(){
+            this.loading = true;
+        };
+
         //定义确认弹出框提示问题
-        var confirmInfo = {"record":{tips:"是否对此次会议进行录音?"}};
+        var confirmInfo = {"end":{tips:"是否对此次会议进行录音?"}};
 
         //操作确认
         $scope.confirmDialogShow = false;
