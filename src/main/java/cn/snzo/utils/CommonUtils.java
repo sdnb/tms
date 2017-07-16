@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -51,8 +52,10 @@ public class CommonUtils {
 
 
     public static String getRecordFileName(String path) {
-        String recordName = path + DateUtil.format(new Date(), Constants.FORMATE_yyyyMMddHHmmss);
-        return recordName + RandomUtils.getRandomNum(4) + Constants.RECORD_FILE_SUFFIX;
+        String recordName = DateUtil.format(new Date(), Constants.FORMATE_yyyyMMddHHmmss)
+                + RandomUtils.getRandomNum(4)
+                + Constants.RECORD_FILE_SUFFIX;
+        return path + File.separator + recordName;
     }
 
 }

@@ -140,10 +140,14 @@ public class IpscUtil {
                                             recording.setFilename(filename.substring(index+1));
                                             recording.setFilePath(filename.substring(0, index));
                                         }
-                                        Integer start = (Integer) rpcRequest.getParams().get("begin_time");
-                                        Integer end = (Integer) rpcRequest.getParams().get("end_time");
-                                        recording.setStartTime(new Date(start));
-                                        recording.setStartTime(new Date(end));
+
+                                        Object start = rpcRequest.getParams().get("begin_time");
+                                        Object end = rpcRequest.getParams().get("end_time");
+                                        logger.info("beginTime {}", start);
+                                        logger.info("endTime {}", end);
+                                        logger.info("class of start : {}", start.getClass());
+                                        recording.setStartTime(new Date((Integer)start));
+                                        recording.setStartTime(new Date((Integer)end));
                                         recording.setRoomId(conference.getRoomId());
                                         recording.setRoomNo(conference.getRoomNo());
                                         recordingRepository.save(recording);

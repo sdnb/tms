@@ -516,8 +516,6 @@ public class IpscServiceImpl implements IpscService {
                         part.setName("未知");
                     } else {
                         String[] strs = phoneName.split("-");
-                        logger.info("===============>>>>>>strs[0] {}", strs[0]);
-                        logger.info("===============>>>>>>strs[1] {}", strs[1]);
                         part.setPhone(strs[0]);
                         part.setName(strs[1]);
                     }
