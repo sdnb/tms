@@ -180,6 +180,13 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public int stopConference(String resId, String tokenName) throws IOException, InterruptedException {
         logger.info("结束会议resId:{}", resId);
+
+        //会议不存在
+        if (checkConfExist(resId) != 1) {
+            logger.info("会议 {} 不存在", resId);
+            return 4;
+        }
+
         Log log = new Log(resId, OperResTypeEnum.CONFERENCE.ordinal(),
                 "sys.conf.release",
                 "删除会议", tokenName, OperTypeEnum.OPERATE.ordinal(),
@@ -214,7 +221,7 @@ public class IpscServiceImpl implements IpscService {
             }
         });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(50);
         }
         return ret[0];
     }
@@ -225,6 +232,12 @@ public class IpscServiceImpl implements IpscService {
     public int addCallToConf(List<String> phones, String conferenceId, String tokenName) throws IOException, InterruptedException {
 //        SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
         logger.info("呼叫 {} 加入会议 {}", phones, conferenceId);
+
+        //会议不存在
+        if (checkConfExist(conferenceId) != 1) {
+            logger.info("会议 {} 不存在", conferenceId);
+            return 4;
+        }
         Log log = new Log("", OperResTypeEnum.CALL.ordinal(),
                 "sys.call.construct",
                 "创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal(),
@@ -260,7 +273,7 @@ public class IpscServiceImpl implements IpscService {
                     }
                 });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
         return ret[0];
     }
@@ -276,6 +289,12 @@ public class IpscServiceImpl implements IpscService {
         if (path == null || path.isEmpty()) {
             return 4;
         }
+
+        //会议不存在
+        if (checkConfExist(conferenceId) != 1) {
+            return 5;
+        }
+
         String filename = CommonUtils.getRecordFileName(path);
         Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(),
                 "sys.conf.record_start","开始录音",
@@ -307,7 +326,7 @@ public class IpscServiceImpl implements IpscService {
             }
         });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
         return ret[0];
     }
@@ -316,6 +335,11 @@ public class IpscServiceImpl implements IpscService {
     public int stopRecord(String conferenceId, String tokenName) throws IOException, InterruptedException {
         Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.record_stop",
                 "停止录音", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
+
+        //会议不存在
+        if (checkConfExist(conferenceId) != 1) {
+            return 4;
+        }
 
         int[] ret = new int[1];
         IpscUtil.stopRecord(conferenceId, new RpcResultListener() {
@@ -343,7 +367,7 @@ public class IpscServiceImpl implements IpscService {
             }
         });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
         return ret[0];
     }
@@ -353,6 +377,16 @@ public class IpscServiceImpl implements IpscService {
         logger.info("从会议 {} 移除呼叫{}", callId, conferenceId);
         Log log = new Log(callId, OperResTypeEnum.CALL.ordinal(), "sys.call.conf_exit",
                 "退出会议", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
+
+        //会议不存在
+        if (checkConfExist(conferenceId) != 1) {
+            return 4;
+        }
+
+        //呼叫不存在
+        if (checkCallExist(callId) != 1) {
+            return 5;
+        }
 
         int[] ret = new int[1];
         IpscUtil.exitConferece(conferenceId, callId, new RpcResultListener() {
@@ -379,7 +413,7 @@ public class IpscServiceImpl implements IpscService {
             }
         });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
         return ret[0];
     }
@@ -390,6 +424,15 @@ public class IpscServiceImpl implements IpscService {
         Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.set_part_voice_mode",
                 "改变与会者的声音收放模式", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
         int[] ret = new int[1];
+        //会议不存在
+        if (checkConfExist(conferenceId) != 1) {
+            return 4;
+        }
+
+        //呼叫不存在
+        if (checkCallExist(callId) != 1) {
+            return 5;
+        }
         IpscUtil.changePartMode(conferenceId, callId, mode, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
@@ -415,7 +458,7 @@ public class IpscServiceImpl implements IpscService {
             }
         });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
         return ret[0];
     }
@@ -426,7 +469,9 @@ public class IpscServiceImpl implements IpscService {
         Log log = new Log(confResId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.get_parts",
                 "获取会议与会者列表", username, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
         List<ConferencePart> conferenceParts = new ArrayList<ConferencePart>();
-
+        if (checkConfExist(confResId) != 1) {
+            return conferenceParts;
+        }
         int[] ret = new int[1];
         IpscUtil.getConfParts(confResId, new RpcResultListener() {
             @Override
@@ -435,7 +480,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("Object ={}", o);
                 String array = JSON.toJSONString(o);
                 logger.info("array = {}", array);
-                JSONArray jsonArray = JSON.parseArray(array);
+                JSONArray      jsonArray = JSON.parseArray(array);
                 List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
                 logger.info("PartDatas={}", partDatas);
                 for (PartData partData : partDatas) {
@@ -466,9 +511,68 @@ public class IpscServiceImpl implements IpscService {
             }
         });
         while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(10);
         }
         return conferenceParts;
+    }
+
+    @Override
+    public int checkConfExist(String confResId) throws InterruptedException, IOException {
+
+        int[] ret = new int[1];
+        IpscUtil.checkConf(confResId, new RpcResultListener() {
+            @Override
+            protected void onResult(Object o) {
+                logger.info("获取会议资源是否存在成功，结果：{}", o.toString());
+                ret[0] = 1;
+            }
+
+            @Override
+            protected void onError(RpcError rpcError) {
+                logger.info("会议资源是否存在错误：code {}, message {}", rpcError.getCode(), rpcError.getMessage());
+                ret[0] = 2;
+            }
+
+            @Override
+            protected void onTimeout() {
+                logger.info("会议资源是否存在超时");
+                ret[0] = 3;
+            }
+        });
+        while (ret[0] == 0) {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        return ret[0];
+    }
+
+
+    @Override
+    public int checkCallExist(String callId) throws InterruptedException, IOException {
+
+        int[] ret = new int[1];
+        IpscUtil.checkCall(callId, new RpcResultListener() {
+            @Override
+            protected void onResult(Object o) {
+                logger.info("获取呼叫资源是否存在成功，结果：{}", o.toString());
+                ret[0] = 1;
+            }
+
+            @Override
+            protected void onError(RpcError rpcError) {
+                logger.info("获取呼叫资源是否存在错误：code {}, message {}", rpcError.getCode(), rpcError.getMessage());
+                ret[0] = 2;
+            }
+
+            @Override
+            protected void onTimeout() {
+                logger.info("获取呼叫资源是否存在超时");
+                ret[0] = 3;
+            }
+        });
+        while (ret[0] == 0) {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        return ret[0];
     }
 
 

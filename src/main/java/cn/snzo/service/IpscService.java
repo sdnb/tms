@@ -31,4 +31,19 @@ public interface IpscService {
 
 
     List<ConferencePart> getConfParts(String confResId, String username) throws IOException, InterruptedException;
+
+
+    /**
+     * 检查会议资源是否存在
+     * @param confResId
+     * @return
+     */
+    int checkConfExist(String confResId) throws InterruptedException, IOException;
+
+    /**
+     * 检查呼叫资源是否存在
+     * @param callId
+     * @return
+     */
+    int checkCallExist(String callId) throws InterruptedException, IOException ;
 }

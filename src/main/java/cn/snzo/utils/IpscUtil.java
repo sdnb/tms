@@ -136,7 +136,7 @@ public class IpscUtil {
                                         String filename = (String) rpcRequest.getParams().get("record_file");
                                         int index = filename.lastIndexOf("/");
                                         if (index != -1) {
-                                            recording.setFilename(filename.substring(index));
+                                            recording.setFilename(filename.substring(index+1));
                                             recording.setFilePath(filename.substring(0, index));
                                         }
                                         Integer start = (Integer) rpcRequest.getParams().get("begin_time");
@@ -314,5 +314,36 @@ public class IpscUtil {
         } else {
             logger.info("commander客户端 未初始化");
         }
+    }
+
+    public static void checkConf(String confResId, RpcResultListener listener) throws IOException {
+        if (commander == null) {
+            logger.info("commander客户端 未初始化");
+            return;
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_id", confResId);
+        commander.operateResource(
+                busAddress,
+                confResId,
+                "sys.conf.exists",
+                params,
+                listener);
+
+    }
+
+    public static void checkCall(String callId, RpcResultListener listener) throws IOException {
+        if (commander == null) {
+            logger.info("commander客户端 未初始化");
+            return;
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_id", callId);
+        commander.operateResource(
+                busAddress,
+                callId,
+                "sys.call.exists",
+                params,
+                listener);
     }
 }

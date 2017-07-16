@@ -89,6 +89,8 @@ public class ConferenceController extends BaseController {
                 return failureRes("结束会议错误");
             } else if (code == 3) {
                 return failureRes("结束会议超时");
+            } else if (code == 4) {
+                return failureRes("会议不存在");
             } else {
                 return failureRes("结束会议失败");
             }
@@ -117,6 +119,8 @@ public class ConferenceController extends BaseController {
                 return failureRes("添加呼叫错误");
             } else if (code == 3) {
                 return failureRes("添加呼叫超时");
+            } else if (code == 4) {
+                return failureRes("会议资源不存在");
             } else {
                 return failureRes("添加呼叫失败");
             }
@@ -152,6 +156,10 @@ public class ConferenceController extends BaseController {
                 return failureRes("改变错误");
             } else if (code == 3) {
                 return failureRes("改变超时");
+            } else if (code == 4) {
+                return failureRes("会议不存在");
+            } else if (code == 5) {
+                return failureRes("呼叫不存在");
             } else {
                 return failureRes("改变失败");
             }
@@ -184,6 +192,10 @@ public class ConferenceController extends BaseController {
                 return failureRes("退出错误");
             } else if (code == 3) {
                 return failureRes("退出超时");
+            } else if (code == 4) {
+                return failureRes("会议不存在");
+            } else if (code == 5) {
+                return failureRes("呼叫不存在");
             } else {
                 return failureRes("退出失败");
             }
@@ -216,6 +228,8 @@ public class ConferenceController extends BaseController {
                 return failureRes("开始录音超时");
             } else if (code == 4) {
                 return failureRes("请设置录音文件存储地址");
+            } else if (code == 5) {
+                return failureRes("会议不存在");
             } else {
                 return failureRes("开始录音失败");
             }
@@ -246,6 +260,8 @@ public class ConferenceController extends BaseController {
                 return failureRes("停止录音错误");
             } else if (code == 3) {
                 return failureRes("停止录音超时");
+            } else if (code == 4) {
+                return failureRes("会议不存在");
             } else {
                 return failureRes("停止录音失败");
             }
