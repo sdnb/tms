@@ -3,6 +3,7 @@ package cn.snzo.controller;
 import cn.snzo.common.BaseController;
 import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
+import cn.snzo.entity.Conference;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.service.IConferenceService;
 import cn.snzo.service.ITokenService;
@@ -47,19 +48,11 @@ public class ConferenceController extends BaseController {
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
-            int code = ipscService.startConference(conferenceStartShow, username);
-            if (code == 1) {
-                return successRes("会议发起成功");
-            } else if (code == 2) {
-                return failureRes("会议发起错误");
-            } else if (code == 3) {
-                return failureRes("会议发起超时");
-            } else if (code == 4){
-                return failureRes("会议室不存在");
-            } else if (code == 5){
-                return failureRes("会议室在使用中");
+            Conference conference = ipscService.startConference(conferenceStartShow, token);
+            if (conference != null) {
+                return successRes(conference);
             } else {
-                return failureRes("会议发起失败");
+                return failureRes("创建会议失败");
             }
         } catch (ServiceException e) {
             return failureRes(e.getMessage());

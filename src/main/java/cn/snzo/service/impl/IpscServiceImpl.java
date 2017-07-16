@@ -63,17 +63,17 @@ public class IpscServiceImpl implements IpscService {
      * @throws IOException
      */
     @Override
-    public int startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException {
+    public Conference startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException {
 
         int roomId = conferenceStartShow.getRoomId();
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(roomId);
         if (conferenceRoomShow == null) {
-            return 4;
+            throw new ServiceException("会议室不存在");
         }
         //检查会议室是否在使用中
         boolean roomIsUse = conferenceRepository.checkConfOfRoom(roomId) > 0;
         if (roomIsUse) {
-            return 5;
+            throw new ServiceException("会议室正在使用");
         }
         logger.info("建立会议");
         logger.info("参数：{}", conferenceStartShow);
@@ -93,8 +93,7 @@ public class IpscServiceImpl implements IpscService {
             }
         }
         logger.info("创建会议资源参数 {}", params);
-
-        int[] ret = new int[1];
+        List<Conference> conferences = new ArrayList<>();
         Log log = new Log("", OperResTypeEnum.CONFERENCE.ordinal(),
                 "sys.conf.construct", "创建会议", tokenName, OperTypeEnum.CREATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
             IpscUtil.createConference(
@@ -110,11 +109,10 @@ public class IpscServiceImpl implements IpscService {
                             logRepository.save(log);
 
                             //保存会议信息
-                            saveConference(conferenceStartShow, conferenceId);
-
+                            Conference conference = saveConference(conferenceStartShow, conferenceId);
+                            conferences.add(conference);
                             //外呼
                             logger.info("进行外呼", conferenceId);
-                            ret[0] = 1;
                             try {
                                 addCallToConf(conferenceStartShow.getPhones(), conferenceId, tokenName);
                             } catch (IOException | InterruptedException e) {
@@ -127,7 +125,6 @@ public class IpscServiceImpl implements IpscService {
                             logger.error("创建会议资源错误：{} {}", rpcError.getCode(), rpcError.getMessage());
                             log.setOperResult(OperResultEnum.ERROR.ordinal());
                             logRepository.save(log);
-                            ret[0] = 2;
                         }
 
                         @Override
@@ -135,21 +132,21 @@ public class IpscServiceImpl implements IpscService {
                             logger.error("创建会议资源超时无响应");
                             log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
                             logRepository.save(log);
-                            ret[0] = 3;
                         }
                     }
             );
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(100);
+        if (!conferences.isEmpty()) {
+            return conferences.get(0);
         }
-        return ret[0];
+        else
+            return null;
     }
 
 
 
 
     @Transactional
-    private void saveConference(ConferenceStartShow conferenceStartShow, String conferenceId) {
+    private Conference saveConference(ConferenceStartShow conferenceStartShow, String conferenceId) {
         Conference conference = new Conference();
         conference.setConductorId(conferenceStartShow.getConductorId());
         conference.setResId(conferenceId);
@@ -166,7 +163,7 @@ public class IpscServiceImpl implements IpscService {
         conference.setStartAt(new Date());
         conference.setEndAt(new Date());
         conference.setStatus(1);
-        conferenceRepository.save(conference);
+        return conferenceRepository.save(conference);
     }
 
 
