@@ -3,10 +3,12 @@ package cn.snzo.service.impl;
 import cn.snzo.common.Constants;
 import cn.snzo.entity.Conductor;
 import cn.snzo.entity.Conference;
+import cn.snzo.entity.Contact;
 import cn.snzo.entity.Log;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
+import cn.snzo.repository.ContactRepository;
 import cn.snzo.repository.LogRepository;
 import cn.snzo.service.IConductorService;
 import cn.snzo.service.IConferenceRoomService;
@@ -14,13 +16,18 @@ import cn.snzo.service.ISysSettingService;
 import cn.snzo.service.IpscService;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.utils.IpscUtil;
+import cn.snzo.utils.PageUtil;
 import cn.snzo.vo.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.hesong.ipsc.ccf.*;
+import com.hesong.ipsc.ccf.RpcError;
+import com.hesong.ipsc.ccf.RpcResultListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -49,10 +56,13 @@ public class IpscServiceImpl implements IpscService {
     private IConferenceRoomService conferenceRoomService;
 
     @Autowired
-    private IConductorService        conductorService;
+    private IConductorService conductorService;
 
     @Autowired
     private ConferenceRoomRepository conferenceRoomRepository;
+
+    @Autowired
+    private ContactRepository contactRepository;
 
     /**
      * 建立会议
@@ -65,7 +75,7 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public Conference startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException {
 
-        int roomId = conferenceStartShow.getRoomId();
+        int                roomId             = conferenceStartShow.getRoomId();
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(roomId);
         if (conferenceRoomShow == null) {
             throw new ServiceException("会议室不存在");
@@ -251,12 +261,14 @@ public class IpscServiceImpl implements IpscService {
                 "创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal(),
                 OperResultEnum.SUCCESS.ordinal());
         int[] ret = new int[1];
-        IpscUtil.callOut(phones, IpscUtil.VOIP,
+        List<Contact> contacts = contactRepository.findByPhones(phones);
+        IpscUtil.callOut(contacts, IpscUtil.VOIP,
                 new RpcResultListener() {
                     @Override
                     protected void onResult(Object o) {
+                        @SuppressWarnings("unchecked")
                         Map<String, Object> result = (Map<String, Object>) o;
-                        String              callId = (String) result.get("res_id");
+                        String callId = (String) result.get("res_id");
                         logger.info("呼叫资源建立成功，ID={}。系统正在执行外呼……注意这不是呼叫成功！", callId);
                         IpscUtil.callConfMap.put(callId, conferenceId);
                         log.setOperResId(callId);
@@ -472,13 +484,15 @@ public class IpscServiceImpl implements IpscService {
     }
 
     @Override
-    public List<ConferencePart> getConfParts(String confResId, String username) throws IOException, InterruptedException {
+    public Page<ConferencePart> getConfParts(String confResId, String username, Integer currentPage, Integer pageSize) throws IOException, InterruptedException {
+
         logger.info("获取会议{}与会者列表", confResId);
         Log log = new Log(confResId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.get_parts",
                 "获取会议与会者列表", username, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
         List<ConferencePart> conferenceParts = new ArrayList<ConferencePart>();
+        Pageable page = PageUtil.createPage(currentPage, pageSize);
         if (checkConfExist(confResId) != 1) {
-            return conferenceParts;
+            return new PageImpl<>(conferenceParts, page, 0);
         }
         int[] ret = new int[1];
         IpscUtil.getConfParts(confResId, new RpcResultListener() {
@@ -488,13 +502,23 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("Object ={}", o);
                 String array = JSON.toJSONString(o);
                 logger.info("array = {}", array);
-                JSONArray      jsonArray = JSON.parseArray(array);
+                JSONArray  jsonArray = JSON.parseArray(array);
                 List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
                 logger.info("PartDatas={}", partDatas);
                 for (PartData partData : partDatas) {
                     ConferencePart part = new ConferencePart();
                     part.setVoiceMode(partData.getVoice_mode());
-                    part.setConfId(partData.getRes_id());
+                    part.setCallId(partData.getRes_id());
+
+                    String phoneName = partData.getUser_data();
+                    if (phoneName == null) {
+                        part.setPhone("未知");
+                        part.setName("未知");
+                    } else {
+                        String[] strs = phoneName.split("-");
+                        part.setPhone(strs[0]);
+                        part.setName(strs[1]);
+                    }
                     part.setPhone(partData.getUser_data());
                     conferenceParts.add(part);
                 }
@@ -521,7 +545,8 @@ public class IpscServiceImpl implements IpscService {
         while (ret[0] == 0) {
             TimeUnit.MILLISECONDS.sleep(10);
         }
-        return conferenceParts;
+
+        return new PageImpl<>(conferenceParts, page, (long)conferenceParts.size());
     }
 
     @Override

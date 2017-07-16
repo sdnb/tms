@@ -2,6 +2,7 @@ package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
 import cn.snzo.entity.Conference;
+import cn.snzo.entity.Contact;
 import cn.snzo.entity.Recording;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.RecordingRepository;
@@ -189,12 +190,12 @@ public class IpscUtil {
     }
 
 
-    public static void callOut(List<String> phones, String ip, RpcResultListener listener) throws IOException, InterruptedException {
-        for (String te : phones) {
+    public static void callOut(List<Contact> contacts, String ip, RpcResultListener listener) throws IOException, InterruptedException {
+        for (Contact te : contacts) {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put("to_uri", te+"@"+ip); /// 被叫号码的 SIP URI
+            params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
-            params.put("user_data", te); /// 该呼叫最长通话允许时间
+            params.put("user_data", te+"-"+te.getName()); /// 该呼叫最长通话允许时间
             commander.createResource(
                     busAddress,
                     "sys.call",

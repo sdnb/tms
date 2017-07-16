@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/4 0004.
@@ -274,12 +273,14 @@ public class ConferenceController extends BaseController {
      */
     @RequestMapping(value = "/conference/parts", method = RequestMethod.GET)
     public ObjectResult getParts(@RequestParam(value = "confResId", required = true) String confResId,
+                                 @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                   @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token) {
 
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
-            List<ConferencePart> parts = ipscService.getConfParts(confResId, username);
+            Page<ConferencePart> parts = ipscService.getConfParts(confResId, username, currentPage, pageSize);
             return successRes(parts);
         } catch (ServiceException e) {
             return failureRes(e.getMessage());

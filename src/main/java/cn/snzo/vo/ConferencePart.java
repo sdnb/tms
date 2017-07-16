@@ -7,13 +7,22 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class ConferencePart {
     private String phone;
-    private String confId;
+    private String name;
+    private String callId;
     private int voiceMode;
 
     public ConferencePart() {
     }
 
     public ConferencePart(JSONObject obj) {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {
@@ -24,12 +33,12 @@ public class ConferencePart {
         this.phone = phone;
     }
 
-    public String getConfId() {
-        return confId;
+    public String getCallId() {
+        return callId;
     }
 
-    public void setConfId(String confId) {
-        this.confId = confId;
+    public void setCallId(String callId) {
+        this.callId = callId;
     }
 
     public int getVoiceMode() {

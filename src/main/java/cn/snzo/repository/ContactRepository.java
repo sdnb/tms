@@ -36,6 +36,8 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
     List<String> checkPhones(List<String> phones, int bookId);
 
 
+    @Query("select c from Contact c where c.phone in ?1")
+    List<Contact> findByPhones(List<String> phones);
 
 //    Contact checkExsits(String phone, Integer bookId);
 }
