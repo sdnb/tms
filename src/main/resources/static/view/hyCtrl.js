@@ -40,6 +40,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                         this.conductor = {};
                         this.conductor.id = $scope.loginUser.conductorId;
                         _this.getRooms(this.conductor.id);
+                        _this.getConferences(this.conductor.id);
                         _this.getContacts('reload');
                     }
                 }else{
@@ -58,6 +59,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     _this.conductor = _this.conductors[0];
                     _this.getRooms(_this.conductor.id);
                     _this.getContacts('reload');
+                    _this.getConferences(_this.conductor.id);
                 }else{
                     _this.conductors = [];
                     console.log(data);
@@ -205,6 +207,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.add(this.conference,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
+                    _this.conference = data.message;
                     _this.getMembers('reload');
                 }else{
                     _this.message.show = true;
@@ -244,8 +247,23 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             });
         };
         $scope.$watch('conferencePageObject.currentPage',function(){
-            _this.getMembers();
+            if(_this.conference.resId){
+                _this.getMembers();
+            }
         });
+
+         //获取会议
+        this.getConferences = function(conductorId){
+            conferenceService.getConferencePage({currentPage:1,pageSize:6000,conductorId:conductorId},function(data){
+                if(data.status == 'true'){
+                    _this.conferences = data.message;
+                    _this.conference = _this.conferences[0];
+                    _this.getMembers();
+                }else{
+                    _this.conferences = [];
+                }
+            });
+        };
 
         //定义确认弹出框提示问题
         var confirmInfo = {"record":{tips:"是否对此次会议进行录音?"}};
