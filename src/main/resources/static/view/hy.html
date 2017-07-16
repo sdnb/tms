@@ -7,7 +7,9 @@
             <span>主持人电话：</span>
             <div class="zcchwbk" style="background: #fff url(images/select.png) no-repeat right 10px center;">
                 <input type="text" placeholder="手机号/固定电话" style="z-index: 2; position: relative;" />
-                <select><option>11111</option><option>11111</option></select>
+                <select ng-model="hy.conductor" ng-options="conductor in conductors" ng-change="hy.selectConductor(conductor)" ng-disabled="loginUser.username!='admin'">
+                    <option value="">请选择</option>
+                </select>
             </div>
         </div>
 
@@ -44,23 +46,14 @@
 
     <div class="hyb-left">
 
-        <div class="hyblT">待入会参会人<font style="font-size:14px">（<font color="#3686dc">0</font>）</font></div>
+        <div class="hyblT">待入会参会人<font style="font-size:14px">（<font color="#3686dc" ng-bind="hy.totalContacts">0</font>）</font></div>
 
         <div class="hyblCon">
 
             <div class="hyblH"> <li style="width:144px; border-right: solid 1px #fff">姓名</li> <li style="width:203px">联系电话</li> </div>
 
             <div class="drhchr">
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
-                <li> <input type="checkbox" /> <span>张三</span> <font>13989795959</font> </li>
+                <li ng-repeat="contact in hy.contacts"> <input type="checkbox" ng-model="contact.isChecked" ng-change="hy.selectContact(contact)"/> <span ng-bind="contact.name"></span> <font ng-bind="contact.phone"></font> </li>
             </div>
 
             <div class="fenye2">

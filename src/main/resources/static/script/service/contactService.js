@@ -4,6 +4,7 @@ define([], function(){
         this.saveApi = $resource('/api/contact'); //新增联系人
         this.updateApi = $resource('/api/contact/:id', null, {update:{method:'PUT'}}); //修改联系人
         this.deleteApi = $resource('/api/contact/:id'); //删除联系人
+        this.getContactsApi = $resource('/api/contact/conf'); //获取联系人
     }
 
     ContactService.prototype.pageList = function(contact, cb){
@@ -34,6 +35,14 @@ define([], function(){
         this.deleteApi.delete({id:id}, null, function(data){
             cb(data);
         }, function(errData){
+            cb(errData.data.error);
+        });
+    };
+
+    ContactService.prototype.getContacts = function(conductor,cb){
+        this.getContactsApi.get(conductor,function(data,header){
+            cb(data,header);
+        },function(errData){
             cb(errData.data.error);
         });
     };
