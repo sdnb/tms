@@ -273,9 +273,25 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             });
         };
 
+        //停止会议
         this.endConference = function(){
             this.loading = true;
         };
+
+        //改变与会者的声音收放模式
+        this.changeVoiceMode = function(member){
+            var mode = member.mode == 4 ? 1 : member.mode + 1;
+            conferenceService.forbid(this.conference.resId,member.confId,mode,function(data){
+                if(data.status == 'true'){
+                    _this.getMembers();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                    console.log(data);
+                }
+            });
+        }
+
 
         //定义确认弹出框提示问题
         var confirmInfo = {"end":{tips:"是否对此次会议进行录音?"}};
