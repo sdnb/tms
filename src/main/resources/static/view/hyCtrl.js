@@ -87,7 +87,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             this.contractFilter.currentPage = $scope.contactPageObject.currentPage;
             this.contractFilter.pageSize = $scope.contactPageObject.pageSize;
-            this.contractFilter.uid = this.conductor.id; //电话簿
+            this.contractFilter.conductorId = this.conductor.id; //电话簿
             this.loading = true;
             contactService.getContacts(this.contractFilter,function(data,header){
                 _this.loading = false;
