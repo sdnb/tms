@@ -71,8 +71,8 @@ define([],function(){
     };
 
     ConferenceService.prototype.getParts = function(conference,cb){
-        this.getPartsApi.get(conference,function(data){
-            cb(data);
+        this.getPartsApi.get(conference,function(data,header){
+            cb(data,header);
         },function(errData){
             cb(errData.data.error);
         });

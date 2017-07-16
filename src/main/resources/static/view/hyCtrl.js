@@ -122,6 +122,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                         if(_this.checkedContacts.indexOf(contact) != -1)
                             contact.isChecked = true;
                     });
+                    $scope.checkLimit($scope.contactPageObject.currentPage);
                 }else{
                     _this.contracts = [];
                     console.log(data);
@@ -133,7 +134,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             if(_this.conductor){
                 _this.getContacts();
             }
-            $scope.checkLimit();
         });
 
         $scope.selectPage = function(page){
@@ -205,11 +205,47 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.add(this.conference,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
+                    _this.getMembers('reload');
                 }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
                 }
             });
         };
 
+        //分页查会议与会人列表
+        $scope.conferencePageObject = {
+            currentPage:1,
+            totalPage:0,
+            pageSize:10,
+            pages:[]
+        };
+
+        this.members = [];
+        this.conferenceFilter = {};
+        this.getMembers = function(type){
+            if(type == 'reload'){
+                $scope.conferencePageObject.currentPage = 1;
+            }
+            this.conferenceFilter.currentPage = $scope.conferencePageObject.currentPage;
+            this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
+            conferenceService.getParts(this.conferenceFilter,function(data,header){
+                if(data.status == 'true'){
+                    _this.members = data.message;
+                    $scope.conferencePageObject.totalPage = header('page_count');
+                    $scope.conferencePageObject.pages = [];
+                    for(var i=1;i<=$scope.conferencePageObject.totalPage;i++){
+                        $scope.conferencePageObject.pages.push(i);
+                    }
+                }else{
+                    _this.members = [];
+                    console.log(data);
+                }
+            });
+        };
+        $scope.$watch('conferencePageObject.currentPage',function(){
+            _this.getMembers();
+        });
 
         //定义确认弹出框提示问题
         var confirmInfo = {"record":{tips:"是否对此次会议进行录音?"}};
