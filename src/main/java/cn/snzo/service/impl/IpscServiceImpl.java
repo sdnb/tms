@@ -96,7 +96,9 @@ public class IpscServiceImpl implements IpscService {
         List<Conference> conferences = new ArrayList<>();
         Log log = new Log("", OperResTypeEnum.CONFERENCE.ordinal(),
                 "sys.conf.construct", "创建会议", tokenName, OperTypeEnum.CREATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
-            IpscUtil.createConference(
+
+        int[] ret = new int[1];
+        IpscUtil.createConference(
                     params,
                     new RpcResultListener() {
                         @Override
@@ -118,6 +120,8 @@ public class IpscServiceImpl implements IpscService {
                             } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
+
+                            ret[0] = 1;
                         }
 
                         @Override
@@ -125,6 +129,7 @@ public class IpscServiceImpl implements IpscService {
                             logger.error("创建会议资源错误：{} {}", rpcError.getCode(), rpcError.getMessage());
                             log.setOperResult(OperResultEnum.ERROR.ordinal());
                             logRepository.save(log);
+                            ret[0] = 2;
                         }
 
                         @Override
@@ -132,9 +137,15 @@ public class IpscServiceImpl implements IpscService {
                             logger.error("创建会议资源超时无响应");
                             log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
                             logRepository.save(log);
+                            ret[0] = 3;
                         }
                     }
             );
+
+        //等待结果返回
+        while (ret[0] == 0) {
+            TimeUnit.MILLISECONDS.sleep(50);
+        }
         if (!conferences.isEmpty()) {
             return conferences.get(0);
         }
