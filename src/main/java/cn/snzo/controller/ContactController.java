@@ -127,12 +127,12 @@ public class ContactController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/contact/conf", method = RequestMethod.GET)
-    public ObjectResult getContacts(@RequestParam(value = "uid", required = true)Integer uid,
+    public ObjectResult getContacts(@RequestParam(value = "conductorId", required = true)Integer conductorId,
                                     @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                     @RequestParam(value = "pageSize", required = false)Integer pageSize,
                                     HttpServletResponse response) {
         try {
-            Page<ContactShow> page = contactService.findContactByCurrUser(uid, currentPage, pageSize);
+            Page<ContactShow> page = contactService.findContactByCurrUser(conductorId, currentPage, pageSize);
             CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
             return new ObjectResult("true", page.getContent());
         } catch (Exception e) {

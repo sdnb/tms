@@ -10,6 +10,7 @@ public class LoginInfo implements Serializable{
     private Integer id;
     private String username;
     private String password;
+    private Integer conductorId;
 
     public Integer getId() {
         return id;
@@ -33,5 +34,13 @@ public class LoginInfo implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getConductorId() {
+        return conductorId;
+    }
+
+    public void setConductorId(Integer conductorId) {
+        this.conductorId = conductorId;
     }
 }

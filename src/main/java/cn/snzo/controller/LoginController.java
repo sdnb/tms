@@ -1,6 +1,8 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
+import cn.snzo.entity.Conductor;
+import cn.snzo.repository.ConductorRepository;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
@@ -28,6 +30,9 @@ public class LoginController extends BaseController{
     @Autowired
     private ITokenService<LoginInfo> tokenService;
 
+
+    @Autowired
+    private ConductorRepository conductorRepository;
     /**
      * 管理员密码登录
      * @param validateInfo
@@ -51,6 +56,10 @@ public class LoginController extends BaseController{
             LoginInfo loginInfo = new LoginInfo();
             loginInfo.setUsername(accountShow.getUsername());
             loginInfo.setId(accountShow.getId());
+            Conductor conductor = conductorRepository.findByAccountid(accountShow.getId());
+            if (conductor != null) {
+                loginInfo.setConductorId(conductor.getId());
+            }
             tokenService.saveToken(token, loginInfo, expireTime);
             return successRes(loginInfo);
         }

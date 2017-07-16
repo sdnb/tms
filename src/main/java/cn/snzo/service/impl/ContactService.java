@@ -211,14 +211,14 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public Page<ContactShow> findContactByCurrUser(Integer uid, Integer currentPage, Integer pageSize) {
+    public Page<ContactShow> findContactByCurrUser(Integer conductorId, Integer currentPage, Integer pageSize) {
         Pageable p = CommonUtils.createPage(currentPage, pageSize);
         Map<String, Object> params = new HashMap<>();
 //        Account account = accountRepository.findOne(uid);
 //        if (account == null) {
 //            return new PageImpl<ContactShow>(new ArrayList<>(), p, 0);
 //        }
-        Conductor conductor = conductorRepository.findByAccountid(uid);
+        Conductor conductor = conductorRepository.findOne(conductorId);
         if (conductor == null) {
             return new PageImpl<ContactShow>(new ArrayList<>(), p, 0);
         }
