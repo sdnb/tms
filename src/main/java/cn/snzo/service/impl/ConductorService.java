@@ -1,6 +1,5 @@
 package cn.snzo.service.impl;
 
-import cn.snzo.common.CommonUtils;
 import cn.snzo.entity.Account;
 import cn.snzo.entity.Conductor;
 import cn.snzo.entity.ConferenceRoom;
@@ -9,6 +8,7 @@ import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.service.IAccountService;
 import cn.snzo.service.IConductorService;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.AccountShow;
 import cn.snzo.vo.ConductorShow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +52,11 @@ public class ConductorService implements IConductorService {
         if (conductor != null) {
             return 3;
         }
-        accountService.add(accountShow);
+        AccountShow show = accountService.add(accountShow);
         conductor = new Conductor(conductorShow);
+        if (show != null) {
+            conductor.setAccountId(show.getId());
+        }
         conductorRepository.save(conductor);
         return 1;
     }
@@ -121,6 +124,12 @@ public class ConductorService implements IConductorService {
 
         conductorRepository.save(new Conductor(conductorShow));
         return 1;
+    }
+
+    @Override
+    public Conductor getOne(Integer conductorId) {
+        Conductor conductor = conductorRepository.findOne(conductorId);
+        return conductor;
     }
 
 }

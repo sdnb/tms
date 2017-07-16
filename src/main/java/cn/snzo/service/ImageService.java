@@ -2,7 +2,7 @@ package cn.snzo.service;
 
 
 import cn.snzo.common.Constants;
-import cn.snzo.common.SFTPUtil;
+import cn.snzo.utils.SFTPUtil;
 import cn.snzo.common.UploadResult;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;

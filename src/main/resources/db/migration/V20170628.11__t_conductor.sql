@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS t_conductor (
   create_date      DATETIME                       COMMENT '创建时间',
   PRIMARY KEY (id),
   UNIQUE  KEY (phone)
-) COMMENT='会议主持人表';
+) COMMENT='会议主持人表' DEFAULT CHARSET=utf8;

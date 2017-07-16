@@ -42,4 +42,14 @@ public interface IConferenceRoomService {
      * @return
      */
     Page<ConferenceRoomShow> findPage(String ivr, String number, String name, Integer currentPage, Integer pageSize);
+
+    ConferenceRoomShow getOne(int roomId);
+
+    /**
+     * 修改会议室状态
+     * @param roomId
+     * @param i
+     * @return
+     */
+    int modifyStatus(Integer roomId, int i);
 }

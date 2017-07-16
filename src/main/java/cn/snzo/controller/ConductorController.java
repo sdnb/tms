@@ -1,7 +1,7 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
-import cn.snzo.common.CommonUtils;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.service.IConductorService;
 import cn.snzo.vo.ConductorShow;

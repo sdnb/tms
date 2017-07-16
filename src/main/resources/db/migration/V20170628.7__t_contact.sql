@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS t_contact (
   modify_date      DATETIME                      COMMENT '更新时间',
   create_date      DATETIME                      COMMENT '创建时间',
   PRIMARY KEY (id)
-) COMMENT='联系人';
+) COMMENT='联系人' DEFAULT CHARSET=utf8;

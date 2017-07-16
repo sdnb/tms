@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS t_recording (
   modify_date        DATETIME                       COMMENT '修改时间',
   PRIMARY KEY (id),
   UNIQUE KEY (filename)
-) COMMENT='录音表';
+) COMMENT='录音表' DEFAULT CHARSET=utf8;

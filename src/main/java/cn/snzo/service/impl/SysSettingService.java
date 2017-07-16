@@ -42,4 +42,15 @@ public class SysSettingService implements ISysSettingService {
     public int modifyPwd(AccountShow accountShow) {
         return 0;
     }
+
+    @Override
+    public SysSettingShow getLatestSetting() {
+        SysSetting sysSetting = sysSettingRepository.findFirstByOrderByIdDesc();
+        if (sysSetting != null) {
+            SysSettingShow sysSettingShow = new SysSettingShow();
+            BeanUtil.entityToShow(sysSetting, sysSettingShow);
+            return sysSettingShow;
+        }
+        return null;
+    }
 }
