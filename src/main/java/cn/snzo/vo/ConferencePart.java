@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
  * Created by chentao on 2017/7/15 0015.
  */
 public class ConferencePart {
-    private String name;
     private String phone;
     private String confId;
     private int voiceMode;
@@ -15,14 +14,6 @@ public class ConferencePart {
     }
 
     public ConferencePart(JSONObject obj) {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getPhone() {

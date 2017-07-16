@@ -17,12 +17,13 @@ public interface IContactService {
      * 分页查联系人
      * @param name
      * @param phone
-     * @param currentPage
-     * @param pageSize
-     * @return
+     * @param sysBookId
+     *@param currentPage
+     * @param pageSize   @return
      */
     Page<ContactShow> getPage(Integer groupId, Integer bookId,
-                              String name, String phone, Integer bookType, Integer currentPage, Integer pageSize);
+                              String name, String phone, Integer bookType, Boolean sysBookId,
+                              Integer currentPage, Integer pageSize);
 
 
     /**

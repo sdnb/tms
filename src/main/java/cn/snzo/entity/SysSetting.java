@@ -10,8 +10,26 @@ import javax.persistence.Table;
 @Table(name = "t_sys_setting")
 public class SysSetting extends BaseEntity{
     private String recordingPath;  //录音存储路径
+    private String hostname;        //主机ip
+    private Integer port;           //端口
 
-    public String getRecordingPath() {
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    public  String getRecordingPath() {
         return recordingPath;
     }
 

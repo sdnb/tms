@@ -8,6 +8,8 @@ import java.util.Date;
 public class SysSettingShow {
     private Integer id;
     private String  recordingPath;
+    private String hostname;        //主机ip
+    private Integer port;           //端口
     private Date    createDate;
     private Date    modifyDate;
 
@@ -41,5 +43,21 @@ public class SysSettingShow {
 
     public void setModifyDate(Date modifyDate) {
         this.modifyDate = modifyDate;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 }
