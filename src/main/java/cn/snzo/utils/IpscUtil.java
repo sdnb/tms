@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,8 +145,8 @@ public class IpscUtil {
                                         logger.info("beginTime {}", start);
                                         logger.info("endTime {}", end);
                                         logger.info("class of start : {}", start.getClass());
-                                        recording.setStartTime(new Date((Integer)start));
-                                        recording.setStartTime(new Date((Integer)end));
+//                                        recording.setStartTime(new Date((Integer)start));
+//                                        recording.setStartTime(new Date((Integer)end));
                                         recording.setRoomId(conference.getRoomId());
                                         recording.setRoomNo(conference.getRoomNo());
                                         recordingRepository.save(recording);
