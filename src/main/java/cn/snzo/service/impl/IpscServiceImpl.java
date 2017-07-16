@@ -109,48 +109,48 @@ public class IpscServiceImpl implements IpscService {
 
         int[] ret = new int[1];
         IpscUtil.createConference(
-                    params,
-                    new RpcResultListener() {
-                        @Override
-                        protected void onResult(Object o) {
-                            @SuppressWarnings("unchecked")
-                            Map<String, Object> result = (Map<String, Object>) o;
-                            String conferenceId = (String) result.get("res_id");
-                            logger.info(">>>>>>会议资源建立成功：confId={}", conferenceId);
-                            log.setOperResId(conferenceId);
-                            logRepository.save(log);
+                params,
+                new RpcResultListener() {
+                    @Override
+                    protected void onResult(Object o) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> result = (Map<String, Object>) o;
+                        String conferenceId = (String) result.get("res_id");
+                        logger.info(">>>>>>会议资源建立成功：confId={}", conferenceId);
+                        log.setOperResId(conferenceId);
+                        logRepository.save(log);
 
-                            //保存会议信息
-                            Conference conference = saveConference(conferenceStartShow, conferenceId);
-                            conferences.add(conference);
-                            //外呼
-                            logger.info("进行外呼", conferenceId);
-                            try {
-                                addCallToConf(conferenceStartShow.getPhones(), conferenceId, tokenName);
-                            } catch (IOException | InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            ret[0] = 1;
+                        //保存会议信息
+                        Conference conference = saveConference(conferenceStartShow, conferenceId);
+                        conferences.add(conference);
+                        //外呼
+                        logger.info("进行外呼", conferenceId);
+                        try {
+                            addCallToConf(conferenceStartShow.getPhones(), conferenceId, tokenName);
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
                         }
 
-                        @Override
-                        protected void onError(RpcError rpcError) {
-                            logger.error("创建会议资源错误：{} {}", rpcError.getCode(), rpcError.getMessage());
-                            log.setOperResult(OperResultEnum.ERROR.ordinal());
-                            logRepository.save(log);
-                            ret[0] = 2;
-                        }
-
-                        @Override
-                        protected void onTimeout() {
-                            logger.error("创建会议资源超时无响应");
-                            log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
-                            logRepository.save(log);
-                            ret[0] = 3;
-                        }
+                        ret[0] = 1;
                     }
-            );
+
+                    @Override
+                    protected void onError(RpcError rpcError) {
+                        logger.error("创建会议资源错误：{} {}", rpcError.getCode(), rpcError.getMessage());
+                        log.setOperResult(OperResultEnum.ERROR.ordinal());
+                        logRepository.save(log);
+                        ret[0] = 2;
+                    }
+
+                    @Override
+                    protected void onTimeout() {
+                        logger.error("创建会议资源超时无响应");
+                        log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+                        logRepository.save(log);
+                        ret[0] = 3;
+                    }
+                }
+        );
 
         //等待结果返回
         while (ret[0] == 0) {
@@ -516,6 +516,8 @@ public class IpscServiceImpl implements IpscService {
                         part.setName("未知");
                     } else {
                         String[] strs = phoneName.split("-");
+                        logger.info("===============>>>>>>strs[0] {}", strs[0]);
+                        logger.info("===============>>>>>>strs[1] {}", strs[1]);
                         part.setPhone(strs[0]);
                         part.setName(strs[1]);
                     }
