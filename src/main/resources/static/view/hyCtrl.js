@@ -68,9 +68,13 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         this.selectConductor = function(conductor){
-            this.rooms = [];
-            this.getRooms(this.conductor.id);
-            this.getContacts('reload');
+            if(this.conductor){
+                this.rooms = [];
+                this.getRooms(this.conductor.id);
+                this.getContacts('reload');
+                this.getConferences(this.conductor.id);
+            }
+
         };
 
         //获取会议室
@@ -259,8 +263,10 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.getConferencePage({currentPage:1,pageSize:6000,conductorId:conductorId},function(data){
                 if(data.status == 'true'){
                     _this.conferences = data.message;
-                    _this.conference = _this.conferences[0];
-                    _this.getMembers('reload');
+                    if(_this.conferences.length > 0){
+                        _this.conference = _this.conferences[0];
+                        _this.getMembers('reload');
+                    }
                 }else{
                     _this.conferences = [];
                 }
