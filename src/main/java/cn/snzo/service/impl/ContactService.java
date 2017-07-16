@@ -1,13 +1,13 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.CommonRepository;
-import cn.snzo.utils.CommonUtils;
 import cn.snzo.entity.Contact;
 import cn.snzo.entity.ContactGroupRelative;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.repository.ContactGroupRelativeRepository;
 import cn.snzo.repository.ContactRepository;
 import cn.snzo.service.IContactService;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.utils.ExcelUtils;
 import cn.snzo.vo.ContactShow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -46,12 +49,6 @@ public class ContactService implements IContactService {
         params.put("phone", CommonUtils.fuzzyString(phone));
         params.put("groupId", groupId);
         params.put("bookId", bookId);
-//        if (addSysBook != null && addSysBook) {
-//            params.put("sysBookId", 1);
-//        } else {
-//            params.put("sysBookId", null);
-//        }
-
         params.put("bookType", bookType);
         String pageSql = "select c.id, c.phone,c.name,cg.group_id as group_id," +
                 " g.name as group_name,c.book_id " +
@@ -202,4 +199,46 @@ public class ContactService implements IContactService {
             return 1;
         }
     }
+
+    @Override
+    public Page<ContactShow> findContactByCurrUser(int uid, Integer currentPage, Integer pageSize) {
+        Pageable p = CommonUtils.createPage(currentPage, pageSize);
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", uid);
+
+
+        String pageSql = "select c.* " +
+                " FROM" +
+                "  t_contact c" +
+                "  INNER JOIN t_phone_book pb ON pb.id = c.book_id" +
+                "  inner JOIN t_conference_room cr ON cr.id = pb.room_id" +
+                "  INNER JOIN t_conductor cd ON cd.id = cr.conductor_id" +
+                " WHERE" +
+                "  cd.id = :uid" +
+                " UNION" +
+                " SELECT" +
+                "  c.* " +
+                " FROM" +
+                "  t_contact c" +
+                " where book_id=1" ;
+
+
+        String countSql = "SELECT count(*) from (" +
+                "  select c.*" +
+                " FROM" +
+                "  t_contact c" +
+                "  INNER JOIN t_phone_book pb ON pb.id = c.book_id" +
+                "  inner JOIN t_conference_room cr on cr.id = pb.room_id" +
+                "  INNER JOIN t_conductor cd ON cd.id = cr.conductor_id" +
+                " WHERE" +
+                "  cd.id = :uid" +
+                " UNION" +
+                " SELECT" +
+                "  c.*" +
+                " FROM" +
+                "  t_contact c" +
+                " where book_id=1) temp " ;
+        return commonRepository.queryPage(pageSql, countSql, params, ContactShow.class, p);
+    }
+
 }

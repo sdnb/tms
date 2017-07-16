@@ -1,11 +1,14 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
+import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.service.IContactService;
+import cn.snzo.service.ITokenService;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.ContactShow;
+import cn.snzo.vo.LoginInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,9 @@ public class ContactController extends BaseController {
 
     @Autowired
     private IContactService contactService;
+
+    @Autowired
+    private ITokenService<LoginInfo> tokenService;
 
 
 
@@ -114,20 +120,32 @@ public class ContactController extends BaseController {
     }
 
 
-//    /**
-//     * 分页查联系人
-//     * @param name
-//     * @param currentPage
-//     * @param pageSize
-//     * @param response
-//     * @return
-//     */
-//    @RequestMapping(value = "/contact/{roomId}", method = RequestMethod.GET)
-//    public ObjectResult getContacts() {
-//        Page<ContactShow> page = contactService.findAllToConference( groupId, bookId, name, phone, bookType, currentPage, pageSize);
-//        CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
-//        return new ObjectResult("true", page.getContent());
-//    }
+    /**
+     * 查询所有待入会的联系人
+     * @param currentPage
+     * @param pageSize
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/contact/conf", method = RequestMethod.GET)
+    public ObjectResult getContacts(@CookieValue(Constants.STAFF_TOKEN) String token,
+                                    @RequestParam(value = "currentPage", required = false)Integer currentPage,
+                                    @RequestParam(value = "pageSize", required = false)Integer pageSize,
+                                    HttpServletResponse response) {
+        try {
+            LoginInfo loginInfo = tokenService.loadToken(token);
+            if (loginInfo == null) {
+                return new ObjectResult("false", "cookie失效，请重新登录");
+            }
+            Page<ContactShow> page = contactService.findContactByCurrUser(loginInfo.getId(), currentPage, pageSize);
+            CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
+            return new ObjectResult("true", page.getContent());
+        } catch (Exception e) {
+            logErrInfo(e, logger);
+            return failureRes("获取失败");
+        }
+
+    }
 
     /**
      * 新增联系人
