@@ -1,5 +1,6 @@
 package cn.snzo.service;
 
+import cn.snzo.entity.Conference;
 import cn.snzo.vo.ConferencePart;
 import cn.snzo.vo.ConferenceStartShow;
 
@@ -15,7 +16,7 @@ public interface IpscService {
 
 //    void createCommander() throws InterruptedException;
 
-    int startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException;
+    Conference startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException;
 
     int stopConference(String confResId, String tokenName) throws IOException, InterruptedException;
 
