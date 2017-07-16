@@ -74,7 +74,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 this.getContacts('reload');
                 this.getConferences(this.conductor.id);
             }
-
+            this.checkedContacts = [];
         };
 
         //获取会议室
