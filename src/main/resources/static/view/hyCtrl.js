@@ -54,6 +54,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conductorService.pageList({currentPage:1,pageSize:6000},function(data,header){
                 if(data.status == 'true'){
                     _this.conductors = data.message;
+					console.log(_this.conductors);
                     _this.conductor = _this.conductors[0];
                     _this.getContacts('reload');
                 }else{
@@ -150,6 +151,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 }
             }
             console.log(this.checkedContacts);
-        }
+        };
     });
 });

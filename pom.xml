@@ -127,7 +127,7 @@
             <version>4.1.0</version>
             <configuration>
                 <user>root</user>
-                <password>kerber@2017</password>
+                <password>123456</password>
                 <driver>com.mysql.jdbc.Driver</driver>
                 <url>jdbc:mysql://127.0.0.1:3306/tms</url>
                 <!--<baseDir>db/migration</baseDir>-->
