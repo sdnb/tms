@@ -48,7 +48,7 @@ public class ConferenceController extends BaseController {
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
-            Conference conference = ipscService.startConference(conferenceStartShow, token);
+            Conference conference = ipscService.startConference(conferenceStartShow, username);
             if (conference != null) {
                 return successRes(conference);
             } else {
