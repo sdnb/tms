@@ -154,5 +154,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
 
+        //发起会议
     });
 });
