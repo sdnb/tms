@@ -58,11 +58,11 @@
 
             <div class="fenye2">
                 <a href=""><img src="images/arrow-l.png" ng-click="hy.changePage('prev')"/></a>
-                <a href="" ng-repeat="page in contactPageObject.pages" ng-bind="page" ng-click="selectPage(page)" ng-class="{cur3:page==contactPageObject.currentPage}"></a>
+                <a href="" ng-repeat="page in contactPageObject.pages" ng-bind="page" ng-click="selectPage(page)" ng-class="{cur3:page==contactPageObject.currentPage}" ng-show="page>upLimit && page<downLimit"></a>
                 <a href=""><img src="images/arrow-r.png" ng-click="hy.changePage('next')"/></a>
             </div>
 
-            <a href="" class="btn-fqhy">发起会议</a>
+            <a href="" class="btn-fqhy" ng-click="hy.confirmAdd()">发起会议</a>
 
         </div>
 
