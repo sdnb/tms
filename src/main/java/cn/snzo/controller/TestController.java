@@ -27,11 +27,11 @@ public class TestController {
     private ContactRepository contactRepository;
 
     @RequestMapping("/hwe")
-    public String twe(){
+    public Object twe(){
         List<String> phones = new ArrayList<>();
         phones.add("18627720789");
         phones.add("18627720788");
         List<Contact> c = contactRepository.findByPhones(phones);
-        return "true";
+        return c;
     }
 }

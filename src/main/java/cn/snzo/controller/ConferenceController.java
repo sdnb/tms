@@ -277,7 +277,6 @@ public class ConferenceController extends BaseController {
                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                   @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token,
                                  HttpServletResponse response) {
-
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
