@@ -215,7 +215,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 phoneArray.push(contact.phone);
             });
             this.conference.phones = phoneArray;
-            console.log(this.conference);
             this.loading = true;
             conferenceService.add(this.conference,function(data){
                 _this.loading = false;
