@@ -284,6 +284,7 @@ public class ConferenceController extends BaseController {
      */
     @RequestMapping(value = "/conference/parts", method = RequestMethod.GET)
     public ObjectResult getParts(@RequestParam(value = "confResId", required = true) String confResId,
+                                 @RequestParam(value = "phone", required = false) String phone,
                                  @RequestParam(value = "currentPage", required = false) Integer currentPage,
                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                   @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token,
@@ -291,7 +292,7 @@ public class ConferenceController extends BaseController {
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
-            Page<ConferencePart> parts = ipscService.getConfParts(confResId, username, currentPage, pageSize);
+            Page<ConferencePart> parts = ipscService.getConfParts(confResId, username, phone, currentPage, pageSize);
             CommonUtils.setResponseHeaders(parts.getTotalElements(), parts.getTotalPages(), parts.getNumber(), response);
             return successRes(parts.getContent());
         } catch (ServiceException e) {

@@ -26,11 +26,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by chentao on 2017/7/11 0011.
@@ -503,7 +505,7 @@ public class IpscServiceImpl implements IpscService {
     }
 
     @Override
-    public Page<ConferencePart> getConfParts(String confResId, String username, Integer currentPage, Integer pageSize) throws IOException, InterruptedException {
+    public Page<ConferencePart> getConfParts(String confResId, String username, String phone, Integer currentPage, Integer pageSize) throws IOException, InterruptedException {
 
         logger.info("获取会议{}与会者列表", confResId);
         Log log = new Log(confResId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.get_parts",
@@ -565,7 +567,13 @@ public class IpscServiceImpl implements IpscService {
             sleepMillSeconds(1000);
         }
 
-        return new PageImpl<>(conferenceParts, page, (long)conferenceParts.size());
+        if (StringUtils.isEmpty(phone)) {
+            return new PageImpl<>(conferenceParts, page, (long)conferenceParts.size());
+        }
+        List<ConferencePart> conferenceParts1 = conferenceParts.stream()
+                .filter(e -> e.getPhone().contains(phone))
+                .collect(Collectors.toList());
+        return new PageImpl<>(conferenceParts1, page, (long)conferenceParts1.size());
     }
 
     @Override

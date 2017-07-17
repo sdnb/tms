@@ -32,7 +32,7 @@ public interface IpscService {
     int changeCallMode(String callId, String confResId,  int mode, String tokenName) throws IOException, InterruptedException;
 
 
-    Page<ConferencePart> getConfParts(String confResId, String username, Integer currentPage, Integer pageSize) throws IOException, InterruptedException;
+    Page<ConferencePart> getConfParts(String confResId, String username, String phone, Integer currentPage, Integer pageSize) throws IOException, InterruptedException;
 
 
     /**
