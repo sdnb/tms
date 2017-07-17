@@ -73,7 +73,7 @@
 
         <div class="hyblT" style="float: left;">已参会人数<font style="font-size:14px">（<font color="#3686dc" ng-bind="hy.totalMembers"></font>）</font></div>
 
-        <form><input type="text" class="schwbk" /><input type="submit" value="" class="btn-sch2" /></form>
+        <form><input type="text" class="schwbk" placeholder="联系电话" ng-model="hy.conferenceFilter.phone"/><input type="submit" value="" class="btn-sch2" ng-clikc="hy.getMembers('reload')"/></form>
 
         <!--<a href="" class="btn-jy">静音</a>
         <a href="" class="btn-jy" style="background-image: url(images/icon-qxjy.png); background-position: 10px center; text-indent: 30px">取消静音</a>
