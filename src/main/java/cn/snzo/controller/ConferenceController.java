@@ -10,6 +10,8 @@ import cn.snzo.service.ITokenService;
 import cn.snzo.service.impl.IpscServiceImpl;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api")
 public class ConferenceController extends BaseController {
 
-
+    private static Logger logger = LoggerFactory.getLogger(ConferenceController.class);
     @Autowired
     private IpscServiceImpl ipscService;
 
@@ -56,6 +58,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("发起会议异常");
         }
     }
@@ -89,6 +92,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("结束会议异常");
         }
     }
@@ -119,6 +123,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("添加呼叫异常");
         }
     }
@@ -158,6 +163,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("结改变异常");
         }
     }
@@ -194,6 +200,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("退出异常");
         }
     }
@@ -228,6 +235,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("开始录音异常");
         }
     }
@@ -260,6 +268,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("停止录音异常");
         }
     }
@@ -286,6 +295,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("获取与会者异常");
         }
     }
@@ -314,6 +324,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
+            logErrInfo(e, logger);
             return failureRes("查询会议异常");
         }
     }
