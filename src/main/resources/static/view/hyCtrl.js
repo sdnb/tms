@@ -339,11 +339,25 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             });
         };
 
+        this.phone = null;
+        var phonePattern = commonService.regex('telephone');
         //添加到会议
-        this.addCall = function(member){
+        this.addCall = function(phone){
+            if(!phonePattern.test(phone)){
+                this.message.show = true;
+                this.message.text = '请填写正确的电话号码';
+                return;
+            }
+
+            if(!this.conference){
+                this.message.show = true;
+                this.message.text = '当前无会议';
+                return;
+            }
+
             this.addCallShow = {
                 confResId: this.conference.resId,
-                phones:[member.phone]
+                phones:[phone]
             };
             this.loading = true;
             conferenceService.addCall(this.addCallShow,function(data){
