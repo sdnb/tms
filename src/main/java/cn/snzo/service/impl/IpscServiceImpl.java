@@ -75,13 +75,12 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public Conference startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException {
 
-        int roomId  = conferenceStartShow.getRoomId();
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getRoomByConductor(conferenceStartShow.getConductorId());
         if (conferenceRoomShow == null) {
             throw new ServiceException("会议室不存在");
         }
         //检查会议室是否在使用中
-        boolean roomIsUse = conferenceRepository.checkConfOfRoom(roomId) > 0;
+        boolean roomIsUse = conferenceRepository.checkConfOfRoom(conferenceRoomShow.getId()) > 0;
         if (roomIsUse) {
             throw new ServiceException("会议室正在使用");
         }
