@@ -229,6 +229,8 @@ public class ConferenceController extends BaseController {
                 return failureRes("请设置录音文件存储地址");
             } else if (code == 5) {
                 return failureRes("会议不存在");
+            } else if (code == 6) {
+                return failureRes("会议已是录音状态");
             } else {
                 return failureRes("开始录音失败");
             }

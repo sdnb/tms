@@ -1,10 +1,7 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.Constants;
-import cn.snzo.entity.Conductor;
-import cn.snzo.entity.Conference;
-import cn.snzo.entity.Contact;
-import cn.snzo.entity.Log;
+import cn.snzo.entity.*;
 import cn.snzo.exception.ServiceException;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
@@ -319,10 +316,15 @@ public class IpscServiceImpl implements IpscService {
         if (path == null || path.isEmpty()) {
             return 4;
         }
-
         //会议不存在
-        if (checkConfExist(conferenceId) != 1) {
+        Conference conference = conferenceRepository.findByResId(conferenceId);
+        if (conference == null || checkConfExist(conferenceId) != 1) {
             return 5;
+        }
+
+        //会议已是录音状态
+        if (conference.getIsInRecording() == 1) {
+            return 6;
         }
 
         String filename = CommonUtils.getRecordFileName(path);
