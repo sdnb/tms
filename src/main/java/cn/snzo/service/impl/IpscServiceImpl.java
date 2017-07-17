@@ -372,6 +372,10 @@ public class IpscServiceImpl implements IpscService {
             protected void onResult(Object o) {
                 logger.info("会议{}已结束录音", conferenceId);
                 logRepository.save(log);
+                //将会议是否录音状态改为正在录音
+                Conference conference = conferenceRepository.findByResId(conferenceId);
+                conference.setIsInRecording(0);
+                conferenceRepository.save(conference);
                 ret[0] = 1;
             }
 
