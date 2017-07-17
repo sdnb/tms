@@ -16,4 +16,14 @@ define(['../tms'], function(module){
             return input;
         }
     });
+
+    module.filter('voiceMode',function(){
+        return function(input){
+            if(input == 1) input = '放音+收音';
+            else if(input == 2) input = '收音';
+            else if(input == 3) input = '放音';
+            else if(input == 4) input = '无';
+            return input;
+        }
+    });
 });

@@ -16,8 +16,8 @@
         <div class="zcchr">
             <span>参会人电话：</span>
             <div class="zcchwbk">
-                <input type="text" placeholder="手机号/固定电话" />
-                <a href=""></a>
+                <input type="text" placeholder="手机号/固定电话" ng-model="hy.phone"/>
+                <a href="" ng-click="hy.addCall(hy.phone)"></a>
             </div>
         </div>
 
@@ -88,7 +88,7 @@
                 <tr  ng-repeat="member in hy.members">
                     <td></td>
                     <td ng-bind="member.phone"></td>
-                    <td ng-bind="member.voiceMode"></td>
+                    <td ng-bind="member.voiceMode | voiceMode"></td>
                     <td>
                         <!-- 与会者禁音 1 放音+收音 3 放音 -->
                         <a href="" style="margin-right:18px" ng-show="member.voiceMode==1 || member.voiceMode==3" ng-click="hy.changeVoiceMode(member)"><img src="images/icon-jy2.png" /></a>
@@ -97,7 +97,7 @@
                         <!-- 移出与会者 -->
                         <a href="" ng-click="hy.removeCall(member)"><img src="images/exit2.png"/></a>
                         <!-- 重新呼叫 -->
-                        <a href="" ng-clicl="hy.addCall(member)"><img src="images/tel2.png"/></a>
+                        <a href="" ng-clicl="hy.addCall(member.phone)"><img src="images/tel2.png"/></a>
                     </td>
                 </tr>
             </table>
