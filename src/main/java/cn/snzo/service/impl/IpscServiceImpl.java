@@ -122,7 +122,7 @@ public class IpscServiceImpl implements IpscService {
                             isInRecording = 1;
                         }
                         //保存会议信息
-                        Conference conference = saveConference(conferenceStartShow, conferenceId, isInRecording);
+                        Conference conference = saveConference(conferenceStartShow, conferenceId, isInRecording, conferenceRoomShow.getId());
 
 
                         conferences.add(conference);
@@ -172,13 +172,12 @@ public class IpscServiceImpl implements IpscService {
     }
 
     @Transactional
-    private Conference saveConference(ConferenceStartShow conferenceStartShow, String conferenceId, int isInRecording) {
+    private Conference saveConference(ConferenceStartShow conferenceStartShow, String conferenceId, int isInRecording, int roomId) {
         Conference conference = new Conference();
         conference.setConductorId(conferenceStartShow.getConductorId());
         conference.setResId(conferenceId);
-
-        conference.setRoomId(conferenceStartShow.getRoomId());
-        ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(conferenceStartShow.getRoomId());
+        conference.setRoomId(roomId);
+        ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getOne(roomId);
         if (conferenceRoomShow != null) {
             conference.setRoomNo(conferenceRoomShow.getNumber());
         }
