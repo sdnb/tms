@@ -24,9 +24,12 @@ app.controller('loginCtrl', function($scope, $resource, loginService){
     this.login = function(flag){
         this.isNull = true;
         if(!flag) return;
-        this.loginData.password = md5(this.loginData.password);
-        console.log(this.loginData);
-        loginService.login($resource, this.loginData, function(data){
+        this.login = {
+            username: this.loginData.username,
+            password: md5(this.loginData.password)
+        };
+        console.log(this.login);
+        loginService.login($resource, this.login, function(data){
             if(data.status == 'true'){
                 $scope.loginCookie = getCookie('staff_token');
                 window.location.href = '/';

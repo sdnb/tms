@@ -67,7 +67,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             });
         };
 
-        this.selectConductor = function(conductor){
+        this.selectConductor = function(){
             if(this.conductor){
                 this.rooms = [];
                 this.getRooms(this.conductor.id);
@@ -92,6 +92,15 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         //获取联系人
+        Array.prototype.commonIndexOf = function(key,element){
+            for(var i=0;i<this.length;i++){
+                if(this[i][key] == element[key]){
+                    return i;
+                }
+            }
+            return -1;
+        };
+
         $scope.contactPageObject = {
             currentPage:1,
             pageSize:10,
@@ -125,7 +134,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }
                     angular.forEach(_this.contacts,function(contact){
                         contact.isChecked = false;
-                        if(_this.checkedContacts.indexOf(contact) != -1)
+                        if(_this.checkedContacts.commonIndexOf('id',contact) != -1)
                             contact.isChecked = true;
                     });
                     $scope.checkLimit($scope.contactPageObject.currentPage);
@@ -165,12 +174,12 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         this.selectContact = function(contact){
             if(contact.isChecked){
-                if(this.checkedContacts.indexOf(contact) == -1){
+                if(this.checkedContacts.commonIndexOf('id',contact) == -1){
                     this.checkedContacts.push(contact);
                 }
             }else{
-                if(this.checkedContacts.indexOf(contact) != -1){
-                    this.checkedContacts.splice(this.checkedContacts.indexOf(contact),1);
+                if(this.checkedContacts.commonIndexOf('id',contact) != -1){
+                    this.checkedContacts.splice(this.checkedContacts.commonIndexOf('id',contact),1);
                 }
             }
             console.log(this.checkedContacts);
@@ -206,7 +215,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 phoneArray.push(contact.phone);
             });
             this.conference.phones = phoneArray;
-            console.log(this.conference);
             this.loading = true;
             conferenceService.add(this.conference,function(data){
                 _this.loading = false;
@@ -266,22 +274,99 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     if(_this.conferences.length > 0){
                         _this.conference = _this.conferences[0];
                         _this.getMembers('reload');
+                    }else{
+                        _this.members = [];
                     }
                 }else{
                     _this.conferences = [];
+                    _this.members = [];
+                    console.log(data);
                 }
             });
         };
 
         //停止会议
         this.endConference = function(){
+            if(!this.conference){
+                this.message.show = true;
+                this.message.text = '当前无会议';
+                return;
+            }
             this.loading = true;
+            conferenceService.end(this.conference.id,function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                    _this.getConferences();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                    console.log(data);
+                }
+            });
+        };
+
+        //开始录音
+        this.startRecord = function(){
+            conferenceService.startRecord(this.conference.resId,function(data){
+                if(data.status == 'true'){
+                    _this.getConferences();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                }
+            });
+        };
+
+        //停止录音
+        this.endRecord = function(){
+            conferenceService.stopReord(this.conference.resId,function(data){
+                if(data.status == 'true'){
+                    _this.getConferences();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                }
+            });
+        };
+
+        //添加到会议
+        this.addCall = function(){
+            var phoneArray =  [];
+            this.checkedContacts.forEach(function(contact){
+                phoneArray.push(contact.phone);
+            });
+            this.addCallShow = {
+                confResId: this.conference.resId,
+                phones:phoneArray
+            };
+            conferenceService.addCall(this.addCallShow,function(data){
+                if(data.status == 'true'){
+                    _this.getMembers('reload');
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                }
+            });
+        };
+
+        //从会议移除
+        this.removeCall = function(member){
+            this.loading = true;
+            conferenceService.exitConf(this.conference.resId,member.callId,function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                    _this.getMembers();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                }
+            });
         };
 
         //改变与会者的声音收放模式
         this.changeVoiceMode = function(member){
             var mode = member.voiceMode == 4 ? 1 : member.voiceMode + 1;
-            conferenceService.forbid(this.conference.resId,member.confId,mode,function(data){
+            conferenceService.forbid(this.conference.resId,member.callId,mode,function(data){
                 if(data.status == 'true'){
                     _this.getMembers();
                 }else{
@@ -290,7 +375,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     console.log(data);
                 }
             });
-        }
+        };
 
 
         //定义确认弹出框提示问题

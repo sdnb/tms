@@ -106,6 +106,21 @@ a.topExit img { float: left; margin:8px 5px 0 0; }
 	text-indent: 10px;
 }
 
+.dhb-sch select.wbk1{
+	vertical-align: top;
+	width:120px;
+	height: 32px;
+	line-height: 32px;
+	border:solid 1px #999;
+	border-radius: 4px;
+	color:#333;
+	font-family:Microsoft YaHei;
+	font-size:16px;
+	margin-right:20px;
+	text-indent: 10px;
+	background: #fff;
+}
+
 .btn-dhbs {
 	width:80px;
 	height: 34px;
