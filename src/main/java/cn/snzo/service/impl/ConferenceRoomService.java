@@ -176,7 +176,7 @@ public class ConferenceRoomService implements IConferenceRoomService {
     @Override
     public ConferenceRoomShow getOne(int roomId) {
         ConferenceRoom conferenceRoom = conferenceRoomRepository.findOne(roomId);
-        ConferenceRoomShow conferenceRoomShow = new ConferenceRoomShow();
+        ConferenceRoomShow conferenceRoomShow = new ConferenceRoomShow(conferenceRoom);
         BeanUtil.entityToShow(conferenceRoom, conferenceRoomShow);
         return conferenceRoomShow;
     }
@@ -185,5 +185,14 @@ public class ConferenceRoomService implements IConferenceRoomService {
     public int modifyStatus(Integer roomId, int status) {
         int ret = conferenceRoomRepository.updateStatus(roomId, status);
         return 1;
+    }
+
+    @Override
+    public ConferenceRoomShow getRoomByConductor(Integer conductorId) {
+        List<ConferenceRoom> conferenceRoom = conferenceRoomRepository.findByConductorId(conductorId);
+        if (conferenceRoom == null || conferenceRoom.isEmpty()) {
+            return null;
+        }
+        return new ConferenceRoomShow(conferenceRoom.get(0));
     }
 }

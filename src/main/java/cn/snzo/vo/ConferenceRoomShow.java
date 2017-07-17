@@ -1,6 +1,8 @@
 package cn.snzo.vo;
 
+import cn.snzo.entity.ConferenceRoom;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotNull;
 
@@ -26,6 +28,10 @@ public class ConferenceRoomShow {
     private   String    conductorName;  //主持人姓名
 
     public ConferenceRoomShow() {
+    }
+
+    public ConferenceRoomShow(ConferenceRoom conferenceRoom) {
+        BeanUtils.copyProperties(conferenceRoom, this);
     }
 
     public String getConductorName() {

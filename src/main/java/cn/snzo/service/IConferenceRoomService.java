@@ -61,4 +61,12 @@ public interface IConferenceRoomService {
      * @return
      */
     int modifyStatus(Integer roomId, int i);
+
+
+    /**
+     * 查询主持人的会议室
+     * @param conductorId
+     * @return
+     */
+    ConferenceRoomShow getRoomByConductor(Integer conductorId);
 }
