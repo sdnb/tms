@@ -122,6 +122,11 @@ public class IpscServiceImpl implements IpscService {
 
                         //保存会议信息
                         Conference conference = saveConference(conferenceStartShow, conferenceId);
+
+                        //会议正在录音
+                        if (params.get("record_file") != null) {
+                            conference.setStatus(1);
+                        }
                         conferences.add(conference);
                         //外呼
                         logger.info("进行外呼", conferenceId);

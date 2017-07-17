@@ -19,6 +19,7 @@ public class Conference extends BaseEntity {
     private Date    startAt;
     private Date    endAt;
     private int     status;//状态 1 会议中 2 已结束
+    private int     isInRecording; //1 正在录音 0 未录音
     public String getResId() {
         return resId;
     }
@@ -81,5 +82,13 @@ public class Conference extends BaseEntity {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getIsInRecording() {
+        return isInRecording;
+    }
+
+    public void setIsInRecording(int isInRecording) {
+        this.isInRecording = isInRecording;
     }
 }
