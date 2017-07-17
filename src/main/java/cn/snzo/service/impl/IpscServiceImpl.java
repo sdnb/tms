@@ -264,8 +264,7 @@ public class IpscServiceImpl implements IpscService {
             logger.info("会议 {} 不存在", conferenceId);
             return 4;
         }
-        Log log = new Log("", OperResTypeEnum.CALL.ordinal(),
-                "sys.call.construct",
+        Log log = new Log("", OperResTypeEnum.CALL.ordinal(), "sys.call.construct",
                 "创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal(),
                 OperResultEnum.SUCCESS.ordinal());
         int[] ret = new int[1];

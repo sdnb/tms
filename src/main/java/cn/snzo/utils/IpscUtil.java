@@ -202,7 +202,7 @@ public class IpscUtil {
             logger.info("Name ={} ", name);
             String reencode = new String(name.getBytes("gbk"),"utf-8");
             logger.info("reEncode Name ={} ", reencode);
-            params.put("user_data", te.getPhone()+"-"+ te.getPhone()); ///用户信息
+            params.put("user_data", te.getPhone()+"-"+ name); ///用户信息
             logger.info("呼叫参数： {}", params);
             commander.createResource(
                     busAddress,
