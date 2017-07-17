@@ -20,9 +20,9 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
         var recordingService = new RecordingService($resource);
 
         //时间控件样式冲突暂时屏蔽
-        this.initDatePicker = function(){
+        /*this.initDatePicker = function(){
             commonService.changeDatePicker('datetime',['createStart','createEnd']);
-        };
+        };*/
 
         $scope.pageObject= {
             currentPage: 1,
