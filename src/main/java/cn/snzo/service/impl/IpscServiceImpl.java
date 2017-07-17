@@ -159,9 +159,9 @@ public class IpscServiceImpl implements IpscService {
                 }
         );
 
-        //等待结果返回
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(50);
+        //等待1s，结果返回
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         if (!conferences.isEmpty()) {
             return conferences.get(0);
@@ -171,7 +171,9 @@ public class IpscServiceImpl implements IpscService {
     }
 
 
-
+    private void sleepMillSeconds(int millsecondes) throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(millsecondes);
+    }
 
     @Transactional
     private Conference saveConference(ConferenceStartShow conferenceStartShow, String conferenceId, int isInRecording) {
@@ -246,8 +248,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(50);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -299,8 +302,9 @@ public class IpscServiceImpl implements IpscService {
                         ret[0] = 3;
                     }
                 });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -352,8 +356,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -397,8 +402,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -443,8 +449,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -488,8 +495,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -513,7 +521,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("Object ={}", o);
                 String array = JSON.toJSONString(o);
                 logger.info("array = {}", array);
-                JSONArray  jsonArray = JSON.parseArray(array);
+                JSONArray      jsonArray = JSON.parseArray(array);
                 List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
                 logger.info("PartDatas={}", partDatas);
                 for (PartData partData : partDatas) {
@@ -552,8 +560,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
 
         return new PageImpl<>(conferenceParts, page, (long)conferenceParts.size());
@@ -582,8 +591,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
@@ -612,8 +622,9 @@ public class IpscServiceImpl implements IpscService {
                 ret[0] = 3;
             }
         });
-        while (ret[0] == 0) {
-            TimeUnit.MILLISECONDS.sleep(10);
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
         }
         return ret[0];
     }
