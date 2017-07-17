@@ -210,7 +210,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         this.addConference = function(){
-            this.conference.roomId = this.rooms[0].id;
+            //this.conference.roomId = this.rooms[0].id;
             this.conference.conductorId = this.conductor.id;
             var phoneArray =  [];
             this.checkedContacts.forEach(function(contact){
@@ -239,7 +239,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         this.members = [];
-        this.totalMemebers = 0;
+        this.totalMembers = 0;
         this.conferenceFilter = {};
         this.getMembers = function(type){
             if(type == 'reload'){
@@ -260,7 +260,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }
                 }else{
                     _this.members = [];
-                    _this.totalMemebers = 0;
+                    _this.totalMembers = 0;
                     console.log(data);
                 }
             });
