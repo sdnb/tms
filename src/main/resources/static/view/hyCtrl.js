@@ -1,6 +1,6 @@
 define(['../script/tms', 'jquery','../script/service/loginService','../script/service/conferenceService','../script/service/conferenceRoomService','../script/service/conductorService','../script/service/contactService','./pagination'],
     function(module, $, LoginService, ConferenceService, ConferenceRoomService, ConductorService, ContactService){
-    module.controller('hyCtrl', function($scope, $location,$resource,commonService){
+    module.controller('hyCtrl', function($scope, $location,$resource,$interval,commonService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -222,7 +222,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.conference = data.message;
-                    _this.getMembers('reload');
+                    var timer = $interval(function(){
+                        _this.getMembers('reload');
+                    },3000,10);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
