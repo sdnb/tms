@@ -56,10 +56,12 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conductorService.pageList({currentPage:1,pageSize:6000},function(data,header){
                 if(data.status == 'true'){
                     _this.conductors = data.message;
-                    _this.conductor = _this.conductors[0];
-                    _this.getRooms(_this.conductor.id);
-                    _this.getContacts('reload');
-                    _this.getConferences(_this.conductor.id);
+                    if(_this.conductors.length > 0){
+                         _this.conductor = _this.conductors[0];
+                         _this.getRooms(_this.conductor.id);
+                         _this.getContacts('reload');
+                         _this.getConferences(_this.conductor.id);
+                    }
                 }else{
                     _this.conductors = [];
                     console.log(data);
@@ -119,7 +121,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             this.contractFilter.currentPage = $scope.contactPageObject.currentPage;
             this.contractFilter.pageSize = $scope.contactPageObject.pageSize;
-            this.contractFilter.conductorId = this.conductor.id; //电话簿
+            this.contractFilter.conductorId = this.conductor.id; //主持人
             this.loading = true;
             contactService.getContacts(this.contractFilter,function(data,header){
                 _this.loading = false;
@@ -237,6 +239,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         this.members = [];
+        this.totalMemebers = 0;
         this.conferenceFilter = {};
         this.getMembers = function(type){
             if(type == 'reload'){
@@ -249,6 +252,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
                     _this.members = data.message;
+                    _this.totalMembers = header('page_total');
                     $scope.conferencePageObject.totalPage = header('page_count');
                     $scope.conferencePageObject.pages = [];
                     for(var i=1;i<=$scope.conferencePageObject.totalPage;i++){
@@ -256,6 +260,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }
                 }else{
                     _this.members = [];
+                    _this.totalMemebers = 0;
                     console.log(data);
                 }
             });
@@ -268,7 +273,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
          //获取会议
         this.getConferences = function(conductorId){
-            conferenceService.getConferencePage({currentPage:1,pageSize:6000,conductorId:conductorId},function(data){
+            conferenceService.getConferencePage({currentPage:1,pageSize:6000,conductorId:conductorId,status:1},function(data){
                 if(data.status == 'true'){
                     _this.conferences = data.message;
                     if(_this.conferences.length > 0){
@@ -279,6 +284,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }
                 }else{
                     _this.conferences = [];
+                    _this.conference = null;
                     _this.members = [];
                     console.log(data);
                 }
@@ -296,7 +302,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.end(this.conference.id,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
-                    _this.getConferences();
+                    _this.getConferences(_this.conductor.id);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
@@ -307,9 +313,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         //开始录音
         this.startRecord = function(){
+            this.loading = true;
             conferenceService.startRecord(this.conference.resId,function(data){
+                _this.loading = false;
                 if(data.status == 'true'){
-                    _this.getConferences();
+                    _this.getConferences(_this.conductor.id);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
@@ -319,9 +327,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         //停止录音
         this.endRecord = function(){
+            this.loading = true;
             conferenceService.stopReord(this.conference.resId,function(data){
+                _this.loading = false;
                 if(data.status == 'true'){
-                    _this.getConferences();
+                    _this.getConferences(_this.conductor.id);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
@@ -330,16 +340,14 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         //添加到会议
-        this.addCall = function(){
-            var phoneArray =  [];
-            this.checkedContacts.forEach(function(contact){
-                phoneArray.push(contact.phone);
-            });
+        this.addCall = function(member){
             this.addCallShow = {
                 confResId: this.conference.resId,
-                phones:phoneArray
+                phones:[member.phone]
             };
+            this.loading = true;
             conferenceService.addCall(this.addCallShow,function(data){
+                _this.loading = false;
                 if(data.status == 'true'){
                     _this.getMembers('reload');
                 }else{
@@ -365,8 +373,15 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         //改变与会者的声音收放模式
         this.changeVoiceMode = function(member){
-            var mode = member.voiceMode == 4 ? 1 : member.voiceMode + 1;
+            var mode = member.voiceMode;
+            if(mode == 1 || mode == 3){
+                mode = 2;
+            }else{
+                mode = 1;
+            }
+            this.loading = true;
             conferenceService.forbid(this.conference.resId,member.callId,mode,function(data){
+                _this.loading = false;
                 if(data.status == 'true'){
                     _this.getMembers();
                 }else{

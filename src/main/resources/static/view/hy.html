@@ -35,7 +35,8 @@
         <div class="hykz">
             <span>会议控制</span>
             <a href="">全部静音</a>
-            <a href="" style="background-image: url(images/icon-hykz2.png);">会议录音</a>
+            <a href="" style="background-image: url(images/icon-hykz2.png);" ng-show="hy.conference && hy.conference.isInRecording==0"  ng-click="hy.startRecord()">会议录音</a>
+            <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="hy.conference && hy.conference.isInRecording==1" ng-click="hy.endRecord()">结束录音</a>
             <a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>
         </div>
 
@@ -70,13 +71,13 @@
 
     <div class="hyb-right">
 
-        <div class="hyblT" style="float: left;">已参会人数<font style="font-size:14px">（<font color="#3686dc">0</font>）</font></div>
+        <div class="hyblT" style="float: left;">已参会人数<font style="font-size:14px">（<font color="#3686dc" ng-bind="hy.totalMembers"></font>）</font></div>
 
         <form><input type="text" class="schwbk" /><input type="submit" value="" class="btn-sch2" /></form>
 
-        <a href="" class="btn-jy">静音</a>
+        <!--<a href="" class="btn-jy">静音</a>
         <a href="" class="btn-jy" style="background-image: url(images/icon-qxjy.png); background-position: 10px center; text-indent: 30px">取消静音</a>
-        <a href="" class="btn-jy" style="background-image: url(images/icon-gd.png); background-position: 18px center; text-indent: 40px; margin-right: 0">挂断</a>
+        <a href="" class="btn-jy" style="background-image: url(images/icon-gd.png); background-position: 18px center; text-indent: 40px; margin-right: 0">挂断</a>-->
         <div style="clear: both"></div>
 
         <div class="hybrCon">
@@ -88,7 +89,16 @@
                     <td></td>
                     <td ng-bind="member.phone"></td>
                     <td ng-bind="member.voiceMode"></td>
-                    <td><a href="" style="margin-right:18px" ng-click="hy.changeVoiceMode(member)"><img src="images/icon-jy2.png" /></a><a href=""><img src="images/exit2.png" /></a></td>
+                    <td>
+                        <!-- 与会者禁音 1 放音+收音 3 放音 -->
+                        <a href="" style="margin-right:18px" ng-show="member.voiceMode==1 || member.voiceMode==3" ng-click="hy.changeVoiceMode(member)"><img src="images/icon-jy2.png" /></a>
+                        <!-- 与会者 2收音-->
+                        <a href="" style="margin-right:18px" ng-show="member.voiceMode==2" ng-click="hy.changeVoiceMode(member)"><img src="images/icon-hykz2.png"/></a>
+                        <!-- 移出与会者 -->
+                        <a href="" ng-click="hy.removeCall(member)"><img src="images/exit2.png"/></a>
+                        <!-- 重新呼叫 -->
+                        <a href="" ng-clicl="hy.addCall(member)"><img src="images/tel2.png"/></a>
+                    </td>
                 </tr>
             </table>
 
