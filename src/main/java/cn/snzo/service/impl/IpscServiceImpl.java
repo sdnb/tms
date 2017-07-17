@@ -120,13 +120,15 @@ public class IpscServiceImpl implements IpscService {
                         log.setOperResId(conferenceId);
                         logRepository.save(log);
 
-                        //保存会议信息
-                        Conference conference = saveConference(conferenceStartShow, conferenceId);
-
+                        int isInRecording = 0;
                         //会议正在录音
                         if (params.get("record_file") != null) {
-                            conference.setStatus(1);
+                            isInRecording = 1;
                         }
+                        //保存会议信息
+                        Conference conference = saveConference(conferenceStartShow, conferenceId, isInRecording);
+
+
                         conferences.add(conference);
                         //外呼
                         logger.info("进行外呼", conferenceId);
@@ -172,7 +174,7 @@ public class IpscServiceImpl implements IpscService {
 
 
     @Transactional
-    private Conference saveConference(ConferenceStartShow conferenceStartShow, String conferenceId) {
+    private Conference saveConference(ConferenceStartShow conferenceStartShow, String conferenceId, int isInRecording) {
         Conference conference = new Conference();
         conference.setConductorId(conferenceStartShow.getConductorId());
         conference.setResId(conferenceId);
@@ -189,6 +191,7 @@ public class IpscServiceImpl implements IpscService {
         conference.setStartAt(new Date());
         conference.setEndAt(new Date());
         conference.setStatus(1);
+        conference.setIsInRecording(isInRecording);
         return conferenceRepository.save(conference);
     }
 
