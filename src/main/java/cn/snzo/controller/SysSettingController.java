@@ -40,12 +40,20 @@ public class SysSettingController extends BaseController{
     }
 
 
-    //todo
+
     @RequestMapping(value = "/setting/pwd", method = RequestMethod.PUT)
     public ObjectResult updatePwd(@RequestBody AccountShow accountShow) {
         int ret = sysSettingService.modifyPwd(accountShow);
         if (ret == 1) {
             return successRes("修改成功");
+        } else if (ret == 2){
+            return failureRes("该用户不存在");
+        } else if (ret == 3){
+            return failureRes("新密码不能为空");
+        } else if (ret == 4){
+            return failureRes("修改异常");
+        } else if (ret == 5){
+            return failureRes("原密码错误");
         } else {
             return failureRes("修改失败");
         }
