@@ -1,4 +1,4 @@
-define(['../../script/tms', 'jquery', '../../script/service/conductorService', '../pagination'], function(module, $, ConductorService){
+define(['../../script/tms', 'jquery', '../../script/service/conductorService','md5', '../pagination'], function(module, $, ConductorService,MD5){
     module.controller('zcrCtrl', function($scope, $resource, $location, commonService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
@@ -31,6 +31,7 @@ define(['../../script/tms', 'jquery', '../../script/service/conductorService', '
                 case 'add':
                     this.conductor = {};
                     this.conductor.accountShow = {};
+                    this.password = null;
                     this.template = 'addTemplate';
                     break;
                 case 'update':
@@ -91,11 +92,12 @@ define(['../../script/tms', 'jquery', '../../script/service/conductorService', '
         this.usernamePattern = commonService.regex('account'); //账户
         this.passwordPattern = commonService.regex('password'); //密码
         this.phonePattern = commonService.regex('telephone'); //电话
-
         this.saveConductor = function(flag){
             this.isNull = true;
             if(!flag) return;
             this.conductor.accountShow.username = this.conductor.username;
+            this.conductor.accountShow.password = MD5(this.password);
+            console.log(this.conductor);
             this.loading = true;
             conductorService.save(this.conductor, function(data){
                 _this.loading = false;

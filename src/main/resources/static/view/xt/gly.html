@@ -21,20 +21,65 @@
 
     <div class="glyRight">
 
-        <form>
+        <form name="updateForm">
 
-            <div style="margin:0 0 20px; font-size:18px">新建联系人</div>
+            <div style="margin:0 0 20px; font-size:18px">修改密码<i class="mgr-x-tips">密码由字母加数字组成</i></div>
 
-            <div class="xjLI"><i style="padding: 0 .5em"></i>原密码：<input type="password" class="wbk3" /></div>
+            <div class="xjLI"><i style="padding: 0 .5em"></i>原密码：<input type="password" class="wbk3" name="password" ng-model="gly.account.password" ng-pattern="gly.pwdPattern"  required/>
+                <i class="mgr-x-tips" ng-show="updateForm.password.$error.required && gly.isNull">原密码不能为空</i>
+                <i class="mgr-x-tips" ng-show="updateForm.password.$error.pattern">密码格式不对</i>
+            </div>
 
-            <div class="xjLI"><i style="padding: 0 .5em"></i>新密码：<input type="password" class="wbk3" /></div>
+            <div class="xjLI"><i style="padding: 0 .5em"></i>新密码：<input type="password" class="wbk3" name="newPassword" ng-model="gly.account.newPassword" ng-pattern="gly.pwdPattern"  required/>
+                <i class="mgr-x-tips" ng-show="updateForm.newPassword.$error.required && gly.isNull">新密码不能为空</i>
+                <i class="mgr-x-tips" ng-show="updateForm.newPassword.$error.pattern">密码格式不对</i>
+            </div>
 
-            <div class="xjLI">确认密码：<input type="password" class="wbk3" /></div>
+            <div class="xjLI">确认密码：<input type="password" class="wbk3" name="confirmPassword" ng-model="gly.account.confirmPassword" ng-pattern="gly.pwdPattern"  required/>
+                <i class="mgr-x-tips" ng-show="updateForm.confirmPassword.$error.required && gly.isNull">确认密码不能为空</i>
+                <i class="mgr-x-tips" ng-show="updateForm.confirmPassword.$error.pattern">密码格式不对</i>
+                <i class="mgr-x-tips" ng-show="(gly.account.newPassword != gly.account.confirmPassword) && updateForm.newPassword.$valid && updateForm.confirmPassword.$valid">两次密码不一致</i>
+            </div>
 
-            <div><input type="submit" value="保存" class="btn-xj" /><a href="" class="btn-xj" style="margin-left: 20px">取消</a></div>
+            <div><input type="submit" value="保存" class="btn-xj" ng-click="gly.updatePwd(updateForm.$valid)"/><a href="" class="btn-xj" style="margin-left: 20px" ng-click="gly.reset()">取消</a></div>
 
         </form>
 
+    </div>
+
+    <div class="modalbg" ng-show="gly.message.show">
+        <div class="tishi">
+
+            <span class="lyClose" ng-click="gly.hideMessage()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="gly.message.text"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="gly.hideMessage()"><img src="images/qx.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="gly.hideMessage()"><img src="images/qr.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" ng-show="confirmDialogShow">
+        <div class="tishi">
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="confirmTips"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/qx.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/qr.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" style="text-align: center;" ng-show="ls.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
     </div>
 
 </div>

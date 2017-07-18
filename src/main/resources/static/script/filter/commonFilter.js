@@ -12,7 +12,15 @@ define(['../tms'], function(module){
         return function(input){
             if(input == 0) input = '创建';
             else if(input == 1) input = '操作';
-            else if(input == 1) input = '事件';
+            else if(input == 2) input = '事件';
+            return input;
+        }
+    });
+
+    module.filter('operResType',function(){
+        return function(input){
+            if(input == 0) input = '会议';
+            else if(input == 1) input = '呼叫';
             return input;
         }
     });

@@ -37,10 +37,10 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                         //获取主持人
                         _this.getConductors();
                     }else{ //非主持人直接获取联系人
-                        this.conductor = {};
-                        this.conductor.id = $scope.loginUser.conductorId;
-                        _this.getRooms(this.conductor.id);
-                        _this.getConferences(this.conductor.id);
+                        _this.conductor = {};
+                        _this.conductor.id = $scope.loginUser.conductorId;
+                        _this.getRooms(_this.conductor.id);
+                        _this.getConferences(_this.conductor.id);
                         _this.getContacts('reload');
                     }
                 }else{
@@ -365,7 +365,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.addCall(this.addCallShow,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
-                    _this.getMembers('reload');
+                    var task = $interval(function(){
+                        _this.getMembers('reload');
+                    },5000,2);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
