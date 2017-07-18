@@ -257,6 +257,7 @@ public class IpscUtil {
 
 
     public static void createConference(Map<String, Object> params, RpcResultListener rpcResultListener) throws IOException {
+        logger.info("createConference params {}, busAddress {}", params, busAddress);
         if (commander != null) {
             commander.createResource(
                     busAddress,
