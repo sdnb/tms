@@ -23,8 +23,8 @@
 
         <div class="dhb-sch" style="margin-top:0">
             <form>
-                操作人：<input type="text" class="wbk1" ng-bind="rz.logFilter.operator"/>
-                操作类型：<select class="wbk1" ng-model="rz.logFilter.operResType" ng-options="type.id as type.name for type in rz.types">
+                操作人：<input type="text" class="wbk1" ng-model="rz.logFilter.operator"/>
+                资源类型：<select class="wbk1" ng-model="rz.logFilter.operResType" ng-options="type.id as type.name for type in rz.types">
                     <option value="">请选择</option>
                 </select>
                 <input type="submit" value="搜索" class="btn-dhbs" ng-click="rz.getLogs('reload')"/>
