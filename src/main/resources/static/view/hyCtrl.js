@@ -228,7 +228,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     _this.conference = data.message;
                     var timer = $interval(function(){
                         _this.getMembers('reload');
-                    },3000,10);
+                    },1000,2);
+                    _this.getRooms(_this.conductor.id);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
