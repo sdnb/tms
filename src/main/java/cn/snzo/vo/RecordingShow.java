@@ -10,7 +10,7 @@ public class RecordingShow {
     private String filename;
     private Date startTime;
     private Date endTime;
-    private String filepath;
+    private String filePath;
     private String conferenceNo;
     private String conferenceId;
     private String roomNo;
@@ -56,12 +56,12 @@ public class RecordingShow {
         this.endTime = endTime;
     }
 
-    public String getFilepath() {
-        return filepath;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public String getConferenceNo() {

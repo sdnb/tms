@@ -3,8 +3,6 @@ package cn.snzo.service;
 import cn.snzo.vo.ConferenceRoomShow;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 /**
  * Created by Administrator on 2017/7/1 0001.
  */
@@ -45,12 +43,6 @@ public interface IConferenceRoomService {
      */
     Page<ConferenceRoomShow> findPage(String ivr, String number, String name, Integer currentPage, Integer pageSize);
 
-    /**
-     *
-     * @param conductorId
-     * @return
-     */
-    List<ConferenceRoomShow> findByConductorId(Integer conductorId);
 
     ConferenceRoomShow getOne(int roomId);
 

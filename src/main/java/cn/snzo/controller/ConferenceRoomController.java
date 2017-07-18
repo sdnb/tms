@@ -1,9 +1,9 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
-import cn.snzo.utils.CommonUtils;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.service.IConferenceRoomService;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.ConferenceRoomShow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,16 +81,21 @@ public class ConferenceRoomController extends BaseController{
     }
 
     /**
-     *
+     * 根据主持人查会议室
      * @param conductorId 主持人Id
      * @param response
      * @return
      */
     @RequestMapping(value = "/conferenceRoom/conductor",method = RequestMethod.GET)
-    public ObjectResult getRoomByConductor(@RequestParam(value = "conductorId", required = false)Integer conductorId,
+    public ObjectResult getRoomByConductor(@RequestParam(value = "conductorId", required = true)Integer conductorId,
                                 HttpServletResponse response) {
-        List<ConferenceRoomShow> list = conferenceRoomService.findByConductorId(conductorId);
-        return new ObjectResult("true", list);
+        ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getRoomByConductor(conductorId);
+        if (conferenceRoomShow != null) {
+            List<ConferenceRoomShow> conferenceRoomShows = new ArrayList<>();
+            return successRes(conferenceRoomShows.add(conferenceRoomShow));
+        } else {
+            return failureRes("该主持人未绑定会议室");
+        }
     }
 
     /**
