@@ -34,4 +34,12 @@ define(['../tms'], function(module){
             return input;
         }
     });
+
+    module.filter('conferenceStatus',function(){
+        return function(input){
+            if(input == 1) input = '会议中';
+            else if(input == 2) input = '已结束';
+            return input;
+        }
+    });
 });

@@ -27,7 +27,7 @@ define(['../../script/tms', 'jquery', '../../script/service/systemService', '../
             pages: []
         };
 
-        this.types = [{id:0,name:'创建'},{id:1,name:'操作'},{id:2,name:'事件'}];
+        this.types = [{id:1,name:'会议'},{id:2,name:'呼叫'}];
 
         this.logs = [];
         this.getLogs = function(type){

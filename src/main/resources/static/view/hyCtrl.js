@@ -81,11 +81,15 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         //获取会议室
         this.rooms =  [];
+        this.room = null;
         this.getRooms = function(conductorId){
             if(!conductorId) return;
             conferenceRoomService.getRoomByConductor(conductorId,function(data){
                 if(data.status == 'true'){
                     _this.rooms = data.message;
+                    if(_this.rooms.length > 0){
+                        _this.room = _this.rooms[0];
+                    }
                 }else{
                     _this.rooms = [];
                     console.log(data);
