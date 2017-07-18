@@ -10,6 +10,8 @@ define([],function(){
     SystemService.prototype.logFindPage = function(filter,cb){
         this.logFindPageApi.get(filter,function(data,header){
             cb(data,header);
+        },function(errData){
+            cb(errData.data.error);
         });
     };
 
