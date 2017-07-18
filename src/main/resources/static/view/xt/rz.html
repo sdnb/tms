@@ -34,7 +34,7 @@
 
         <table cellpadding="0" cellspacing="0" class="hysTB">
 
-            <tr> <th>资源Id</th> <th>资源类型</th> <th>操作类型</th> <th>操作方法Id</th> <th>操作方法</th><th>操作结果</th> <td>操作人</td> <th>创建时间</th></tr>
+            <tr> <th>资源Id</th> <th>资源类型</th> <th>操作类型</th> <th>操作方法Id</th> <th>操作方法</th><th>操作结果</th> <th>操作人</th> <th>创建时间</th></tr>
             <tr ng-repeat="log in rz.logs">
                 <td ng-bind="log.operResId"></td>
                 <td ng-bind="log.operResType | operResType"></td>
