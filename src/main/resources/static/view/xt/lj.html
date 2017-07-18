@@ -20,17 +20,59 @@
     </div>
 
     <div class="glyRight">
-
+        <form name="settingForm">
         <div class="zcchr">
             <span>文件存储路径：</span>
             <div class="zcchwbk" style="width:270px">
-                <input type="text" />
+                <input type="text" name="recordingPath" ng-model="lj.setting.recordingPath" required/>
                 <a href="" style="background-image: url(images/wjj.png); width:40px"></a>
             </div>
-            <input type="submit" value="修 改" class="btn-xg" />
+            <input type="submit" value="修 改" class="btn-xg" ng-show="lj.setting.id" ng-click="lj.updateCurrentSetting(settingForm.$valid)"/>
+            <input type="submit" value="新增" class="btn-xg" ng-show="!lj.setting.id" ng-click="lj.saveSetting(settingForm.$valid)"/>
+            <i class="mgr-x-tips" ng-show="settingForm.recordingPath.$error.required && lj.isNull">文件存储路径不能为空</i>
         </div>
-        <div class="xjLI">确认密码：<input style="margin-left:28px" type="password" class="wbk3" /></div>
-        <div class="xjLI">确认密码：<input style="margin-left:28px;" type="password" class="wbk3" /></div>
+        <div class="xjLI">voip：<input style="margin-left:55px" type="text" class="wbk3" name="hostname" ng-model="lj.setting.hostname" required />
+            <i class="mgr-x-tips" ng-show="settingForm.hostname.$error.required && lj.isNull">voip不能为空</i>
+        </div>
+        <div class="xjLI">端口号：<input style="margin-left:40px;" type="text" class="wbk3" name="port" ng-model="lj.setting.port" ng-pattern="lj.portPattern" required/>
+            <i class="mgr-x-tips" ng-show="settingForm.port.$error.required && lj.isNull">端口号不能为空</i>
+            <i class="mgr-x-tips" ng-show="settingForm.port.$error.pattern">端口号只能为正整数</i>
+        </div>
+        </form>
     </div>
 
+    <div class="modalbg" ng-show="lj.message.show">
+        <div class="tishi">
+
+            <span class="lyClose" ng-click="lj.hideMessage()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="lj.message.text"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="lj.hideMessage()"><img src="images/qx.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="lj.hideMessage()"><img src="images/qr.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" ng-show="confirmDialogShow">
+        <div class="tishi">
+            <span class="lyClose" ng-click="cancelConfirm()"></span>
+            <div style="clear: both;"></div>
+
+            <div class="lyCen" ng-bind="confirmTips"></div>
+
+            <div class="lyBtn">
+                <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/qx.png" /></a>
+                <a href="" style="margin-left:8px;" ng-click="confirmCommit(confirmType)"><img src="images/qr.png" /></a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modalbg" style="text-align: center;" ng-show="lj.loading">
+        <img style="margin-top: 20%;" src="/images/loading.gif">
+    </div>
 </div>
