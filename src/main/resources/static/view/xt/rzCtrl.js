@@ -43,6 +43,7 @@ define(['../../script/tms', 'jquery', '../../script/service/systemService', '../
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.logs = data.message;
+                    console.log(_this.logs);
                     $scope.pageObject.totalPage = header('page_count');
                     $scope.pageObject.pages = [];
                     for(var i=1;i<=$scope.pageObject.totalPage;i++){

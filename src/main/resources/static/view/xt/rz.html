@@ -24,7 +24,7 @@
         <div class="dhb-sch" style="margin-top:0">
             <form>
                 操作人：<input type="text" class="wbk1" ng-bind="rz.logFilter.operator"/>
-                操作类型：<select class="wbk1" ng-model="rz.logFilter.operResult" ng-options="type.id as type.name for type in rz.types">
+                操作类型：<select class="wbk1" ng-model="rz.logFilter.operResType" ng-options="type.id as type.name for type in rz.types">
                     <option value="">请选择</option>
                 </select>
                 <input type="submit" value="搜索" class="btn-dhbs" ng-click="rz.getLogs('reload')"/>
@@ -34,13 +34,16 @@
 
         <table cellpadding="0" cellspacing="0" class="hysTB">
 
-            <tr> <th>操作人</th> <th>操作时间</th> <th>操作表</th> <th>组建</th> <th>操作类型</th> </tr>
+            <tr> <th>资源Id</th> <th>资源类型</th> <th>操作类型</th> <th>操作方法Id</th> <th>操作方法</th><th>操作结果</th> <th>操作人</th> <th>创建时间</th></tr>
             <tr ng-repeat="log in rz.logs">
-                <td ng-bind="rz.operator"></td>
-                <td ng-bind="rz.createDate | date:'yyyy-MM-dd HH:mm'"></td>
-                <td ng-bind="rz.operMethodName"></td>
-                <td ng-bind="rz.operResId"></td>
-                <td ng-bind="rz.operType | operType"></td>
+                <td ng-bind="log.operResId"></td>
+                <td ng-bind="log.operResType | operResType"></td>
+                <td ng-bind="log.operType | operType"></td>
+                <td ng-bind="log.operMethodId"></td>
+                <td ng-bind="log.operMethodName"></td>
+                <td ng-bind="log.operResult | operResult"></td>
+                <td ng-bind="log.operator"></td>
+                <td ng-bind="log.createDate | date:'yyyy-MM-dd HH:mm'"></td>
             </tr>
         </table>
 
