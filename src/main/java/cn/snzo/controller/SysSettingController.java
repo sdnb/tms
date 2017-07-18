@@ -40,6 +40,16 @@ public class SysSettingController extends BaseController{
     }
 
 
+    @RequestMapping(value = "/setting", method = RequestMethod.GET)
+    public ObjectResult get() {
+        SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
+        if (sysSettingShow == null) {
+            return failureRes("未进行系统设置");
+        }
+        return successRes(sysSettingShow);
+    }
+
+
 
     @RequestMapping(value = "/setting/pwd", method = RequestMethod.PUT)
     public ObjectResult updatePwd(@RequestBody AccountShow accountShow) {
@@ -58,5 +68,7 @@ public class SysSettingController extends BaseController{
             return failureRes("修改失败");
         }
     }
+
+
 
 }
