@@ -35,7 +35,7 @@
         <div class="hykz">
             <span>会议控制</span>
             <!--<a href="">全部静音</a>-->
-            <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="hy.conference && hy.conference.isInRecording==0"  ng-click="hy.startRecord()">开始录音</a>
+            <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="!hy.conference || hy.conference.isInRecording==0"  ng-click="hy.startRecord()">开始录音</a>
             <a href="" style="background-image: url(images/icon-hykz2.png);" ng-show="hy.conference && hy.conference.isInRecording==1" ng-click="hy.endRecord()">停止录音</a>
             <!--<a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>-->
         </div>

@@ -320,6 +320,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         //开始录音
         this.startRecord = function(){
+            if(!this.conference){
+                this.message.show = true;
+                this.message.text = '当前无会议';
+                return;
+            }
             this.loading = true;
             conferenceService.startRecord(this.conference.resId,function(data){
                 _this.loading = false;
@@ -334,6 +339,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         //停止录音
         this.endRecord = function(){
+            if(!this.conference){
+                this.message.show = true;
+                this.message.text = '当前无会议';
+                return;
+            }
             this.loading = true;
             conferenceService.stopReord(this.conference.resId,function(data){
                 _this.loading = false;
