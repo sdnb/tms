@@ -92,7 +92,8 @@ public class ConferenceRoomController extends BaseController{
         ConferenceRoomShow conferenceRoomShow = conferenceRoomService.getRoomByConductor(conductorId);
         if (conferenceRoomShow != null) {
             List<ConferenceRoomShow> conferenceRoomShows = new ArrayList<>();
-            return successRes(conferenceRoomShows.add(conferenceRoomShow));
+            conferenceRoomShows.add(conferenceRoomShow);
+            return successRes(conferenceRoomShows);
         } else {
             return failureRes("该主持人未绑定会议室");
         }
