@@ -29,15 +29,15 @@
 
         <div class="hyxx">
             <span>会议信息</span>
-            <font>接入号：95130196&nbsp;&nbsp;&nbsp;&nbsp;参会密码：<i ng-bind="hy.room.ivrPassword"></i>&nbsp;&nbsp;&nbsp;&nbsp;状态：<i ng-bind="hy.conference.status | conferenceStatus"></i></font>
+            <font>接入号：95130196&nbsp;&nbsp;&nbsp;&nbsp;参会密码：<i ng-show="!hy.room.ivrPassword">未知</i><i ng-show="hy.room.ivrPassword" ng-bind="hy.room.ivrPassword"></i>&nbsp;&nbsp;&nbsp;&nbsp;状态：<i ng-show="!hy.conference.status">空置</i><i ng-show="hy.conference.status" ng-bind="hy.conference.status | conferenceStatus"></i></font>
         </div>
 
         <div class="hykz">
             <span>会议控制</span>
             <!--<a href="">全部静音</a>-->
-            <a href="" style="background-image: url(images/icon-hykz2.png);" ng-show="hy.conference && hy.conference.isInRecording==0"  ng-click="hy.startRecord()">会议录音</a>
-            <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="hy.conference && hy.conference.isInRecording==1" ng-click="hy.endRecord()">结束录音</a>
-            <a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>
+            <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="hy.conference && hy.conference.isInRecording==0"  ng-click="hy.startRecord()">开始录音</a>
+            <a href="" style="background-image: url(images/icon-hykz2.png);" ng-show="hy.conference && hy.conference.isInRecording==1" ng-click="hy.endRecord()">停止录音</a>
+            <!--<a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>-->
         </div>
 
         <img src="images/line.png" width="435" style="margin-left:80px"  />
