@@ -529,7 +529,12 @@ public class IpscUtil {
         try {
             Map<String, Object> paramsDtmfStart = new HashMap<String, Object>();
             paramsDtmfStart.put("res_id", callId);
-            paramsDtmfStart.put("play_content", Constants.WELCOME_VOICE);
+            String content = "{" +
+                    "  \"content\": [" +
+                    "    [\""+Constants.WELCOME_VOICE+"\", 0, \"\"]" +
+                    "  ]" +
+                    "}";
+            paramsDtmfStart.put("play_content", content);
             commander.operateResource(
                     busAddress,
                     callId,
