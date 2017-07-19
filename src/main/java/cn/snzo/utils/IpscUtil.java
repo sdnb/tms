@@ -132,7 +132,7 @@ public class IpscUtil {
                                 } else {
                                     answer(callId);
                                 }
-                            } else if (methodName.equals("sys.call.on_receive_dtmf_completed")) {
+                            } else if (methodName.equals("on_receive_dtmf_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
                                     String keys = (String)rpcRequest.getParams().get("keys");
