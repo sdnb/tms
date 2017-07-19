@@ -20,8 +20,8 @@ public class Constants {
 
     public static final int     MAX_ANSWER_SECONDS  = 3600;
     public static final String  RECORD_FILE_SUFFIX  = ".wav";
-    public static final String  WRONG_PASSWORD = "/file/wrong_passwd.wav";
-    public static final String  FINAL_WRONG_PASSWORD = "/file/final_wrong_passwd.wav";
-    public static final String  WELCOME_VOICE = "/file/welcome.wav";
+    public static final String  WRONG_PASSWORD = "/root/tms/tms/file/wrong_passwd.wav";
+    public static final String  FINAL_WRONG_PASSWORD = "/root/tms/tms/file/final_wrong_passwd.wav";
+    public static final String  WELCOME_VOICE = "/root/tms/tms/file/welcome.wav";
     public static       Integer MAX_CONF_PARTS      = 1000;
 }
