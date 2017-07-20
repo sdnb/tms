@@ -127,7 +127,7 @@ public class IpscUtil {
                                 logger.warn("呼入呼叫，callId ={}", callId);
                                 String error = (String) rpcRequest.getParams().get("error");
                                 logger.info("呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
-
+                                answer(callId);
                             } else if (methodName.equals("on_receive_dtmf_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
@@ -153,9 +153,10 @@ public class IpscUtil {
                                 logger.warn("呼入呼叫成功被接听，callId ={}", callId);
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error != null) {
-                                    logger.error("呼入呼叫{}发生错误", callId);
+                                    logger.error("接听呼入呼叫{}发生错误", callId);
                                 } else {
-                                    answer(callId);
+                                    logger.info("成功接听呼入呼叫{}，开始接收dtmf码");
+                                    callReceiveDtmfStart(callId);
                                 }
                             }
                         } else if (fullMethodName.startsWith("sys.conf")) {
@@ -207,6 +208,10 @@ public class IpscUtil {
 
     public static void addCallToConf(String callId, String conferenceId) {
         try {
+            if (callConfMap.get(callId) != null) {
+                logger.error("该呼叫资源{}已经加入会议{},请勿重复加入", callId, conferenceId);
+                return;
+            }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);
@@ -220,6 +225,7 @@ public class IpscUtil {
                         @Override
                         protected void onResult(Object o) {
                             logger.info("呼叫 {} 加入会议 {} 操作完毕", callId, conferenceId);
+                            callConfMap.put(callId, conferenceId);
                         }
 
                         @Override
@@ -507,18 +513,17 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("应答呼入 {} 操作完毕,开始接收DTMF码", callId, callConfMap.get(callId));
-                            callReceiveDtmfStart(callId);
+                            logger.info("应答呼入 {} 操作完毕", callId);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.error("应答呼入 操作错误: {}", callId, callConfMap.get(callId), rpcError.getMessage());
+                            logger.error("应答呼入{} 操作错误: {}", callId, rpcError.getMessage());
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.error("应答呼入 操作超时无响应", callId, callConfMap.get(callId));
+                            logger.error("应答呼入{} 操作超时无响应", callId);
                         }
                     }
             );
