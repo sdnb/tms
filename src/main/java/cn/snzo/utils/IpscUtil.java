@@ -32,7 +32,7 @@ public class IpscUtil {
 
     @Autowired
     public void setConferenceRepository(ConferenceRepository conferenceRepository) {
-        this.conferenceRepository = conferenceRepository;
+        IpscUtil.conferenceRepository = conferenceRepository;
     }
 
     private static RecordingRepository  recordingRepository;
@@ -45,7 +45,7 @@ public class IpscUtil {
     private static ConferenceRoomRepository conferenceRoomRepository;
 
     @Autowired
-    public static void setConferenceRoomRepository(ConferenceRoomRepository conferenceRoomRepository) {
+    public  void setConferenceRoomRepository(ConferenceRoomRepository conferenceRoomRepository) {
         IpscUtil.conferenceRoomRepository = conferenceRoomRepository;
     }
 
