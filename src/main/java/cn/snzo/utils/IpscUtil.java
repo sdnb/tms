@@ -120,18 +120,14 @@ public class IpscUtil {
                                 } else {
                                     logger.error("呼叫 {} 拨号失败：{}", callId, error);
                                 }
-                            }
-                            else if (methodName.equals("on_record_completed")) {
+                            } else if (methodName.equals("on_record_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 logger.info("录音停止callId: {} error: {}", callId, error);
                             } else if (methodName.equals("on_incoming")) {
                                 logger.warn("呼入呼叫，callId ={}", callId);
                                 String error = (String) rpcRequest.getParams().get("error");
-                                if (error != null) {
-                                    logger.error("呼入呼叫{}发生错误", callId);
-                                } else {
-                                    answer(callId);
-                                }
+                                logger.info("呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
+
                             } else if (methodName.equals("on_receive_dtmf_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
@@ -152,6 +148,14 @@ public class IpscUtil {
                                     }
                                     logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同，将该呼叫{}加入会议{}",callId, conference.getResId());
                                     addCallToConf(callId, conference.getResId());
+                                }
+                            } else if (methodName.equals("on_answer_completed")) {
+                                logger.warn("呼入呼叫成功被接听，callId ={}", callId);
+                                String error = (String) rpcRequest.getParams().get("error");
+                                if (error != null) {
+                                    logger.error("呼入呼叫{}发生错误", callId);
+                                } else {
+                                    answer(callId);
                                 }
                             }
                         } else if (fullMethodName.startsWith("sys.conf")) {
