@@ -133,9 +133,6 @@ public class IpscUtil {
                                 if (error == null) {
                                     String keys = (String)rpcRequest.getParams().get("keys");
                                     logger.info(">>>>>>>>>接收到dtmf码为：{}", keys);
-                                    //根据输入的dtmf码
-                                    logger.debug("conferenceRoomRepository", conferenceRepository);
-                                    logger.info("conferenceRoomRepository", conferenceRepository);
                                     ConferenceRoom conferenceRoom = conferenceRoomRepository.findByIvrPassword(keys);
                                     if (conferenceRoom == null) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr密码不同，播放错误提示音");
@@ -416,15 +413,19 @@ public class IpscUtil {
         Integer count = callEnterDtfmCount.get(callId);
         //如果该呼叫输入错误2次，播放提示音 final_wrong_passwd.wav
         if (count == null) {
+            logger.info("playWrongVoice,count={}", count);
             playContent(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, 1);
         } else if (count == 1){
+            logger.info("playWrongVoice,count={}", count);
             playContent(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
+            logger.info("playWrongVoice,count={}", count);
             playContent(callId, Constants.FINAL_WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 3){
+            logger.info("playWrongVoice,count={}", count);
             reject(callId);
             //从缓存中清除
             callEnterDtfmCount.remove(callId);
