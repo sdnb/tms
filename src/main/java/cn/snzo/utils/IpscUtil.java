@@ -134,6 +134,8 @@ public class IpscUtil {
                                     String keys = (String)rpcRequest.getParams().get("keys");
                                     logger.info(">>>>>>>>>接收到dtmf码为：{}", keys);
                                     //根据输入的dtmf码
+                                    logger.debug("conferenceRoomRepository", conferenceRepository);
+                                    logger.info("conferenceRoomRepository", conferenceRepository);
                                     ConferenceRoom conferenceRoom = conferenceRoomRepository.findByIvrPassword(keys);
                                     if (conferenceRoom == null) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr密码不同，播放错误提示音");
