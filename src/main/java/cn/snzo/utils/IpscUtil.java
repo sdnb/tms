@@ -165,6 +165,20 @@ public class IpscUtil {
                                     logger.info("成功接听呼入呼叫{}，开始接收dtmf码");
                                     callReceiveDtmfStart(callId, Constants.WELCOME_VOICE);
                                 }
+                            } else if (methodName.equals("sys.call.on_play_complete")) {
+                                logger.warn("放音成功，callId ={}", callId);
+                                String error = (String) rpcRequest.getParams().get("error");
+                                if (error != null) {
+                                    logger.error("播放失败callId={}", callId);
+                                } else {
+                                    Integer count = callEnterDtfmCount.get(callId);
+                                    //呼叫错误达到3次
+                                    if (count != null && count == 2) {
+                                        logger.info("呼入呼叫{}输入dtmf码错误3次，将该呼叫挂断");
+                                        callEnterDtfmCount.remove(callId);
+                                        drop(callId);
+                                    }
+                                }
                             }
                         } else if (fullMethodName.startsWith("sys.conf")) {
                             /// 会议事件
@@ -430,18 +444,45 @@ public class IpscUtil {
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
             logger.info("输入错误达到3次，呼叫id={}", callId);
+//            playContent(callId, Constants.FINAL_WRONG_PASSWORD, new RpcResultListener() {
+//                @Override
+//                protected void onResult(Object o) {
+//                    logger.info("操作呼叫{}放音成功", callId);
+//                    logger.info("将该呼叫挂断");
+//                    logger.info("等待播放");
+//                    try {
+//                        Thread.sleep(6000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    drop(callId);
+//                }
+//
+//                @Override
+//                protected void onError(RpcError rpcError) {
+//                    logger.info("操作呼叫{}放音失败code={}, msg={}", callId, rpcError.getCode(), rpcError.getMessage());
+//                }
+//
+//                @Override
+//                protected void onTimeout() {
+//                    logger.info("操作呼叫{}放音成功", callId);
+//                }
+//            });
+//            //从缓存中清除
+//            callEnterDtfmCount.remove(callId);
+//        }
             playContent(callId, Constants.FINAL_WRONG_PASSWORD, new RpcResultListener() {
                 @Override
                 protected void onResult(Object o) {
                     logger.info("操作呼叫{}放音成功", callId);
-                    logger.info("将该呼叫挂断");
-                    logger.info("等待播放");
-                    try {
-                        Thread.sleep(6000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    drop(callId);
+
+//                    logger.info("等待播放");
+//                    try {
+//                        Thread.sleep(6000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+
                 }
 
                 @Override
@@ -455,7 +496,7 @@ public class IpscUtil {
                 }
             });
             //从缓存中清除
-            callEnterDtfmCount.remove(callId);
+//            callEnterDtfmCount.remove(callId);
         }
     }
 
