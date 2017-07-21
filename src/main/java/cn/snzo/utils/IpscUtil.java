@@ -430,11 +430,61 @@ public class IpscUtil {
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
             logger.info("输入错误达到3次，呼叫id={}", callId);
-            playContent(callId, Constants.FINAL_WRONG_PASSWORD);
+            playContent(callId, Constants.FINAL_WRONG_PASSWORD, new RpcResultListener() {
+                @Override
+                protected void onResult(Object o) {
+                    logger.info("操作呼叫{}放音成功", callId);
+                    logger.info("将该呼叫挂断");
+                    drop(callId);
+                }
+
+                @Override
+                protected void onError(RpcError rpcError) {
+                    logger.info("操作呼叫{}放音失败code={}, msg={}", callId, rpcError.getCode(), rpcError.getMessage());
+                }
+
+                @Override
+                protected void onTimeout() {
+                    logger.info("操作呼叫{}放音成功", callId);
+                }
+            });
             //从缓存中清除
             callEnterDtfmCount.remove(callId);
         }
     }
+
+    public static void drop(String callId) {
+        logger.info("挂断呼叫{}", callId);
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_id", callId);
+        try {
+            commander.operateResource(
+                    busAddress,
+                    callId,
+                    "sys.call.drop",
+                    params,
+                    new RpcResultListener() {
+                        @Override
+                        protected void onResult(Object o) {
+                            logger.info("挂断呼叫{}已拒接", callId);
+                        }
+
+                        @Override
+                        protected void onError(RpcError rpcError) {
+                            logger.info("挂断呼叫{}失败,code={},msg={}", callId, rpcError.getCode(), rpcError.getMessage());
+                        }
+
+                        @Override
+                        protected void onTimeout() {
+                            logger.info("挂断呼叫{}超时", callId);
+                        }
+                    }
+            );
+        } catch (IOException e) {
+            logger.error("挂断呼叫{}异常", callId);
+        }
+    }
+
 
 
     public static void reject(String callId) {
@@ -472,6 +522,26 @@ public class IpscUtil {
 
 
     public static void playContent(String callId, String filename) {
+        playContent(callId, filename, new RpcResultListener() {
+            @Override
+            protected void onResult(Object o) {
+                logger.info("操作呼叫{}放音成功", callId);
+            }
+
+            @Override
+            protected void onError(RpcError rpcError) {
+                logger.info("操作呼叫{}放音失败", callId);
+            }
+
+            @Override
+            protected void onTimeout() {
+                logger.info("操作呼叫{}放音超时", callId);
+            }
+        });
+    }
+
+
+    public static void playContent(String callId, String filename, RpcResultListener rpcResultListener) {
         if (commander == null) {
             logger.info("commander客户端 未初始化");
             return;
@@ -485,22 +555,7 @@ public class IpscUtil {
                     callId,
                     "sys.call.play_start",
                     params,
-                    new RpcResultListener() {
-                        @Override
-                        protected void onResult(Object o) {
-                            logger.info("操作呼叫{}放音成功", callId);
-                        }
-
-                        @Override
-                        protected void onError(RpcError rpcError) {
-                            logger.info("操作呼叫{}放音失败", callId);
-                        }
-
-                        @Override
-                        protected void onTimeout() {
-                            logger.info("操作呼叫{}放音超时", callId);
-                        }
-                    });
+                    rpcResultListener);
         } catch (IOException e) {
             logger.info("播放声音失败");
         }
