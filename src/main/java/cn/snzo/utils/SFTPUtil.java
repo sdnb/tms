@@ -186,12 +186,14 @@ public class SFTPUtil {
 //            return new FileInputStream(file);
 
             sftp.get(downloadFile, os);
+            System.out.println("文件所在目录："+ directory);
+            System.out.println("文件名："+ downloadFile);
             System.out.println("下载成功！");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().toLowerCase().equals("no such file")) {
-                System.out.println("sftp中找不到要下载的文件");
+                System.out.println("sftp中找不到要下载的文件"+directory+downloadFile);
             }
             return false;
         }finally {
