@@ -523,7 +523,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("Object ={}", o);
                 String array = JSON.toJSONString(o);
                 logger.info("array = {}", array);
-                JSONArray      jsonArray = JSON.parseArray(array);
+                JSONArray  jsonArray = JSON.parseArray(array);
                 List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
                 logger.info("PartDatas={}", partDatas);
                 for (PartData partData : partDatas) {

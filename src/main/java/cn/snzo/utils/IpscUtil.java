@@ -200,8 +200,8 @@ public class IpscUtil {
                                         logger.info(">>>>>>>>> beginTime {}", start);
                                         logger.info(">>>>>>>>> endTime {}", end);
                                         logger.info(">>>>>>>>> class of start : {}", start.getClass());
-                                        recording.setStartTime(new Date(start * 1000));
-                                        recording.setStartTime(new Date(end * 1000));
+                                        recording.setStartTime(new Date((long)start * 1000));
+                                        recording.setStartTime(new Date((long)end * 1000));
                                         recording.setRoomId(conference.getRoomId());
                                         recording.setRoomNo(conference.getRoomNo());
                                         recordingRepository.save(recording);
