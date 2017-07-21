@@ -425,18 +425,16 @@ public class IpscUtil {
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, 1);
         } else if (count == 1){
-            logger.info("playWrongVoice,count={}", ++count);
+            logger.info("playWrongVoice,count={}", count);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
             logger.info("playWrongVoice,count={}", count);
-            callReceiveDtmfStart(callId, Constants.FINAL_WRONG_PASSWORD);
-            callEnterDtfmCount.put(callId, count);
-        } else if (count == 3){
-            logger.info("playWrongVoice,count={}", count);
-            reject(callId);
+            playContent(callId, Constants.FINAL_WRONG_PASSWORD);
             //从缓存中清除
             callEnterDtfmCount.remove(callId);
+            logger.info("输入错误达到3次，挂断改呼叫{}", callId);
+            reject(callId);
         }
     }
 
@@ -455,17 +453,17 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("呼叫{}输入密码错误超过3次，已拒接", callId);
+                            logger.info("呼叫{}已拒接", callId);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.info("呼叫{}输入密码错误超过3次，拒接失败", callId);
+                            logger.info("呼叫{}拒接失败,code={},msg={}", callId, rpcError.getCode(), rpcError.getMessage());
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.info("呼叫{}输入密码错误超过3次，拒接超时", callId);
+                            logger.info("呼叫{}拒接超时", callId);
                         }
                     }
             );
