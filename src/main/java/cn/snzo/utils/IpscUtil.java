@@ -437,7 +437,7 @@ public class IpscUtil {
                     logger.info("将该呼叫挂断");
                     logger.info("等待播放");
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(6000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

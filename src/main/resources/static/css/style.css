@@ -140,7 +140,7 @@ a.topExit img { float: left; margin:8px 5px 0 0; }
 
 .dhbTB { width:999px; border-top:solid 1px #ccc; border-left: solid 1px #ccc; text-align: center; margin-top:20px; }
 
-.dhbTB th { border-right: solid 1px #ccc; height: 55px; background: #3686dc; color:#fff; font-weight: normal; }
+.dhbTB th { border-right: solid 1px #ccc; height: 55px; background: #3686dc; color:#fff; font-weight: normal; text-align: center }
 
 .dhbTB td { border-right: solid 1px #ccc; border-bottom: solid 1px #ccc; height: 45px; font-size:14px; }
 
@@ -394,7 +394,7 @@ a.btn-jy1 { border-color:#3686dc; color:#3686dc; background-image: url(../images
 
 .hyTB { width: 100%; text-align: center; }
 
-.hyTB th { height: 50px; color:#fff; font-size:14px; border-left: solid 1px #fff; font-weight: normal; }
+.hyTB th { height: 50px; color:#fff; font-size:14px; border-left: solid 1px #fff; font-weight: normal; text-align: center}
 
 .hyTB td { height: 35px; border-bottom: solid 1px #ddd; font-size:12px; }
 
@@ -433,7 +433,7 @@ a.btn-jy1 { border-color:#3686dc; color:#3686dc; background-image: url(../images
 
 .hysTB { width: 779px; text-align: center; border-left:solid 1px #ddd; border-top:solid 1px #ddd; margin-top:30px; }
 
-.hysTB th { height: 60px; background: #3686dc; font-weight: normal; color:#fff; border-right: solid 1px #ddd; }
+.hysTB th { height: 60px; background: #3686dc; font-weight: normal; color:#fff; border-right: solid 1px #ddd; text-align: center}
 
 .hysTB td { height: 50px; border-right: solid 1px #ddd; border-bottom: solid 1px #ddd; font-size:12px; }
 
