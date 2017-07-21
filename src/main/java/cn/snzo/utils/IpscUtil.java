@@ -421,20 +421,18 @@ public class IpscUtil {
 
         //如果该呼叫输入错误2次，播放提示音 final_wrong_passwd.wav
         if (count == null) {
-            logger.info("playWrongVoice,count={}", count);
+            logger.info("输入错误1次，呼叫id={}", callId);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, 1);
         } else if (count == 1){
-            logger.info("playWrongVoice,count={}", count);
+            logger.info("输入错误2次，呼叫id={}", callId);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
-            logger.info("playWrongVoice,count={}", count);
+            logger.info("输入错误达到3次，呼叫id={}", callId);
             playContent(callId, Constants.FINAL_WRONG_PASSWORD);
             //从缓存中清除
             callEnterDtfmCount.remove(callId);
-            logger.info("输入错误达到3次，挂断改呼叫{}", callId);
-            reject(callId);
         }
     }
 
