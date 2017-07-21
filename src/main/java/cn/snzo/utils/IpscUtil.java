@@ -152,9 +152,7 @@ public class IpscUtil {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
                                         playWrongVoice(callId, count);
-                                        if (count == null) {
 
-                                        }
                                     }
 
                                 }
@@ -425,10 +423,11 @@ public class IpscUtil {
         if (count == null) {
             logger.info("playWrongVoice,count={}", count);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
+            callEnterDtfmCount.put(callId, 1);
         } else if (count == 1){
-            logger.info("playWrongVoice,count={}", count);
+            logger.info("playWrongVoice,count={}", ++count);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
-            callEnterDtfmCount.put(callId, count);
+            callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
             logger.info("playWrongVoice,count={}", count);
             callReceiveDtmfStart(callId, Constants.FINAL_WRONG_PASSWORD);
