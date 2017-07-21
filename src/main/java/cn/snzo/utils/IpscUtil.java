@@ -337,6 +337,27 @@ public class IpscUtil {
         }
     }
 
+
+    public static void dropCall(String callId, RpcResultListener listener) throws IOException {
+        if (commander == null) {
+            logger.info(">>>>>>>>> commander客户端 未初始化");
+            return;
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("res_id", callId);
+        logger.info(">>>>>>>>> 挂断呼叫,callId={}", callId);
+        commander.operateResource(
+                busAddress,
+                callId,
+                "sys.call.drop",
+                params,
+                listener);
+
+    }
+
+
+
     public static void startRecord(String conferenceId, String path, RpcResultListener listener) throws IOException {
         if (commander != null) {
             Map<String, Object> params = new HashMap<>();
