@@ -25,4 +25,8 @@ public interface ConferenceRepository extends JpaRepository<Conference, Integer>
             " and (?4 is null or c.conductorId = ?4)" +
             " and (?5 is null or c.resId like ?5)")
     Page<Conference> findPage(Integer id, Integer roomId, Integer status, Integer conductorId, String confResId, Pageable p);
+
+
+    @Query("select c from Conference c where c.roomId=?1 and c.status=?2")
+    Conference findByRoomIdAndStatus(int roomId, int status);
 }
