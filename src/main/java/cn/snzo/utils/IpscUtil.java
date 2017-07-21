@@ -154,6 +154,7 @@ public class IpscUtil {
                                     }
                                     if (isRight) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同，将该呼叫{}加入会议{}", callId, conference.getResId());
+                                        logger.info("callId={}");
                                         addCallToConf(callId, conference.getResId());
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
@@ -218,11 +219,6 @@ public class IpscUtil {
 
     public static void addCallToConf(String callId, String conferenceId) {
         try {
-
-            if (!callConfMap.get(callId).equals(conferenceId)) {
-                logger.error(">>>>>>>>> 该呼叫资源{}已经加入会议{},不能再加入会议{}", callId, callConfMap.get(callId),conferenceId);
-                return;
-            }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);
