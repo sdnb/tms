@@ -134,19 +134,25 @@ public class IpscUtil {
                                     String keys = (String)rpcRequest.getParams().get("keys");
                                     logger.info(">>>>>>>>>接收到dtmf码为：{}", keys);
                                     ConferenceRoom conferenceRoom = conferenceRoomRepository.findByIvrPassword(keys);
-                                    if (conferenceRoom == null) {
-                                        logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr密码不同，播放错误提示音");
+                                    boolean isRight = false;
+                                    Conference conference = null;
+                                    if (conferenceRoom != null) {
+                                        //查询该会议室中正在进行的会议
+                                        conference = conferenceRepository.findByRoomIdAndStatus(conferenceRoom.getId(), 1);
+                                        if (conference != null) {
+                                            isRight  = true;
+                                        } else{
+                                            logger.error(">>>>>>>>>该会议室无正在进行的会议");
+                                        }
+                                    }
+                                    if (isRight) {
+                                        logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同，将该呼叫{}加入会议{}", callId, conference.getResId());
+                                        addCallToConf(callId, conference.getResId());
+                                    } else {
+                                        logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         playWrongVoice(callId);
-                                        return;
                                     }
-                                    //查询该会议室中正在进行的会议
-                                    Conference conference = conferenceRepository.findByRoomIdAndStatus(conferenceRoom.getId(), 1);
-                                    if (conference == null) {
-                                        logger.error(">>>>>>>>>该会议室无正在进行的会议");
-                                        return;
-                                    }
-                                    logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同，将该呼叫{}加入会议{}",callId, conference.getResId());
-                                    addCallToConf(callId, conference.getResId());
+
                                 }
                             } else if (methodName.equals("on_answer_completed")) {
                                 logger.warn("呼入呼叫成功被接听，callId ={}", callId);
