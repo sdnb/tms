@@ -110,7 +110,7 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
 
         this.download = function(record){
             window.location.href = '/api//recording/download?filename=' + record.filename +
-                    '&filepath=' + record.filepath;
+                    '&filePath=' + record.filePath;
         };
     });
 });
