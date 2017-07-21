@@ -435,6 +435,12 @@ public class IpscUtil {
                 protected void onResult(Object o) {
                     logger.info("操作呼叫{}放音成功", callId);
                     logger.info("将该呼叫挂断");
+                    logger.info("等待播放");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     drop(callId);
                 }
 
