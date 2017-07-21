@@ -150,7 +150,11 @@ public class IpscUtil {
                                         addCallToConf(callId, conference.getResId());
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
-                                        playWrongVoice(callId);
+                                        Integer count = callEnterDtfmCount.get(callId);
+                                        playWrongVoice(callId, count);
+                                        if (count == null) {
+
+                                        }
                                     }
 
                                 }
@@ -161,7 +165,7 @@ public class IpscUtil {
                                     logger.error("接听呼入呼叫{}发生错误", callId);
                                 } else {
                                     logger.info("成功接听呼入呼叫{}，开始接收dtmf码");
-                                    callReceiveDtmfStart(callId);
+                                    callReceiveDtmfStart(callId, Constants.WELCOME_VOICE);
                                 }
                             }
                         } else if (fullMethodName.startsWith("sys.conf")) {
@@ -415,24 +419,20 @@ public class IpscUtil {
     }
 
 
-    public static void playWrongVoice(String callId) {
-        Integer count = callEnterDtfmCount.get(callId);
+    public static void playWrongVoice(String callId, Integer count) {
+
         //如果该呼叫输入错误2次，播放提示音 final_wrong_passwd.wav
         if (count == null) {
             logger.info("playWrongVoice,count={}", count);
-            playContent(callId, Constants.WRONG_PASSWORD);
-            callEnterDtfmCount.put(callId, 1);
-            callReceiveDtmfStart(callId);
+            callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
         } else if (count == 1){
             logger.info("playWrongVoice,count={}", count);
-            playContent(callId, Constants.WRONG_PASSWORD);
-            callEnterDtfmCount.put(callId, ++count);
-            callReceiveDtmfStart(callId);
+            callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
+            callEnterDtfmCount.put(callId, count);
         } else if (count == 2) {
             logger.info("playWrongVoice,count={}", count);
-            playContent(callId, Constants.FINAL_WRONG_PASSWORD);
-            callEnterDtfmCount.put(callId, ++count);
-            callReceiveDtmfStart(callId);
+            callReceiveDtmfStart(callId, Constants.FINAL_WRONG_PASSWORD);
+            callEnterDtfmCount.put(callId, count);
         } else if (count == 3){
             logger.info("playWrongVoice,count={}", count);
             reject(callId);
@@ -474,6 +474,8 @@ public class IpscUtil {
             logger.error("拒接呼叫{}异常", callId);
         }
     }
+
+
     public static void playContent(String callId, String filename) {
         if (commander == null) {
             logger.info("commander客户端 未初始化");
@@ -546,12 +548,11 @@ public class IpscUtil {
     }
 
 
-    public static void callReceiveDtmfStart(String callId) {
+    public static void callReceiveDtmfStart(String callId, String filename) {
         try {
             Map<String, Object> paramsDtmfStart = new HashMap<String, Object>();
             paramsDtmfStart.put("res_id", callId);
-            String content = Constants.WELCOME_VOICE;
-            paramsDtmfStart.put("play_content", content);
+            paramsDtmfStart.put("play_content", filename);
             commander.operateResource(
                     busAddress,
                     callId,
