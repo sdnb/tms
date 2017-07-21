@@ -422,14 +422,17 @@ public class IpscUtil {
             logger.info("playWrongVoice,count={}", count);
             playContent(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, 1);
+            callReceiveDtmfStart(callId);
         } else if (count == 1){
             logger.info("playWrongVoice,count={}", count);
             playContent(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
+            callReceiveDtmfStart(callId);
         } else if (count == 2) {
             logger.info("playWrongVoice,count={}", count);
             playContent(callId, Constants.FINAL_WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
+            callReceiveDtmfStart(callId);
         } else if (count == 3){
             logger.info("playWrongVoice,count={}", count);
             reject(callId);
