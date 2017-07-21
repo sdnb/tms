@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +65,10 @@ public class IpscUtil {
 
     //    @Override
     public static void init() throws InterruptedException {
-        logger.info("Data Bus 客户端单元初始化");
+        logger.info(">>>>>>>>> Data Bus 客户端单元初始化");
         Unit.initiate(localId, new UnitCallbacks() {
             public void connectSucceed(Client client) {
-                logger.info("成功的连接到了IPSC服务程序的 Data Bus");
+                logger.info(">>>>>>>>> 成功的连接到了IPSC服务程序的 Data Bus");
                 busAddress = new BusAddress(commander.getConnectingUnitId(), (byte) 0);
             }
 
@@ -85,7 +86,7 @@ public class IpscUtil {
 
         Thread.sleep(10000);
         //创建commander
-        logger.info("初始化commander");
+        logger.info(">>>>>>>>> 初始化commander");
         createCommander();
     }
 
@@ -104,29 +105,29 @@ public class IpscUtil {
                             String methodName = fullMethodName.substring(9);
                             final String callId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
-                                logger.warn("呼叫 {} 已经释放", callId);
+                                logger.warn(">>>>>>>>> 呼叫 {} 已经释放", callId);
                                 //将呼叫从缓存中清除
                                 callConfMap.remove(callId);
                             } else if (methodName.equals("on_ringing")) {
-                                logger.info("呼叫 {} 振铃", callId);
+                                logger.info(">>>>>>>>> 呼叫 {} 振铃", callId);
                             } else if (methodName.equals("on_dial_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
                                     String confId = callConfMap.get(callId);
                                     if (confId != null) {
-                                        logger.info("呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
+                                        logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
                                         addCallToConf(callId, callConfMap.get(callId));
                                     }
                                 } else {
-                                    logger.error("呼叫 {} 拨号失败：{}", callId, error);
+                                    logger.error(">>>>>>>>> 呼叫 {} 拨号失败：{}", callId, error);
                                 }
                             } else if (methodName.equals("on_record_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
-                                logger.info("录音停止callId: {} error: {}", callId, error);
+                                logger.info(">>>>>>>>> 录音停止callId: {} error: {}", callId, error);
                             } else if (methodName.equals("on_incoming")) {
-                                logger.warn("呼入呼叫，callId ={}", callId);
+                                logger.warn(">>>>>>>>> 呼入呼叫，callId ={}", callId);
                                 String error = (String) rpcRequest.getParams().get("error");
-                                logger.info("呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
+                                logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
                                 answer(callId);
                             } else if (methodName.equals("on_receive_dtmf_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
@@ -157,12 +158,12 @@ public class IpscUtil {
 
                                 }
                             } else if (methodName.equals("on_answer_completed")) {
-                                logger.warn("呼入呼叫成功被接听，callId ={}", callId);
+                                logger.warn(">>>>>>>>> 呼入呼叫成功被接听，callId ={}", callId);
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error != null) {
-                                    logger.error("接听呼入呼叫{}发生错误", callId);
+                                    logger.error(">>>>>>>>> 接听呼入呼叫{}发生错误", callId);
                                 } else {
-                                    logger.info("成功接听呼入呼叫{}，开始接收dtmf码");
+                                    logger.info(">>>>>>>>> 成功接听呼入呼叫{}，开始接收dtmf码");
                                     callReceiveDtmfStart(callId, Constants.WELCOME_VOICE);
                                 }
                             }
@@ -171,17 +172,17 @@ public class IpscUtil {
                             String methodName = fullMethodName.substring(9);
                             String confId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
-                                logger.warn("会议 {} 已经释放", confId);
+                                logger.warn(">>>>>>>>> 会议 {} 已经释放", confId);
 
                                 //修改为已结束状态
                                 Conference conference = conferenceRepository.findByResId(confId);
                                 conference.setStatus(2);
                                 conferenceRepository.save(conference);
                             } else if (methodName.equals("on_record_completed")) {
-                                logger.warn("会议 {} 录音已结束", confId);
+                                logger.warn(">>>>>>>>> 会议 {} 录音已结束", confId);
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
-                                    logger.warn("保存会议 {} 录音信息", confId);
+                                    logger.warn(">>>>>>>>> 保存会议 {} 录音信息", confId);
                                     Recording recording = new Recording();
                                     Conference conference = conferenceRepository.findByResId(confId);
                                     if (conference != null) {
@@ -194,13 +195,13 @@ public class IpscUtil {
                                             recording.setFilePath(filename.substring(0, index));
                                         }
 
-                                        Object start = rpcRequest.getParams().get("begin_time");
-                                        Object end = rpcRequest.getParams().get("end_time");
-                                        logger.info("beginTime {}", start);
-                                        logger.info("endTime {}", end);
-                                        logger.info("class of start : {}", start.getClass());
-//                                        recording.setStartTime(new Date((Integer)start));
-//                                        recording.setStartTime(new Date((Integer)end));
+                                        Integer start = (Integer) rpcRequest.getParams().get("begin_time");
+                                        Integer end = (Integer) rpcRequest.getParams().get("end_time");
+                                        logger.info(">>>>>>>>> beginTime {}", start);
+                                        logger.info(">>>>>>>>> endTime {}", end);
+                                        logger.info(">>>>>>>>> class of start : {}", start.getClass());
+                                        recording.setStartTime(new Date(start * 1000));
+                                        recording.setStartTime(new Date(end * 1000));
                                         recording.setRoomId(conference.getRoomId());
                                         recording.setRoomNo(conference.getRoomNo());
                                         recordingRepository.save(recording);
@@ -216,7 +217,7 @@ public class IpscUtil {
     public static void addCallToConf(String callId, String conferenceId) {
         try {
             if (callConfMap.get(callId) != null) {
-                logger.error("该呼叫资源{}已经加入会议{},请勿重复加入", callId, conferenceId);
+                logger.error(">>>>>>>>> 该呼叫资源{}已经加入会议{},请勿重复加入", callId, conferenceId);
                 return;
             }
             Map<String, Object> params = new HashMap<String, Object>();
@@ -231,18 +232,18 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("呼叫 {} 加入会议 {} 操作完毕", callId, conferenceId);
+                            logger.info(">>>>>>>>> 呼叫 {} 加入会议 {} 操作完毕", callId, conferenceId);
                             callConfMap.put(callId, conferenceId);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.error("呼叫 {} 加入会议 {} 操作错误: {}", callId, conferenceId, rpcError.getMessage());
+                            logger.error(">>>>>>>>> 呼叫 {} 加入会议 {} 操作错误: {}", callId, conferenceId, rpcError.getMessage());
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.error("呼叫 {} 加入会议 {} 操作超时无响应", callId, conferenceId);
+                            logger.error(">>>>>>>>> 呼叫 {} 加入会议 {} 操作超时无响应", callId, conferenceId);
                         }
                     }
             );
@@ -258,11 +259,11 @@ public class IpscUtil {
             params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
             params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
             String name = te.getName();
-            logger.info("Name ={} ", name);
+            logger.info(">>>>>>>>> Name ={} ", name);
             String reencode = new String(name.getBytes("gbk"),"utf-8");
-            logger.info("reEncode Name ={} ", reencode);
+            logger.info(">>>>>>>>> reEncode Name ={} ", reencode);
             params.put("user_data", te.getPhone()+"-"+ te.getPhone()); ///用户信息
-            logger.info("呼叫参数： {}", params);
+            logger.info(">>>>>>>>> 呼叫参数： {}", params);
             commander.createResource(
                     busAddress,
                     "sys.call",
@@ -274,7 +275,7 @@ public class IpscUtil {
 
 
     public static void createConference(Map<String, Object> params, RpcResultListener rpcResultListener) throws IOException {
-        logger.info("createConference params {}, busAddress {}", params, busAddress);
+        logger.info(">>>>>>>>> createConference params {}, busAddress {}", params, busAddress);
         if (commander != null) {
             commander.createResource(
                     busAddress,
@@ -282,7 +283,7 @@ public class IpscUtil {
                     params,
                     rpcResultListener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
     }
 
@@ -296,7 +297,7 @@ public class IpscUtil {
                     null,
                     listener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
     }
 
@@ -307,7 +308,7 @@ public class IpscUtil {
             params.put("res_id", confId);
             params.put("call_res_id", callId);
             params.put("mode", mode);
-            logger.info("修改与会者声音收放模式，confid={},callId={},mode={}", confId, callId, mode);
+            logger.info(">>>>>>>>> 修改与会者声音收放模式，confid={},callId={},mode={}", confId, callId, mode);
             commander.operateResource(
                     busAddress,
                     confId,
@@ -315,7 +316,7 @@ public class IpscUtil {
                     params,
                     listener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
     }
 
@@ -324,7 +325,7 @@ public class IpscUtil {
             Map<String, Object> params = new HashMap<>();
             params.put("res_id", confId);
             params.put("call_res_id", callId);
-            logger.info("退出会议，confid={},callId={}", confId, callId);
+            logger.info(">>>>>>>>> 退出会议，confid={},callId={}", confId, callId);
             commander.operateResource(
                     busAddress,
                     callId,
@@ -332,7 +333,7 @@ public class IpscUtil {
                     params,
                     listener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
     }
 
@@ -350,7 +351,7 @@ public class IpscUtil {
                     params,
                     listener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
 
     }
@@ -366,7 +367,7 @@ public class IpscUtil {
                     params,
                     listener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
     }
 
@@ -381,13 +382,13 @@ public class IpscUtil {
                     params,
                     listener);
         } else {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
         }
     }
 
     public static void checkConf(String confResId, RpcResultListener listener) throws IOException {
         if (commander == null) {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
             return;
         }
         Map<String, Object> params = new HashMap<>();
@@ -403,7 +404,7 @@ public class IpscUtil {
 
     public static void checkCall(String callId, RpcResultListener listener) throws IOException {
         if (commander == null) {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
             return;
         }
         Map<String, Object> params = new HashMap<>();
@@ -421,21 +422,21 @@ public class IpscUtil {
 
         //如果该呼叫输入错误2次，播放提示音 final_wrong_passwd.wav
         if (count == null) {
-            logger.info("输入错误1次，呼叫id={}", callId);
+            logger.info(">>>>>>>>> 输入错误1次，呼叫id={}", callId);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, 1);
         } else if (count == 1){
-            logger.info("输入错误2次，呼叫id={}", callId);
+            logger.info(">>>>>>>>> 输入错误2次，呼叫id={}", callId);
             callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
             callEnterDtfmCount.put(callId, ++count);
         } else if (count == 2) {
-            logger.info("输入错误达到3次，呼叫id={}", callId);
+            logger.info(">>>>>>>>> 输入错误达到3次，呼叫id={}", callId);
             playContent(callId, Constants.FINAL_WRONG_PASSWORD, new RpcResultListener() {
                 @Override
                 protected void onResult(Object o) {
-                    logger.info("操作呼叫{}放音成功", callId);
-                    logger.info("将该呼叫挂断");
-                    logger.info("等待播放");
+                    logger.info(">>>>>>>>> 操作呼叫{}放音成功", callId);
+                    logger.info(">>>>>>>>> 将该呼叫挂断");
+                    logger.info(">>>>>>>>> 等待播放");
                     try {
                         Thread.sleep(6000);
                     } catch (InterruptedException e) {
@@ -446,12 +447,12 @@ public class IpscUtil {
 
                 @Override
                 protected void onError(RpcError rpcError) {
-                    logger.info("操作呼叫{}放音失败code={}, msg={}", callId, rpcError.getCode(), rpcError.getMessage());
+                    logger.info(">>>>>>>>> 操作呼叫{}放音失败code={}, msg={}", callId, rpcError.getCode(), rpcError.getMessage());
                 }
 
                 @Override
                 protected void onTimeout() {
-                    logger.info("操作呼叫{}放音成功", callId);
+                    logger.info(">>>>>>>>> 操作呼叫{}放音成功", callId);
                 }
             });
             //从缓存中清除
@@ -472,22 +473,22 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("挂断呼叫{}已拒接", callId);
+                            logger.info(">>>>>>>>> 挂断呼叫{}已拒接", callId);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.info("挂断呼叫{}失败,code={},msg={}", callId, rpcError.getCode(), rpcError.getMessage());
+                            logger.info(">>>>>>>>> 挂断呼叫{}失败,code={},msg={}", callId, rpcError.getCode(), rpcError.getMessage());
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.info("挂断呼叫{}超时", callId);
+                            logger.info(">>>>>>>>> 挂断呼叫{}超时", callId);
                         }
                     }
             );
         } catch (IOException e) {
-            logger.error("挂断呼叫{}异常", callId);
+            logger.error(">>>>>>>>> 挂断呼叫{}异常", callId);
         }
     }
 
@@ -507,22 +508,22 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("呼叫{}已拒接", callId);
+                            logger.info(">>>>>>>>> 呼叫{}已拒接", callId);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.info("呼叫{}拒接失败,code={},msg={}", callId, rpcError.getCode(), rpcError.getMessage());
+                            logger.info(">>>>>>>>> 呼叫{}拒接失败,code={},msg={}", callId, rpcError.getCode(), rpcError.getMessage());
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.info("呼叫{}拒接超时", callId);
+                            logger.info(">>>>>>>>> 呼叫{}拒接超时", callId);
                         }
                     }
             );
         } catch (IOException e) {
-            logger.error("拒接呼叫{}异常", callId);
+            logger.error(">>>>>>>>> 拒接呼叫{}异常", callId);
         }
     }
 
@@ -531,17 +532,17 @@ public class IpscUtil {
         playContent(callId, filename, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
-                logger.info("操作呼叫{}放音成功", callId);
+                logger.info(">>>>>>>>> 操作呼叫{}放音成功", callId);
             }
 
             @Override
             protected void onError(RpcError rpcError) {
-                logger.info("操作呼叫{}放音失败", callId);
+                logger.info(">>>>>>>>> 操作呼叫{}放音失败", callId);
             }
 
             @Override
             protected void onTimeout() {
-                logger.info("操作呼叫{}放音超时", callId);
+                logger.info(">>>>>>>>> 操作呼叫{}放音超时", callId);
             }
         });
     }
@@ -549,7 +550,7 @@ public class IpscUtil {
 
     public static void playContent(String callId, String filename, RpcResultListener rpcResultListener) {
         if (commander == null) {
-            logger.info("commander客户端 未初始化");
+            logger.info(">>>>>>>>> commander客户端 未初始化");
             return;
         }
         try {
@@ -563,7 +564,7 @@ public class IpscUtil {
                     params,
                     rpcResultListener);
         } catch (IOException e) {
-            logger.info("播放声音失败");
+            logger.info(">>>>>>>>> 播放声音失败");
         }
 
     }
@@ -583,22 +584,22 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("应答呼入 {} 操作完毕", callId);
+                            logger.info(">>>>>>>>> 应答呼入 {} 操作完毕", callId);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.error("应答呼入{} 操作错误: {}", callId, rpcError.getMessage());
+                            logger.error(">>>>>>>>> 应答呼入{} 操作错误: {}", callId, rpcError.getMessage());
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.error("应答呼入{} 操作超时无响应", callId);
+                            logger.error(">>>>>>>>> 应答呼入{} 操作超时无响应", callId);
                         }
                     }
             );
         } catch (IOException e) {
-            logger.error("应答呼入发生异常", e);
+            logger.error(">>>>>>>>> 应答呼入发生异常", e);
         }
 
     }
@@ -617,21 +618,21 @@ public class IpscUtil {
                     new RpcResultListener() {
                         @Override
                         protected void onResult(Object o) {
-                            logger.info("开始接收DTMF码， callId={}, params={}", callId, paramsDtmfStart);
+                            logger.info(">>>>>>>>> 开始接收DTMF码， callId={}, params={}", callId, paramsDtmfStart);
                         }
 
                         @Override
                         protected void onError(RpcError rpcError) {
-                            logger.info("开始接收DTMF码发生错误， callId={}, params={}", callId, paramsDtmfStart);
+                            logger.info(">>>>>>>>> 开始接收DTMF码发生错误， callId={}, params={}", callId, paramsDtmfStart);
                         }
 
                         @Override
                         protected void onTimeout() {
-                            logger.info("开始接收DTMF码超时， callId={}, params={}", callId, paramsDtmfStart);
+                            logger.info(">>>>>>>>> 开始接收DTMF码超时， callId={}, params={}", callId, paramsDtmfStart);
                         }
                     });
         } catch (IOException e) {
-            logger.error("接收呼入码异常", e);
+            logger.error(">>>>>>>>> 接收呼入码异常", e);
         }
     }
 }
