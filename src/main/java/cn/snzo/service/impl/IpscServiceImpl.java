@@ -414,8 +414,8 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public int removeCallFromConf(String callId, String conferenceId, String tokenName) throws IOException, InterruptedException {
         logger.info("从会议 {} 移除呼叫{}", callId, conferenceId);
-        Log log = new Log(callId, OperResTypeEnum.CALL.ordinal(), "sys.call.drop",
-                "挂断呼叫", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
+        Log log = new Log(callId, OperResTypeEnum.CALL.ordinal(), "sys.call.conf_exit",
+                "退出会议", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
 
         //会议不存在
         if (checkConfExist(conferenceId) != 1) {
@@ -428,7 +428,7 @@ public class IpscServiceImpl implements IpscService {
         }
 
         int[] ret = new int[1];
-        IpscUtil.dropCall(callId, new RpcResultListener() {
+        IpscUtil.exitConferece(conferenceId, callId, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
                 logger.info("离开会议成功，confId={},callId={}", conferenceId, callId);
@@ -523,7 +523,7 @@ public class IpscServiceImpl implements IpscService {
                 logger.info("Object ={}", o);
                 String array = JSON.toJSONString(o);
                 logger.info("array = {}", array);
-                JSONArray  jsonArray = JSON.parseArray(array);
+                JSONArray      jsonArray = JSON.parseArray(array);
                 List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
                 logger.info("PartDatas={}", partDatas);
                 for (PartData partData : partDatas) {

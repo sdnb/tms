@@ -60,6 +60,7 @@ public class IpscUtil {
     public static        Commander           commander   = null;
     public static        BusAddress          busAddress  = null;
     public static        Map<String, String> callConfMap = new HashMap<>();
+    public static        Map<String, String> callPhoneMap = new HashMap<>();
     public static        Map<String, Integer> callEnterDtfmCount = new HashMap<>(); //每个呼入呼叫最多输入三次密码
 
 
@@ -116,7 +117,7 @@ public class IpscUtil {
                                     String confId = callConfMap.get(callId);
                                     if (confId != null) {
                                         logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
-                                        addCallToConf(callId, callConfMap.get(callId));
+                                        addCallToConf(callId, confId);
                                     }
                                 } else {
                                     logger.error(">>>>>>>>> 呼叫 {} 拨号失败：{}", callId, error);
@@ -125,10 +126,15 @@ public class IpscUtil {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 logger.info(">>>>>>>>> 录音停止callId: {} error: {}", callId, error);
                             } else if (methodName.equals("on_incoming")) {
-                                logger.warn(">>>>>>>>> 呼入呼叫，callId ={}", callId);
                                 String error = (String) rpcRequest.getParams().get("error");
-                                logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
-                                answer(callId);
+                                if (error != null) {
+                                    logger.error(">>>>>>>>> 呼入呼叫错误，callId ={}", callId);
+                                } else {
+                                    logger.warn(">>>>>>>>> 呼入呼叫，callId ={}", callId);
+                                    logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
+                                    answer(callId);
+                                }
+
                             } else if (methodName.equals("on_receive_dtmf_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
@@ -153,7 +159,6 @@ public class IpscUtil {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
                                         playWrongVoice(callId, count);
-
                                     }
 
                                 }
@@ -197,9 +202,6 @@ public class IpscUtil {
 
                                         Integer start = (Integer) rpcRequest.getParams().get("begin_time");
                                         Integer end = (Integer) rpcRequest.getParams().get("end_time");
-                                        logger.info(">>>>>>>>> beginTime {}", start);
-                                        logger.info(">>>>>>>>> endTime {}", end);
-                                        logger.info(">>>>>>>>> class of start : {}", start.getClass());
                                         recording.setStartTime(new Date((long)start * 1000));
                                         recording.setEndTime(new Date((long)end * 1000));
                                         recording.setRoomId(conference.getRoomId());
@@ -216,8 +218,9 @@ public class IpscUtil {
 
     public static void addCallToConf(String callId, String conferenceId) {
         try {
-            if (callConfMap.get(callId) != null) {
-                logger.error(">>>>>>>>> 该呼叫资源{}已经加入会议{},请勿重复加入", callId, conferenceId);
+
+            if (!callConfMap.get(callId).equals(conferenceId)) {
+                logger.error(">>>>>>>>> 该呼叫资源{}已经加入会议{},不能再加入会议{}", callId, callConfMap.get(callId),conferenceId);
                 return;
             }
             Map<String, Object> params = new HashMap<String, Object>();
