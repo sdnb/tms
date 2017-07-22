@@ -1,11 +1,11 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
-import cn.snzo.utils.CommonUtils;
 import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
 import cn.snzo.service.IRecordingService;
 import cn.snzo.service.ImageService;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.RecordingShow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +48,8 @@ public class RecordingController extends BaseController{
             if(success){
                 response.flushBuffer();
                 response.setContentType("application/octet-stream");
+                response.addHeader("Content-Disposition", "attachment;filename=" +filename+ ".wav");
+
                 return successRes("下载成功");
             }
         }catch (Exception e){
