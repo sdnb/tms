@@ -44,12 +44,15 @@ public class RecordingController extends BaseController{
             return failureRes("文件名包含非法字符");
         }
         try{
+            response.setContentType("application/octet-stream");
+            response.setHeader("conent-type", "application/octet-stream");
+            response.addHeader("Content-Disposition", "attachment;filename=" + filename + ".wav");
+            response.setHeader("Pragma", "No-cache");
+            response.setHeader("Cache-Control", "No-cache");
+            response.setDateHeader("Expires", 0);
             boolean success = imageService.downloadImage(filename, response.getOutputStream(), filepath);
             if(success){
                 response.flushBuffer();
-                response.setContentType("application/octet-stream");
-                response.addHeader("Content-Disposition", "attachment;filename=" +filename+ ".wav");
-
                 return successRes("下载成功");
             }
         }catch (Exception e){
