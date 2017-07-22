@@ -228,7 +228,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     _this.conference = data.message;
                     var timer = $interval(function(){
                         _this.getMembers('reload');
-                    },1000,2);
+                    },3000,10);
                     _this.getRooms(_this.conductor.id);
                 }else{
                     _this.message.show = true;
@@ -382,7 +382,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 if(data.status == 'true'){
                     var task = $interval(function(){
                         _this.getMembers('reload');
-                    },5000,2);
+                    },3000,5);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
@@ -396,7 +396,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.exitConf(this.conference.resId,member.callId,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
-                    _this.getMembers();
+                    var task = $interval(function(){
+                        _this.getMembers('reload');
+                    },3000,5);
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
