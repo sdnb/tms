@@ -85,9 +85,9 @@ public class RecordingController extends BaseController{
      */
     @RequestMapping(value = "/recording/page", method = RequestMethod.GET)
     public ObjectResult findPage(@RequestParam(name = "filename", required = false)String filename,
-                                 @DateTimeFormat(pattern = Constants.FORMATE_yyyyMMddHHmmss)
+                                 @DateTimeFormat(pattern = Constants.FORMATE_CUSTOM_TIME)
                                  @RequestParam(name = "createStart", required = false) Date createStart,
-                                 @DateTimeFormat(pattern = Constants.FORMATE_yyyyMMddHHmmss)
+                                 @DateTimeFormat(pattern = Constants.FORMATE_CUSTOM_TIME)
                                  @RequestParam(name = "createEnd", required = false) Date createEnd,
                                  @RequestParam(name = "currentPage", required = false)Integer currentPage,
                                  @RequestParam(name = "pageSize", required = false)Integer pageSize,
