@@ -182,6 +182,7 @@ public class SFTPUtil {
     public boolean download(String directory, String downloadFile,OutputStream os, ChannelSftp sftp) {
         try {
             sftp.cd(directory);
+
 //            File file=new File(saveFile);
 //            return new FileInputStream(file);
 
@@ -194,6 +195,12 @@ public class SFTPUtil {
             e.printStackTrace();
             if (e.getMessage().toLowerCase().equals("no such file")) {
                 System.out.println("sftp中找不到要下载的文件"+directory+downloadFile);
+                try {
+                    System.out.println("创建目录"+directory);
+                    sftp.mkdir(directory);
+                } catch (SftpException e1) {
+                    e1.printStackTrace();
+                }
             }
             return false;
         }finally {
