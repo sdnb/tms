@@ -55,7 +55,7 @@ public class CommonUtils {
         String recordName = DateUtil.format(new Date(), Constants.FORMATE_yyyyMMddHHmmss)
                 + RandomUtils.getRandomNum(4)
                 + Constants.RECORD_FILE_SUFFIX;
-        return path + File.separator + recordName;
+        return Constants.SFTP_PATH + path + File.separator + recordName;
     }
 
 }
