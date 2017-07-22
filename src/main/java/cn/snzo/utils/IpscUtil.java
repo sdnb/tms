@@ -195,10 +195,16 @@ public class IpscUtil {
                                         recording.setConferenceId(conference.getId());
                                         recording.setConferenceNo(conference.getResId());
                                         String filename = (String) rpcRequest.getParams().get("record_file");
+                                        logger.info(">>>>>>>>> 会议{}录音保存绝对路径：{}",conference.getResId(), filename);
                                         int index = filename.lastIndexOf("/");
                                         if (index != -1) {
-                                            recording.setFilename(filename.substring(index+1));
-                                            recording.setFilePath(filename.substring(0, index));
+                                            logger.info(">>>>>>>>> 会议{}录音文件名：{}",conference.getResId(), filename);
+                                            recording.setFilename(filename.substring(index + 1));
+                                            int length = Constants.SFTP_PATH.length();
+                                            //保存的是sftp目录下的子目录
+                                            String filepath = filename.substring(length - 1, index);
+                                            logger.info(">>>>>>>>> 会议{}录音保存相对sftp路径：{}",conference.getResId(), filename);
+                                            recording.setFilePath(filepath);
                                         }
 
                                         Integer start = (Integer) rpcRequest.getParams().get("begin_time");

@@ -339,6 +339,8 @@ public class IpscServiceImpl implements IpscService {
             protected void onResult(Object o) {
                 logger.info("会议{}开始录音", conferenceId);
                 logRepository.save(log);
+                conference.setIsInRecording(1);
+                conferenceRepository.save(conference);
                 ret[0] = 1;
             }
 
@@ -369,20 +371,23 @@ public class IpscServiceImpl implements IpscService {
     public int stopRecord(String conferenceId, String tokenName) throws IOException, InterruptedException {
         Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.record_stop",
                 "停止录音", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
-
+        Conference conference = conferenceRepository.findByResId(conferenceId);
         //会议不存在
-        if (checkConfExist(conferenceId) != 1) {
+        if (checkConfExist(conferenceId) != 1 || conference == null) {
             return 4;
         }
 
+        //该会议没有录音
+        if (conference.getIsInRecording() == 0) {
+            return 6;
+        }
         int[] ret = new int[1];
         IpscUtil.stopRecord(conferenceId, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
                 logger.info("会议{}已结束录音", conferenceId);
                 logRepository.save(log);
-                //将会议是否录音状态改为正在录音
-                Conference conference = conferenceRepository.findByResId(conferenceId);
+                //将会议是否录音状态改为没有录音
                 conference.setIsInRecording(0);
                 conferenceRepository.save(conference);
                 ret[0] = 1;
