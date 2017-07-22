@@ -43,6 +43,7 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
             this.filter.currentPage = $scope.pageObject.currentPage;
             this.filter.pageSize = $scope.pageObject.pageSize;
 
+
             for(var k in this.filter){
                 if(!this.filter[k]) this.filter[k] = null;
             }
@@ -109,8 +110,10 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
         };
 
         this.download = function(record){
-            window.location.href = '/api//recording/download?filename=' + record.filename +
+            window.location.href = '/api/recording/download?filename=' + record.filename +
                     '&filePath=' + record.filePath;
         };
+
+
     });
 });

@@ -1,8 +1,7 @@
 
 <div class="w1000" style="margin-top:60px" ng-controller="lyCtrl as ly">
-
+    
     <div class="lytLI">
-
         <span>文件名：</span>
 
         <div class="wbk3">
@@ -34,7 +33,7 @@
 
     </div>
 
-    <input type="submit" value="搜索" class="btn-dhbs" />
+    <input type="submit" value="搜索" class="btn-dhbs" ng-click="ly.getRecordings('reload')"/>
     <div style="clear: both;"></div>
 
     <table cellpadding="0" cellspacing="0" class="lyTB">
