@@ -198,12 +198,11 @@ public class IpscUtil {
                                         logger.info(">>>>>>>>> 会议{}录音保存绝对路径：{}",conference.getResId(), filename);
                                         int index = filename.lastIndexOf("/");
                                         if (index != -1) {
-                                            logger.info(">>>>>>>>> 会议{}录音文件名：{}",conference.getResId(), filename);
                                             recording.setFilename(filename.substring(index + 1));
                                             int length = Constants.SFTP_PATH.length();
                                             //保存的是sftp目录下的子目录
-                                            String filepath = filename.substring(length - 1, index);
-                                            logger.info(">>>>>>>>> 会议{}录音保存相对sftp路径：{}",conference.getResId(), filename);
+                                            String filepath = filename.substring(length, index);
+                                            logger.info(">>>>>>>>> 会议{}录音保存相对sftp路径：{}",conference.getResId(), filepath);
                                             recording.setFilePath(filepath);
                                         }
 
