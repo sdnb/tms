@@ -37,7 +37,7 @@ public class RecordingController extends BaseController{
      */
     @RequestMapping(value = "/recording/download" ,method = RequestMethod.GET)
     public ObjectResult download(@RequestParam(value = "filename",required = true)String filename,
-                                    @RequestParam(value = "filepath",required = true)String filepath,
+                                    @RequestParam(value = "filePath",required = true)String filepath,
                                     HttpServletResponse response) {
 
         if(filename.contains("../") || filepath.contains("../")){
