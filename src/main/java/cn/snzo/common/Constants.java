@@ -16,7 +16,7 @@ public class Constants {
     public static final String       FORMATE_CUSTOM_TIME    = "yyyy-MM-dd HH:mm:ss";
     public static final String       STAFF_TOKEN            = "staff_token";
     public static final CharSequence PREFIX_SFTP_PATH       = "/home/sftp/";
-    public static final int          MAX_CONF_SECONDS       = 3600;
+    public static final int          MAX_CONF_SECONDS       = 36000;
 
     public static final int     MAX_ANSWER_SECONDS          = 3600;
     public static final String  RECORD_FILE_SUFFIX          = ".wav";

@@ -171,7 +171,7 @@ a.topExit img { float: left; margin:8px 5px 0 0; }
 
 .xjLI input.wbk3 {
 	vertical-align: top;
-	width:180px;
+	width:232px;
 	padding:0 10px;
 	height: 32px;
 	line-height: 32px;
@@ -236,7 +236,7 @@ a.topExit img { float: left; margin:8px 5px 0 0; }
 
 .zcchwbk input {
 	width:230px;
-	height: 35px;
+	height: 33px;
 	line-height: 35px;
 	background: #fff;
 	border:none;
@@ -353,7 +353,7 @@ a.btn-fqhy:hover { background-color: #2966a7 }
 .schwbk {
 	float: left;
 	width:130px;
-	height: 25px;
+	height: 27px;
 	line-height: 25px;
 	border:solid 1px #ccc;
 	border-radius: 4px 0 0 4px;
@@ -449,10 +449,12 @@ a.btn-jy1 { border-color:#3686dc; color:#3686dc; background-image: url(../images
 	background: #3686dc;
 	border:none;
 	border-radius: 4px;
-	margin-left:15px;
+	margin-left: 96px;
+	margin-top: 20px;
 	vertical-align: top;
 	cursor: pointer;
 	transition: .2s;
+
 }
 
 .btn-xg:hover { background: #2865a6 }
@@ -473,7 +475,7 @@ a.btn-jy1 { border-color:#3686dc; color:#3686dc; background-image: url(../images
 	border-radius: 4px 0 0 4px;
 	color:#333;
 	font-family:Microsoft YaHei;
-	font-size:16px;
+	font-size:12px;
 	text-indent: 10px;
 }
 
