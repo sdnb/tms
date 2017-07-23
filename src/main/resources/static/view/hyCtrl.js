@@ -1,6 +1,6 @@
 define(['../script/tms', 'jquery','../script/service/loginService','../script/service/conferenceService','../script/service/conferenceRoomService','../script/service/conductorService','../script/service/contactService','./pagination'],
     function(module, $, LoginService, ConferenceService, ConferenceRoomService, ConductorService, ContactService){
-    module.controller('hyCtrl', function($scope, $location,$resource,$interval,commonService){
+    module.controller('hyCtrl', function($rootScope, $scope, $location,$resource,$interval,commonService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -226,9 +226,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.conference = data.message;
-                    var timer = $interval(function(){
+                    /*var timer = $interval(function(){
                         _this.getMembers('reload');
-                    },3000,10);
+                    },3000,10);*/
                     _this.getRooms(_this.conductor.id);
                 }else{
                     _this.message.show = true;
@@ -254,8 +254,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             this.conferenceFilter.currentPage = $scope.conferencePageObject.currentPage;
             this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
-            this.conferenceFilter.confResId = this.conference.resId;
-            if(!this.conferenceFilter.confResId)return;
+            this.conferenceFilter.confResId = this.confResId;
+            if(!this..confResId)return;
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
                     _this.members = data.message;
@@ -272,8 +272,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 }
             });
         };
+        _this.confResId = null
         $scope.$watch('conferencePageObject.currentPage',function(){
-            if(_this.conference != undefined && _this.conference.resId){
+            if(_this.confResId){
                 _this.getMembers();
             }
         });
@@ -380,9 +381,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.addCall(this.addCallShow,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
-                    var task = $interval(function(){
+                    /*var task = $interval(function(){
                         _this.getMembers('reload');
-                    },3000,5);
+                    },3000,5);*/
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
@@ -396,9 +397,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.exitConf(this.conference.resId,member.callId,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
-                    var task = $interval(function(){
+                    /*var task = $interval(function(){
                         _this.getMembers('reload');
-                    },3000,5);
+                    },3000,5);*/
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;
@@ -451,5 +452,62 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 _this.deleteRecording();
             }
         };
+
+        $rootScope.socket = null;
+        function initWebSocket(){
+            //判断当前浏览器是否支持WebSocket
+            if('WebSocket' in window){
+                $rootScope.socket = new WebSocket("ws://localhost:8080/reminder");
+            }
+            else{
+                alert('您的浏览器不支持WebSocket');
+            }
+
+            //连接发生错误的回调方法
+            $rootScope.socket.onerror = function(){
+                console.log("connect error");
+            };
+
+            //连接成功建立的回调方法
+            $rootScope.socket.onopen = function(event){
+                console.log("connect open");
+            };
+
+            //接收到消息的回调方法
+            $rootScope.socket.onmessage = function(){
+                console.log("receive message");
+                console.log(event.data);
+                _this.confResId = event.data;
+                if(_this.conference != undefined && _this.conference.resId == _this.confResId){
+                    _this.getMembers('reload');
+                }
+            };
+
+            //连接关闭的回调方法
+            $rootScope.socket.onclose = function(){
+                console.log("connect close");
+            };
+        }
+
+        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        window.onbeforeunload = function(){
+            if($rootScope.socket){
+                closeWebSocket();
+            }
+        };
+
+
+        //关闭连接
+        function closeWebSocket(){
+            $rootScope.socket.close();
+        }
+
+        //发送消息
+        function send(){
+            var message = "Hello WebSocket";
+            socket.send(message);
+        }
+
+        initWebSocket();
     });
 });
