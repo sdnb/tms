@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * Created by ThomasC on 2017/6/28 0028.
@@ -33,5 +34,10 @@ public class Application implements CommandLineRunner{
     @Override
     public void run(String... strings) throws Exception {
         IpscUtil.init();
+    }
+
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
     }
 }
