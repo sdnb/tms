@@ -5,17 +5,17 @@ import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ContactRepository;
 import cn.snzo.service.IConductorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ThomasC on 2017/6/29 0029.
  */
-@RestController
+@Controller
 public class TestController {
 
     @Autowired
@@ -35,4 +35,7 @@ public class TestController {
         List<Contact> c = contactRepository.findByPhones(phones);
         return c;
     }
+
+    @RequestMapping(value = {"/ws1"},method = RequestMethod.GET)
+    public String ws() { return "forward:/ws.html"; }
 }

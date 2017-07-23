@@ -8,6 +8,7 @@ import cn.snzo.entity.Recording;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.repository.RecordingRepository;
+import cn.snzo.ws.ChangeReminder;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,12 @@ public class IpscUtil {
         IpscUtil.conferenceRoomRepository = conferenceRoomRepository;
     }
 
+    private static ChangeReminder changeReminder;
+
+    @Autowired
+    public void setChangeReminder(ChangeReminder changeReminder) {
+        IpscUtil.changeReminder = changeReminder;
+    }
 
     public static final String VOIP = "10.1.2.152";
 
@@ -107,8 +114,17 @@ public class IpscUtil {
                             final String callId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
                                 logger.warn(">>>>>>>>> 呼叫 {} 已经释放", callId);
+                                String confId = callConfMap.get(callId);
+                                if (confId != null) {
+                                    try {
+                                        changeReminder.sendMessageToAll(confId);
+                                    } catch (IOException e) {
+                                        logger.error(">>>>>>>>> 发送socket错误");
+                                    }
+                                }
                                 //将呼叫从缓存中清除
                                 callConfMap.remove(callId);
+
                             } else if (methodName.equals("on_ringing")) {
                                 logger.info(">>>>>>>>> 呼叫 {} 振铃", callId);
                             } else if (methodName.equals("on_dial_completed")) {
@@ -179,7 +195,13 @@ public class IpscUtil {
                             String confId = (String) rpcRequest.getParams().get("res_id");
                             if (methodName.equals("on_released")) {
                                 logger.warn(">>>>>>>>> 会议 {} 已经释放", confId);
-
+                                //会议结束，推送通知消息
+                                try {
+                                    logger.warn(">>>>>>>>> 推送会议{}结束通知消息", confId);
+                                    changeReminder.sendMessageToAll(confId);
+                                } catch (IOException e) {
+                                    logger.error(">>>>>>>>> 推送通知消息错误");
+                                }
                                 //修改为已结束状态
                                 Conference conference = conferenceRepository.findByResId(confId);
                                 conference.setStatus(2);
@@ -238,6 +260,13 @@ public class IpscUtil {
                         protected void onResult(Object o) {
                             logger.info(">>>>>>>>> 呼叫 {} 加入会议 {} 操作完毕", callId, conferenceId);
                             callConfMap.put(callId, conferenceId);
+                            //往前端推送socket消息
+                            try {
+                                logger.info(">>>>>>>>> 推送websocket通知消息confId=", conferenceId);
+                                changeReminder.sendMessageToAll(conferenceId);
+                            } catch (IOException e) {
+                                logger.error(">>>>>>>>> 推送websocket通知消息错误 {}", conferenceId);
+                            }
                         }
 
                         @Override

@@ -126,7 +126,6 @@ public class IpscServiceImpl implements IpscService {
                         //保存会议信息
                         Conference conference = saveConference(conferenceStartShow, conferenceId, isInRecording, conferenceRoomShow.getId());
 
-
                         conferences.add(conference);
                         //外呼
                         logger.info("进行外呼", conferenceId);
