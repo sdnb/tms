@@ -457,7 +457,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         function initWebSocket(){
             //判断当前浏览器是否支持WebSocket
             if('WebSocket' in window){
-                $rootScope.socket = new WebSocket("ws://localhost:8080/reminder");
+                $rootScope.socket = new WebSocket("ws://202.165.191.9:8080/reminder");
             }
             else{
                 alert('您的浏览器不支持WebSocket');
