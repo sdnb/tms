@@ -288,6 +288,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                         _this.conference = _this.conferences[0];
                         _this.getMembers('reload');
                     }else{
+                        _this.conference = null;
                         _this.members = [];
                     }
                 }else{
@@ -475,12 +476,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
             //接收到消息的回调方法
             $rootScope.socket.onmessage = function(){
-                console.log("receive message");
-                console.log(event.data);
                 _this.confResId = event.data;
-                console.log(_this.conference != undefined && _this.conference.resId == _this.confResId);
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
-                    console.log(123);
                     _this.getMembers('reload');
                 }
             };
