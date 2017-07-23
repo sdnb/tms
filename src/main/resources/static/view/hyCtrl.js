@@ -478,7 +478,9 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 console.log("receive message");
                 console.log(event.data);
                 _this.confResId = event.data;
+                console.log(_this.conference != undefined && _this.conference.resId == _this.confResId);
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
+                    console.log(123);
                     _this.getMembers('reload');
                 }
             };
