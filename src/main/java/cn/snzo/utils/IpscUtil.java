@@ -158,26 +158,21 @@ public class IpscUtil {
                                     logger.info(">>>>>>>>>接收到dtmf码为：{}", keys);
                                     ConferenceRoom conferenceRoom = conferenceRoomRepository.findByIvrPassword(keys);
                                     boolean isRight = false;
+                                    boolean isOpen = false;
                                     Conference conference = null;
                                     if (conferenceRoom != null)
                                     {
+                                        isRight  = true;
                                         //查询该会议室中正在进行的会议
                                         conference = conferenceRepository.findByRoomIdAndStatus(conferenceRoom.getId(), 1);
                                         if (conference != null) {
-                                            isRight  = true;
+                                            isOpen = true;
                                         } else{
-
-                                            Integer count = callEnterDtfmCount.get(callId);
-                                            if (count == null || count < 2) {
-                                                logger.error(">>>>>>>>>该会议室无正在进行的会议,播放语音{}", Constants.CLOSED_VOICE);
-                                                playContent(callId, Constants.CLOSED_VOICE);
-                                                callEnterDtfmCount.put(callId, count == null ? 1 : 2);
-                                            } else if (count == 2){
-                                                playWrongVoice(callId, count);
-                                            }
+                                            isOpen = false;
                                         }
                                     }
-                                    if (isRight) {
+                                    boolean isRightAndOpen = isRight && isOpen;
+                                    if (isRightAndOpen) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
 
                                         final Conference finalConference = conference;
@@ -195,19 +190,19 @@ public class IpscUtil {
 
                                             @Override
                                             protected void onError(RpcError rpcError) {
-                                                logger.error(">>>>>>>>> 播放语音错误,code={},message={}", rpcError.getCode(), rpcError.getMessage());
+                                                logger.error(">>>>>>>>> 播放语音{}错误,code={},message={}", Constants.READY_VOICE, rpcError.getCode(), rpcError.getMessage());
                                             }
 
                                             @Override
                                             protected void onTimeout() {
-                                                logger.error(">>>>>>>>> 播放语音超时");
+                                                logger.error(">>>>>>>>> 播放语音{}超时", Constants.READY_VOICE);
                                             }
                                         });
 
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
-                                        playWrongVoice(callId, count);
+                                        playWrongVoice(callId, count, isRight);
                                     }
 
                                 }
@@ -504,18 +499,19 @@ public class IpscUtil {
     }
 
 
-    public static void playWrongVoice(String callId, Integer count) {
+    public static void playWrongVoice(String callId, Integer count, boolean isRight) {
 
-        //如果该呼叫输入错误2次，播放提示音 final_wrong_passwd.wav
-        if (count == null) {
-            logger.info(">>>>>>>>> 输入错误1次，呼叫id={}", callId);
-            callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
-            callEnterDtfmCount.put(callId, 1);
-        } else if (count == 1){
-            logger.info(">>>>>>>>> 输入错误2次，呼叫id={}", callId);
-            callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
+        //如果该呼叫输入错误3次，播放提示音 final_wrong_passwd.wav
+        count = count == null ? 1 : count;
+        if (count < 3) {
+            logger.info(">>>>>>>>> 输入错误{}次，呼叫id={}",count, callId);
+            if (isRight) {
+                callReceiveDtmfStart(callId, Constants.CLOSED_VOICE);
+            } else {
+                callReceiveDtmfStart(callId, Constants.WRONG_PASSWORD);
+            }
             callEnterDtfmCount.put(callId, ++count);
-        } else if (count == 2) {
+        } else if (count == 3) {
             logger.info(">>>>>>>>> 输入错误达到3次，呼叫id={}", callId);
             playContent(callId, Constants.FINAL_WRONG_PASSWORD, new RpcResultListener() {
                 @Override
