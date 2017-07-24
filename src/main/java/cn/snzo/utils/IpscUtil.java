@@ -166,12 +166,14 @@ public class IpscUtil {
                                         if (conference != null) {
                                             isRight  = true;
                                         } else{
-                                            logger.error(">>>>>>>>>该会议室无正在进行的会议,播放语音{}", Constants.CLOSED_VOICE);
-                                            playContent(callId, Constants.CLOSED_VOICE);
-                                            try {
-                                                Thread.sleep(6000);
-                                            } catch (InterruptedException e) {
-                                                logger.error(">>>>>>>>>播放语音{}被中断", Constants.READY_VOICE);
+
+                                            Integer count = callEnterDtfmCount.get(callId);
+                                            if (count == null || count < 2) {
+                                                logger.error(">>>>>>>>>该会议室无正在进行的会议,播放语音{}", Constants.CLOSED_VOICE);
+                                                playContent(callId, Constants.CLOSED_VOICE);
+                                                callEnterDtfmCount.put(callId, count == null ? 1 : 2);
+                                            } else if (count == 2){
+                                                playWrongVoice(callId, count);
                                             }
                                         }
                                     }
