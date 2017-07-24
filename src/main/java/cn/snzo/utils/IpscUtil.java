@@ -167,12 +167,12 @@ public class IpscUtil {
                                             isRight  = true;
                                         } else{
                                             logger.error(">>>>>>>>>该会议室无正在进行的会议,播放语音{}", Constants.CLOSED_VOICE);
+                                            playContent(callId, Constants.CLOSED_VOICE);
                                             try {
                                                 Thread.sleep(6000);
                                             } catch (InterruptedException e) {
                                                 logger.error(">>>>>>>>>播放语音{}被中断", Constants.READY_VOICE);
                                             }
-                                            playContent(callId, Constants.CLOSED_VOICE);
                                         }
                                     }
                                     if (isRight) {
@@ -198,7 +198,7 @@ public class IpscUtil {
 
                                             @Override
                                             protected void onTimeout() {
-
+                                                logger.error(">>>>>>>>> 播放语音超时");
                                             }
                                         });
 
