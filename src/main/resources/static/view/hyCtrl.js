@@ -255,7 +255,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             this.conferenceFilter.currentPage = $scope.conferencePageObject.currentPage;
             this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
             this.conferenceFilter.confResId = this.confResId;
-            if(!this..confResId)return;
+            if(!this.confResId)return;
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
                     _this.members = data.message;
@@ -288,6 +288,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                         _this.conference = _this.conferences[0];
                         _this.getMembers('reload');
                     }else{
+                        _this.conference = null;
                         _this.members = [];
                     }
                 }else{
@@ -457,7 +458,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         function initWebSocket(){
             //判断当前浏览器是否支持WebSocket
             if('WebSocket' in window){
-                $rootScope.socket = new WebSocket("ws://localhost:8080/reminder");
+                $rootScope.socket = new WebSocket("ws://202.165.191.9:8080/reminder");
             }
             else{
                 alert('您的浏览器不支持WebSocket');
@@ -475,8 +476,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
             //接收到消息的回调方法
             $rootScope.socket.onmessage = function(){
-                console.log("receive message");
-                console.log(event.data);
                 _this.confResId = event.data;
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
                     _this.getMembers('reload');
