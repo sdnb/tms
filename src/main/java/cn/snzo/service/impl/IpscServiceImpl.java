@@ -87,6 +87,7 @@ public class IpscServiceImpl implements IpscService {
         logger.info("参数：{}", conferenceStartShow);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("max_seconds", Constants.MAX_CONF_SECONDS); /// 会议最长时间，这是必填参数
+        params.put("parts_threshold", Constants.PARTS_THRESHOLD); /// 会议最长时间，这是必填参数
         if (conferenceStartShow.isRecordEnable()) {
             SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
             logger.info("sysSettingShow {}", sysSettingShow);

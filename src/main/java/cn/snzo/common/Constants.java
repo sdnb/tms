@@ -23,6 +23,9 @@ public class Constants {
     public static final String  WRONG_PASSWORD              = "/root/tms/tms/file/wrong_passwd.wav";
     public static final String  FINAL_WRONG_PASSWORD        = "/root/tms/tms/file/final_wrong_passwd.wav";
     public static final String  WELCOME_VOICE               = "/root/tms/tms/file/welcome.wav";
+    public static final int     PARTS_THRESHOLD             = 0;
+    public static final String  CLOSED_VOICE                = "/root/tms/tms/file/closed.wav" ;
+    public static final String  READY_VOICE                 = "/root/tms/tms/file/ready.wav" ;
     public static       Integer MAX_CONF_PARTS              = 1000;
     public static       String  SFTP_PATH                   = "/data/sftp/mysftp";
 }

@@ -159,19 +159,49 @@ public class IpscUtil {
                                     ConferenceRoom conferenceRoom = conferenceRoomRepository.findByIvrPassword(keys);
                                     boolean isRight = false;
                                     Conference conference = null;
-                                    if (conferenceRoom != null) {
+                                    if (conferenceRoom != null)
+                                    {
                                         //查询该会议室中正在进行的会议
                                         conference = conferenceRepository.findByRoomIdAndStatus(conferenceRoom.getId(), 1);
                                         if (conference != null) {
                                             isRight  = true;
                                         } else{
-                                            logger.error(">>>>>>>>>该会议室无正在进行的会议");
+                                            logger.error(">>>>>>>>>该会议室无正在进行的会议,播放语音{}", Constants.CLOSED_VOICE);
+                                            try {
+                                                Thread.sleep(6000);
+                                            } catch (InterruptedException e) {
+                                                logger.error(">>>>>>>>>播放语音{}被中断", Constants.READY_VOICE);
+                                            }
+                                            playContent(callId, Constants.CLOSED_VOICE);
                                         }
                                     }
                                     if (isRight) {
-                                        logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同，将该呼叫{}加入会议{}", callId, conference.getResId());
-                                        logger.info("callId={}");
-                                        addCallToConf(callId, conference.getResId());
+                                        logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
+
+                                        final Conference finalConference = conference;
+                                        playContent(callId, Constants.READY_VOICE, new RpcResultListener() {
+                                            @Override
+                                            protected void onResult(Object o) {
+                                                try {
+                                                    Thread.sleep(6000);
+                                                } catch (InterruptedException e) {
+                                                    logger.error(">>>>>>>>>播放语音{}被中断", Constants.READY_VOICE);
+                                                }
+                                                logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, finalConference.getResId());
+                                                addCallToConf(callId, finalConference.getResId());
+                                            }
+
+                                            @Override
+                                            protected void onError(RpcError rpcError) {
+                                                logger.error(">>>>>>>>> 播放语音错误,code={},message={}", rpcError.getCode(), rpcError.getMessage());
+                                            }
+
+                                            @Override
+                                            protected void onTimeout() {
+
+                                            }
+                                        });
+
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
