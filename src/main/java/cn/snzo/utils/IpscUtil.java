@@ -143,8 +143,8 @@ public class IpscUtil {
                                     String confId = callConfMap.get(callId);
                                     if (confId != null) {
                                         logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
-                                        addCallToConf(callId, confId);
                                         playReadyVoice(callId, confId);
+                                        addCallToConf(callId, confId);
                                         //设置为参会中
                                         callRepository.updateStatus(callId, 2);
                                         changeReminder.sendMessageToAll(confId);
@@ -189,8 +189,8 @@ public class IpscUtil {
                                     boolean isRightAndOpen = isRight && isOpen;
                                     if (isRightAndOpen) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
-                                        addCallToConf(callId, conference.getResId());
                                         playReadyVoice(callId, conference.getResId());
+                                        addCallToConf(callId, conference.getResId());
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
