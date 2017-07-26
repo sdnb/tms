@@ -125,10 +125,8 @@ public class IpscUtil {
                             if (methodName.equals("on_released")) {
                                 logger.warn(">>>>>>>>> 呼叫 {} 已经释放", callId);
 
-
                                 //修改该呼叫的状态为已释放
                                 callRepository.updateStatus(callId, 3);
-
 
                                 //推送socket消息
                                 String confId = callConfMap.get(callId);
@@ -139,7 +137,6 @@ public class IpscUtil {
                                 callConfMap.remove(callId);
                             } else if (methodName.equals("on_ringing")) {
                                 logger.info(">>>>>>>>> 呼叫 {} 振铃", callId);
-                                callRepository.updateStatus(callId, 1);
                             } else if (methodName.equals("on_dial_completed")) {
                                 String error = (String) rpcRequest.getParams().get("error");
                                 if (error == null) {
@@ -147,6 +144,7 @@ public class IpscUtil {
                                     if (confId != null) {
                                         logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
                                         addCallToConf(callId, confId);
+                                        playReadyVoice(callId, confId);
                                         //设置为参会中
                                         callRepository.updateStatus(callId, 2);
                                         changeReminder.sendMessageToAll(confId);
@@ -191,12 +189,8 @@ public class IpscUtil {
                                     boolean isRightAndOpen = isRight && isOpen;
                                     if (isRightAndOpen) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
-
-                                        final Conference finalConference = conference;
-
-                                        addCallToConf(callId, finalConference.getResId());
-
-
+                                        addCallToConf(callId, conference.getResId());
+                                        playReadyVoice(callId, conference.getResId());
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
@@ -264,6 +258,31 @@ public class IpscUtil {
     }
 
 
+    public static void playReadyVoice(String callId, String confResId) {
+        playContent(callId, Constants.READY_VOICE, new RpcResultListener() {
+            @Override
+            protected void onResult(Object o) {
+                try {
+                    Thread.sleep(6000);
+                } catch (InterruptedException e) {
+                    logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
+                }
+                logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
+
+            }
+
+            @Override
+            protected void onError(RpcError rpcError) {
+                logger.error(">>>>>>>>> 播放欢迎语音{}错误,code={},message={}", Constants.READY_VOICE, rpcError.getCode(), rpcError.getMessage());
+            }
+
+            @Override
+            protected void onTimeout() {
+                logger.error(">>>>>>>>> 播放欢迎语音{}超时", Constants.READY_VOICE);
+            }
+        });
+    }
+
     public static void addCallToConf(String callId, String conferenceId) {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -283,29 +302,6 @@ public class IpscUtil {
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
-
-                            playContent(callId, Constants.READY_VOICE, new RpcResultListener() {
-                                @Override
-                                protected void onResult(Object o) {
-                                    try {
-                                        Thread.sleep(6000);
-                                    } catch (InterruptedException e) {
-                                        logger.error(">>>>>>>>>播放语音{}被中断", Constants.READY_VOICE);
-                                    }
-                                    logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, conferenceId);
-
-                                }
-
-                                @Override
-                                protected void onError(RpcError rpcError) {
-                                    logger.error(">>>>>>>>> 播放语音{}错误,code={},message={}", Constants.READY_VOICE, rpcError.getCode(), rpcError.getMessage());
-                                }
-
-                                @Override
-                                protected void onTimeout() {
-                                    logger.error(">>>>>>>>> 播放语音{}超时", Constants.READY_VOICE);
-                                }
-                            });
                         }
 
                         @Override
