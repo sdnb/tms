@@ -1,9 +1,7 @@
 package cn.snzo.service;
 
 import cn.snzo.entity.Conference;
-import cn.snzo.vo.ConferencePart;
 import cn.snzo.vo.ConferenceStartShow;
-import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +30,7 @@ public interface IpscService {
     int changeCallMode(String callId, String confResId,  int mode, String tokenName) throws IOException, InterruptedException;
 
 
-    Page<ConferencePart> getConfParts(String confResId, String username, String phone, Integer currentPage, Integer pageSize) throws IOException, InterruptedException;
+//    Page<ConferencePart> getConfParts(String confResId, String username, String phone, Integer currentPage, Integer pageSize) throws IOException, InterruptedException;
 
 
     /**

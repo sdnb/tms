@@ -19,6 +19,12 @@ public class Contact extends BaseEntity {
     public Contact() {
     }
 
+    public Contact(String phone, String name, Integer bookId) {
+        this.phone = phone;
+        this.name = name;
+        this.bookId = bookId;
+    }
+
     public Contact(ContactShow contactShow) {
         BeanUtils.copyProperties(contactShow, this);
     }

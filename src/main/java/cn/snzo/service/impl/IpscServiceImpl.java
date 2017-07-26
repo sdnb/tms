@@ -3,37 +3,26 @@ package cn.snzo.service.impl;
 import cn.snzo.common.Constants;
 import cn.snzo.entity.*;
 import cn.snzo.exception.ServiceException;
-import cn.snzo.repository.ConferenceRepository;
-import cn.snzo.repository.ConferenceRoomRepository;
-import cn.snzo.repository.ContactRepository;
-import cn.snzo.repository.LogRepository;
+import cn.snzo.repository.*;
 import cn.snzo.service.IConductorService;
 import cn.snzo.service.IConferenceRoomService;
 import cn.snzo.service.ISysSettingService;
 import cn.snzo.service.IpscService;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.utils.IpscUtil;
-import cn.snzo.utils.PageUtil;
 import cn.snzo.vo.*;
 import cn.snzo.ws.ChangeReminder;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.hesong.ipsc.ccf.RpcError;
 import com.hesong.ipsc.ccf.RpcResultListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Created by chentao on 2017/7/11 0011.
@@ -67,6 +56,10 @@ public class IpscServiceImpl implements IpscService {
 
     @Autowired
     private ChangeReminder changeReminder;
+
+
+    @Autowired
+    private CallRepository callRepository;
     /**
      * 建立会议
      * @param conferenceStartShow
@@ -87,14 +80,12 @@ public class IpscServiceImpl implements IpscService {
         if (roomIsUse) {
             throw new ServiceException("会议室正在使用");
         }
-        logger.info("=>>>>>>>>> 建立会议");
-        logger.info("=>>>>>>>>> 参数：{}", conferenceStartShow);
+        logger.info("=>>>>>>>>> 建立会议参数：{}", conferenceStartShow);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("max_seconds", Constants.MAX_CONF_SECONDS); /// 会议最长时间，这是必填参数
         params.put("parts_threshold", Constants.PARTS_THRESHOLD); /// 会议最长时间，这是必填参数
         if (conferenceStartShow.isRecordEnable()) {
             SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
-            logger.info("=>>>>>>>>> sysSettingShow {}", sysSettingShow);
             if (sysSettingShow != null) {
                 String recordPath = sysSettingShow.getRecordingPath();
                 logger.info("=>>>>>>>>> 录音文件存放目录：{}", recordPath);
@@ -139,11 +130,7 @@ public class IpscServiceImpl implements IpscService {
                         } catch (IOException | InterruptedException e) {
                             e.printStackTrace();
                         }
-                        try {
-                            changeReminder.sendMessageToAll(conferenceId);
-                        } catch (IOException e) {
-                            logger.error("=>>>>>>>>> 推送消息{}", conferenceId);
-                        }
+                        changeReminder.sendMessageToAll(conferenceId);
                         ret[0] = 1;
                     }
 
@@ -264,11 +251,10 @@ public class IpscServiceImpl implements IpscService {
 
     @Override
     public int addCallToConf(List<String> phones, String conferenceId, String tokenName) throws IOException, InterruptedException {
-//        SysSettingShow sysSettingShow = sysSettingService.getLatestSetting();
         logger.info("=>>>>>>>>> 呼叫 {} 加入会议 {}", phones, conferenceId);
-
+        Conference conference = conferenceRepository.findByResId(conferenceId);
         //会议不存在
-        if (checkConfExist(conferenceId) != 1) {
+        if (checkConfExist(conferenceId) != 1 || conference == null) {
             logger.info("=>>>>>>>>> 会议 {} 不存在", conferenceId);
             return 4;
         }
@@ -289,7 +275,26 @@ public class IpscServiceImpl implements IpscService {
                         log.setOperResId(callId);
                         logRepository.save(log);
                         ret[0] = 1;
+
+                        //保存呼叫信息
+                        List<Call> calls = new ArrayList<Call>();
+                        for (Contact contact : contacts) {
+                            Call call = new Call();
+                            call.setConductorId(conference.getConductorId());
+                            call.setConfResId(conference.getResId());
+                            call.setDerection(2);
+                            call.setRoomId(conference.getRoomId());
+                            call.setStatus(1);
+                            call.setStartAt(new Date());
+                            call.setResId(callId);
+                            call.setPhone(contact.getPhone());
+                            call.setName(contact.getName());
+                            call.setVoiceMode(1);
+                            calls.add(call);
+                        }
+                        callRepository.save(calls);
                     }
+
 
                     @Override
                     protected void onError(RpcError rpcError) {
@@ -298,6 +303,83 @@ public class IpscServiceImpl implements IpscService {
                         logRepository.save(log);
                         ret[0] = 2;
                     }
+
+
+                    @Override
+                    protected void onTimeout() {
+                        logger.error("=>>>>>>>>> 创建呼叫资源超时无响应");
+                        log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+                        logRepository.save(log);
+                        ret[0] = 3;
+                    }
+                });
+        //等待1s
+        if (ret[0] == 0) {
+            sleepMillSeconds(1000);
+        }
+        return ret[0];
+    }
+
+
+    /**
+     * 临时加入会议
+     * @param phone
+     * @param conferenceId
+     * @param tokenName
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public int addPhoneToConf(String phone, String conferenceId, String tokenName) throws IOException, InterruptedException {
+        logger.info("=>>>>>>>>> 临时呼叫电话 {} 加入会议 {}", phone, conferenceId);
+        Conference conference = conferenceRepository.findByResId(conferenceId);
+        //会议不存在
+        if (checkConfExist(conferenceId) != 1 || conference == null) {
+            logger.info("=>>>>>>>>> 会议 {} 不存在", conferenceId);
+            return 4;
+        }
+        Log log = new Log("", OperResTypeEnum.CALL.ordinal(), "sys.call.construct",
+                "创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal(),
+                OperResultEnum.SUCCESS.ordinal());
+        int[] ret = new int[1];
+        IpscUtil.callOutSinglePhone(phone, IpscUtil.VOIP,
+                new RpcResultListener() {
+                    @Override
+                    protected void onResult(Object o) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> result = (Map<String, Object>) o;
+                        String callId = (String) result.get("res_id");
+                        logger.info("=>>>>>>>>> 呼叫资源建立成功，ID={}。系统正在执行外呼……注意这不是呼叫成功！", callId);
+                        IpscUtil.callConfMap.put(callId, conferenceId);
+                        log.setOperResId(callId);
+                        logRepository.save(log);
+                        ret[0] = 1;
+
+                        //保存呼叫信息
+                        Call call = new Call();
+                        call.setConductorId(conference.getConductorId());
+                        call.setConfResId(conference.getResId());
+                        call.setDerection(2);
+                        call.setRoomId(conference.getRoomId());
+                        call.setStatus(1);
+                        call.setStartAt(new Date());
+                        call.setResId(callId);
+                        call.setPhone(phone);
+                        call.setVoiceMode(1);
+                        call.setName("临时参会人");
+                        callRepository.save(call);
+                    }
+
+
+                    @Override
+                    protected void onError(RpcError rpcError) {
+                        logger.error("=>>>>>>>>> 创建呼叫资源错误：{} {}", rpcError.getCode(), rpcError.getMessage());
+                        log.setOperResult(OperResultEnum.ERROR.ordinal());
+                        logRepository.save(log);
+                        ret[0] = 2;
+                    }
+
+
 
                     @Override
                     protected void onTimeout() {
@@ -337,10 +419,7 @@ public class IpscServiceImpl implements IpscService {
         }
 
         String filename = CommonUtils.getRecordFileName(path);
-        Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(),
-                "sys.conf.record_start","开始录音",
-                tokenName, OperTypeEnum.OPERATE.ordinal(),
-                OperResultEnum.SUCCESS.ordinal());
+        Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.record_start","开始录音", tokenName, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
         int[] ret = new int[1];
         IpscUtil.startRecord(conferenceId, filename, new RpcResultListener() {
             @Override
@@ -446,6 +525,12 @@ public class IpscServiceImpl implements IpscService {
             protected void onResult(Object o) {
                 logger.info("=>>>>>>>>> 离开会议成功，confId={},callId={}", conferenceId, callId);
                 logRepository.save(log);
+
+                //修改状态
+                callRepository.updateStatus(callId, 3);
+
+                //推送消息
+                changeReminder.sendMessageToAll(conferenceId);
                 ret[0] = 1;
             }
 
@@ -491,6 +576,12 @@ public class IpscServiceImpl implements IpscService {
             protected void onResult(Object o) {
                 logger.info("=>>>>>>>>> 修改与会者声音模式成功，confId={},callId={},mode={}", conferenceId, callId, mode);
                 logRepository.save(log);
+
+                //修改声音收放模式
+                callRepository.updateVoiceMode(callId, mode);
+
+                //发送通知
+                changeReminder.sendMessageToAll(conferenceId);
                 ret[0] = 1;
             }
 
@@ -517,77 +608,73 @@ public class IpscServiceImpl implements IpscService {
         return ret[0];
     }
 
-    @Override
-    public Page<ConferencePart> getConfParts(String confResId, String username, String phone, Integer currentPage, Integer pageSize) throws IOException, InterruptedException {
 
-        logger.info("=>>>>>>>>> 获取会议{}与会者列表", confResId);
-        Log log = new Log(confResId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.get_parts",
-                "获取会议与会者列表", username, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
-        List<ConferencePart> conferenceParts = new ArrayList<ConferencePart>();
-        Pageable page = PageUtil.createPage(currentPage, pageSize);
-        if (checkConfExist(confResId) != 1) {
-            return new PageImpl<>(conferenceParts, page, 0);
-        }
-        int[] ret = new int[1];
-        IpscUtil.getConfParts(confResId, new RpcResultListener() {
-            @Override
-            protected void onResult(Object o) {
-                logger.info("=>>>>>>>>> 获取与会者列表返回结果：{}", o.toString());
-                logger.info("=>>>>>>>>> Object ={}", o);
-                String array = JSON.toJSONString(o);
-                logger.info("=>>>>>>>>> array = {}", array);
-                JSONArray      jsonArray = JSON.parseArray(array);
-                List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
-                logger.info("=>>>>>>>>> PartDatas={}", partDatas);
-                for (PartData partData : partDatas) {
-                    ConferencePart part = new ConferencePart();
-                    part.setVoiceMode(partData.getVoice_mode());
-                    part.setCallId(partData.getRes_id());
 
-                    String phoneName = partData.getUser_data();
-                    if (phoneName == null) {
-                        part.setPhone("未知");
-                        part.setName("未知");
-                    } else {
-                        String[] strs = phoneName.split("-");
-                        part.setPhone(strs[0]);
-                        part.setName(strs[1]);
-                    }
-                    conferenceParts.add(part);
-                }
-                logRepository.save(log);
-                ret[0] = 1;
-            }
-
-            @Override
-            protected void onError(RpcError rpcError) {
-                logger.info("=>>>>>>>>> 获取与会者列表失败: {} {}", rpcError.getCode(), rpcError.getMessage());
-                log.setOperResult(OperResultEnum.ERROR.ordinal());
-                logRepository.save(log);
-                ret[0] = 2;
-            }
-
-            @Override
-            protected void onTimeout() {
-                logger.info("=>>>>>>>>> 获取与会者列表超时");
-                log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
-                logRepository.save(log);
-                ret[0] = 3;
-            }
-        });
-        //等待1s
-        if (ret[0] == 0) {
-            sleepMillSeconds(1000);
-        }
-
-        if (StringUtils.isEmpty(phone)) {
-            return new PageImpl<>(conferenceParts, page, (long)conferenceParts.size());
-        }
-        List<ConferencePart> conferenceParts1 = conferenceParts.stream()
-                .filter(e -> e.getPhone().contains(phone))
-                .collect(Collectors.toList());
-        return new PageImpl<>(conferenceParts1, page, (long)conferenceParts1.size());
-    }
+//    @Override
+//    public Page<ConferencePart> getConfParts(String confResId, String username, String phone, Integer currentPage, Integer pageSize) throws IOException, InterruptedException {
+//
+//        logger.info("=>>>>>>>>> 获取会议{}与会者列表", confResId);
+//        Log log = new Log(confResId, OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.get_parts",
+//                "获取会议与会者列表", username, OperTypeEnum.OPERATE.ordinal(), OperResultEnum.SUCCESS.ordinal());
+//        List<ConferencePart> conferenceParts = new ArrayList<ConferencePart>();
+//        Pageable page = PageUtil.createPage(currentPage, pageSize);
+//        if (checkConfExist(confResId) != 1) {
+//            return new PageImpl<>(conferenceParts, page, 0);
+//        }
+//        int[] ret = new int[1];
+//        IpscUtil.getConfParts(confResId, new RpcResultListener() {
+//            @Override
+//            protected void onResult(Object o) {
+//                logger.info("=>>>>>>>>> 获取与会者列表返回结果：{}", o.toString());
+//                String array = JSON.toJSONString(o);
+//                JSONArray      jsonArray = JSON.parseArray(array);
+//                List<PartData> partDatas = jsonArray.toJavaList(PartData.class);
+//                for (PartData partData : partDatas) {
+//                    ConferencePart part = new ConferencePart();
+//                    part.setVoiceMode(partData.getVoice_mode());
+//                    part.setCallId(partData.getRes_id());
+//
+//                    String phone = partData.getUser_data();
+//                    if (phone == null) {
+//                        part.setPhone("未知");
+//                    } else {
+//                        part.setPhone(phone);
+//                    }
+//                    conferenceParts.add(part);
+//                }
+//                logRepository.save(log);
+//                ret[0] = 1;
+//            }
+//
+//            @Override
+//            protected void onError(RpcError rpcError) {
+//                logger.info("=>>>>>>>>> 获取与会者列表失败: {} {}", rpcError.getCode(), rpcError.getMessage());
+//                log.setOperResult(OperResultEnum.ERROR.ordinal());
+//                logRepository.save(log);
+//                ret[0] = 2;
+//            }
+//
+//            @Override
+//            protected void onTimeout() {
+//                logger.info("=>>>>>>>>> 获取与会者列表超时");
+//                log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+//                logRepository.save(log);
+//                ret[0] = 3;
+//            }
+//        });
+//        //等待1s
+//        if (ret[0] == 0) {
+//            sleepMillSeconds(1000);
+//        }
+//
+//        if (StringUtils.isEmpty(phone)) {
+//            return new PageImpl<>(conferenceParts, page, (long)conferenceParts.size());
+//        }
+//        List<ConferencePart> conferenceParts1 = conferenceParts.stream()
+//                .filter(e -> e.getPhone().contains(phone))
+//                .collect(Collectors.toList());
+//        return new PageImpl<>(conferenceParts1, page, (long)conferenceParts1.size());
+//    }
 
     @Override
     public int checkConfExist(String confResId) throws InterruptedException, IOException {
@@ -651,42 +738,42 @@ public class IpscServiceImpl implements IpscService {
     }
 
 
-    private static class PartData{
-        private Integer voice_mode;
-        private String res_id;
-        private Integer chan;
-        private String user_data;
-
-        public Integer getVoice_mode() {
-            return voice_mode;
-        }
-
-        public void setVoice_mode(Integer voice_mode) {
-            this.voice_mode = voice_mode;
-        }
-
-        public String getRes_id() {
-            return res_id;
-        }
-
-        public void setRes_id(String res_id) {
-            this.res_id = res_id;
-        }
-
-        public Integer getChan() {
-            return chan;
-        }
-
-        public void setChan(Integer chan) {
-            this.chan = chan;
-        }
-
-        public String getUser_data() {
-            return user_data;
-        }
-
-        public void setUser_data(String user_data) {
-            this.user_data = user_data;
-        }
-    }
+//    private static class PartData{
+//        private Integer voice_mode;
+//        private String res_id;
+//        private Integer chan;
+//        private String user_data;
+//
+//        public Integer getVoice_mode() {
+//            return voice_mode;
+//        }
+//
+//        public void setVoice_mode(Integer voice_mode) {
+//            this.voice_mode = voice_mode;
+//        }
+//
+//        public String getRes_id() {
+//            return res_id;
+//        }
+//
+//        public void setRes_id(String res_id) {
+//            this.res_id = res_id;
+//        }
+//
+//        public Integer getChan() {
+//            return chan;
+//        }
+//
+//        public void setChan(Integer chan) {
+//            this.chan = chan;
+//        }
+//
+//        public String getUser_data() {
+//            return user_data;
+//        }
+//
+//        public void setUser_data(String user_data) {
+//            this.user_data = user_data;
+//        }
+//    }
 }

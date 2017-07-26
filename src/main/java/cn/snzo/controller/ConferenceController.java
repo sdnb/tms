@@ -3,8 +3,10 @@ package cn.snzo.controller;
 import cn.snzo.common.BaseController;
 import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
+import cn.snzo.entity.Call;
 import cn.snzo.entity.Conference;
 import cn.snzo.exception.ServiceException;
+import cn.snzo.service.ICallService;
 import cn.snzo.service.IConferenceService;
 import cn.snzo.service.ITokenService;
 import cn.snzo.service.impl.IpscServiceImpl;
@@ -34,6 +36,9 @@ public class ConferenceController extends BaseController {
 
     @Autowired
     private IConferenceService conferenceService;
+
+    @Autowired
+    private ICallService callService;
 
     /**
      * 发起会议
@@ -276,32 +281,32 @@ public class ConferenceController extends BaseController {
     }
 
 
-    /**
-     * 得到与会人列表
-     * @param confResId 会议资源id
-     * @param token
-     * @return
-     */
-    @RequestMapping(value = "/conference/parts", method = RequestMethod.GET)
-    public ObjectResult getParts(@RequestParam(value = "confResId", required = true) String confResId,
-                                 @RequestParam(value = "phone", required = false) String phone,
-                                 @RequestParam(value = "currentPage", required = false) Integer currentPage,
-                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                  @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token,
-                                 HttpServletResponse response) {
-        try {
-            LoginInfo loginInfo = tokenService.loadToken(token);
-            String username = loginInfo == null ? "" : loginInfo.getUsername();
-            Page<ConferencePart> parts = ipscService.getConfParts(confResId, username, phone, currentPage, pageSize);
-            CommonUtils.setResponseHeaders(parts.getTotalElements(), parts.getTotalPages(), parts.getNumber(), response);
-            return successRes(parts.getContent());
-        } catch (ServiceException e) {
-            return failureRes(e.getMessage());
-        } catch (Exception e) {
-            logErrInfo(e, logger);
-            return failureRes("获取与会者异常");
-        }
-    }
+//    /**
+//     * 得到与会人列表
+//     * @param confResId 会议资源id
+//     * @param token
+//     * @return
+//     */
+//    @RequestMapping(value = "/conference/parts", method = RequestMethod.GET)
+//    public ObjectResult getParts(@RequestParam(value = "confResId", required = true) String confResId,
+//                                 @RequestParam(value = "phone", required = false) String phone,
+//                                 @RequestParam(value = "currentPage", required = false) Integer currentPage,
+//                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
+//                                  @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token,
+//                                 HttpServletResponse response) {
+//        try {
+//            LoginInfo loginInfo = tokenService.loadToken(token);
+//            String username = loginInfo == null ? "" : loginInfo.getUsername();
+//            Page<ConferencePart> parts = ipscService.getConfParts(confResId, username, phone, currentPage, pageSize);
+//            CommonUtils.setResponseHeaders(parts.getTotalElements(), parts.getTotalPages(), parts.getNumber(), response);
+//            return successRes(parts.getContent());
+//        } catch (ServiceException e) {
+//            return failureRes(e.getMessage());
+//        } catch (Exception e) {
+//            logErrInfo(e, logger);
+//            return failureRes("获取与会者异常");
+//        }
+//    }
 
 
 
@@ -329,6 +334,34 @@ public class ConferenceController extends BaseController {
         } catch (Exception e) {
             logErrInfo(e, logger);
             return failureRes("查询会议异常");
+        }
+    }
+
+
+
+    /**
+     * 查询参会人
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/conference/parts", method = RequestMethod.GET)
+    public ObjectResult getCallPage(@RequestParam("confResId")String confResId,
+                                          @RequestParam(value = "roomId", required = false)Integer roomId,
+                                          @RequestParam(value = "phone", required = false)String phone,
+                                          @RequestParam(value = "status", required = false) Integer status,
+                                          @RequestParam(value = "name", required = false) String name,
+                                          @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                          @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                          HttpServletResponse response) {
+        try {
+            Page<Call> calls = callService.findPage(confResId, roomId, phone, status, name, currentPage, pageSize);
+            CommonUtils.setResponseHeaders(calls.getTotalElements(),  calls.getTotalPages(), calls.getNumber(), response);
+            return successRes(calls.getContent());
+        } catch (ServiceException e) {
+            return failureRes(e.getMessage());
+        } catch (Exception e) {
+            logErrInfo(e, logger);
+            return failureRes("查询参会人异常");
         }
     }
 

@@ -60,12 +60,13 @@ public class ChangeReminder {
     /**
      * 群发消息
      */
-    public void sendMessageToAll(String message) throws IOException {
+    public void sendMessageToAll(String message){
         logger.info("消息推送:"+message);
         for (ChangeReminder reminder : webSocketSet) {
             try {
                 reminder.sendMessage(message);
             } catch (IOException e) {
+                logger.error(">>>>>>>>> 发送消息错误，内容{}", message);
                 continue;
             }
         }
