@@ -144,7 +144,7 @@ public class IpscUtil {
                                     if (confId != null) {
                                         logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
                                         playReadyVoice(callId, confId);
-                                        addCallToConf(callId, confId);
+
                                         //设置为参会中
                                         callRepository.updateStatus(callId, 2);
                                         changeReminder.sendMessageToAll(confId);
@@ -190,7 +190,6 @@ public class IpscUtil {
                                     if (isRightAndOpen) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
                                         playReadyVoice(callId, conference.getResId());
-                                        addCallToConf(callId, conference.getResId());
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
@@ -268,7 +267,7 @@ public class IpscUtil {
                     logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
                 }
                 logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
-
+                addCallToConf(callId, confResId);
             }
 
             @Override
