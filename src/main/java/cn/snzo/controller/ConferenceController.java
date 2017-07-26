@@ -134,7 +134,6 @@ public class ConferenceController extends BaseController {
     }
 
 
-
     /**
      * 改变与会者的声音收放模式
      * @param confResId 会议资源id
@@ -362,6 +361,38 @@ public class ConferenceController extends BaseController {
         } catch (Exception e) {
             logErrInfo(e, logger);
             return failureRes("查询参会人异常");
+        }
+    }
+
+
+
+    /**
+      添加临时呼叫到会议
+     */
+    @RequestMapping(value = "/conference/phone", method = RequestMethod.GET)
+    public ObjectResult addTempPhone(@RequestParam String phone,
+                                     @RequestParam String confResId,
+                                     @CookieValue(value = Constants.STAFF_TOKEN, required = false) String token) {
+        try {
+            LoginInfo loginInfo = tokenService.loadToken(token);
+            String username = loginInfo == null ? "" : loginInfo.getUsername();
+            int code = ipscService.addPhoneToConf(phone, confResId, username);
+            if (code == 1) {
+                return successRes("添加临时呼叫成功");
+            } else if (code == 2) {
+                return failureRes("添加临时呼叫错误");
+            } else if (code == 3) {
+                return failureRes("添加临时呼叫超时");
+            } else if (code == 4) {
+                return failureRes("会议资源不存在");
+            } else {
+                return failureRes("添加呼叫失败");
+            }
+        } catch (ServiceException e) {
+            return failureRes(e.getMessage());
+        } catch (Exception e) {
+            logErrInfo(e, logger);
+            return failureRes("添加呼叫异常");
         }
     }
 
