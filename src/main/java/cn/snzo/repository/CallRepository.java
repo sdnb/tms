@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
 
 /**
  * Created by Administrator on 2017/7/25 0025.
@@ -26,11 +28,13 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
                         String name, Pageable p);
 
 
+    @Transactional
     @Modifying
     @Query("update  Call  c set c.status = ?2 where c.resId = ?1")
     int updateStatus(String callId, int status);
 
 
+    @Transactional
     @Modifying
     @Query("update Call c set c.voiceMode = ?2 where c.resId = ?1")
     int updateVoiceMode(String callId, int voiceMode);
