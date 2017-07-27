@@ -17,6 +17,7 @@ public interface ContactGroupRelativeRepository extends JpaRepository<ContactGro
 
 
     @Modifying
+    @Transactional
     @Query("delete from ContactGroupRelative c where c.groupId = ?1")
     void deleteByGroupId(int id);
 
