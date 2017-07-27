@@ -92,8 +92,9 @@ public class RecordingController extends BaseController{
                                  @RequestParam(name = "currentPage", required = false)Integer currentPage,
                                  @RequestParam(name = "pageSize", required = false)Integer pageSize,
                                  @RequestParam(name = "conductorName", required = false)String conductorName,
+                                 @RequestParam(name = "conductorId", required = false)Integer conductorId,
                                  HttpServletResponse response){
-        Page<RecordingShow> page = recordingService.getPage(filename, createStart, createEnd, currentPage, pageSize, conductorName);
+        Page<RecordingShow> page = recordingService.getPage(filename, createStart, createEnd, currentPage, pageSize, conductorName, conductorId);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
         System.out.println(page.getContent());
         return successRes(page.getContent());

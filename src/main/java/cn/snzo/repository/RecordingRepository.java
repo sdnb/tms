@@ -20,7 +20,9 @@ public interface RecordingRepository extends JpaRepository<Recording,Integer>{
             " (?1 is null or r.filename like ?1) and " +
             " (?2 is null or r.createDate >= ?2) and " +
             " (?3 is null or r.createDate <= ?3) and " +
-            " (?4 is null or r.conductorName <= ?4)")
-    Page<Recording> findPage(String filename, Date createStart, Date createEnd, String conductorName, Pageable p);
+            " (?4 is null or r.conductorName like ?4) and " +
+            " (?5 is null or r.conductorId = ?5)")
+    Page<Recording> findPage(String filename, Date createStart, Date createEnd, String conductorName,
+                             Integer conductorId, Pageable p);
 
 }
