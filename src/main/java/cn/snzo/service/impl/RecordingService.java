@@ -35,10 +35,10 @@ public class RecordingService implements IRecordingService {
 
     @Override
     public Page<RecordingShow> getPage(String filename, Date createStart, Date createEnd,
-                                       Integer currentPage, Integer pageSize) {
+                                       Integer currentPage, Integer pageSize, String conductorName) {
         Pageable p = PageUtil.createPage(currentPage, pageSize);
         filename = CommonUtils.fuzzyString(filename);
-        Page<Recording> recordings = recordingRepository.findPage(filename, createStart, createEnd, p);
+        Page<Recording> recordings = recordingRepository.findPage(filename, createStart, createEnd, conductorName, p);
         List<RecordingShow> recordingShows  = new ArrayList<>();
         for (Recording r : recordings) {
             RecordingShow show = new RecordingShow();

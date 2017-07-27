@@ -18,7 +18,8 @@ public class Recording extends BaseEntity {
     private Integer conferenceId;
     private String roomNo;
     private Integer roomId;
-
+    private String conductorName;
+    private Integer conductorId;
 
     public String getFilename() {
         return filename;
@@ -82,5 +83,21 @@ public class Recording extends BaseEntity {
 
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
+    }
+
+    public String getConductorName() {
+        return conductorName;
+    }
+
+    public void setConductorName(String conductorName) {
+        this.conductorName = conductorName;
+    }
+
+    public Integer getConductorId() {
+        return conductorId;
+    }
+
+    public void setConductorId(Integer conductorId) {
+        this.conductorId = conductorId;
     }
 }

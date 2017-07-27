@@ -15,6 +15,8 @@ public class RecordingShow {
     private String conferenceId;
     private String roomNo;
     private Integer roomId;
+    private String conductorName;
+    private Integer conductorId;
 
     public Integer getRoomId() {
         return roomId;
@@ -86,5 +88,21 @@ public class RecordingShow {
 
     public void setRoomNo(String roomNo) {
         this.roomNo = roomNo;
+    }
+
+    public String getConductorName() {
+        return conductorName;
+    }
+
+    public void setConductorName(String conductorName) {
+        this.conductorName = conductorName;
+    }
+
+    public Integer getConductorId() {
+        return conductorId;
+    }
+
+    public void setConductorId(Integer conductorId) {
+        this.conductorId = conductorId;
     }
 }

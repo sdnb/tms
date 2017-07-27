@@ -1,10 +1,7 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
-import cn.snzo.entity.Conference;
-import cn.snzo.entity.ConferenceRoom;
-import cn.snzo.entity.Contact;
-import cn.snzo.entity.Recording;
+import cn.snzo.entity.*;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
@@ -182,8 +179,6 @@ public class IpscUtil {
                                         conference = conferenceRepository.findByRoomIdAndStatus(conferenceRoom.getId(), 1);
                                         if (conference != null) {
                                             isOpen = true;
-                                        } else{
-                                            isOpen = false;
                                         }
                                     }
                                     boolean isRightAndOpen = isRight && isOpen;
@@ -227,6 +222,8 @@ public class IpscUtil {
                                     Recording recording = new Recording();
                                     Conference conference = conferenceRepository.findByResId(confId);
                                     if (conference != null) {
+                                        recording.setConductorId(conference.getConductorId());
+                                        recording.setConductorName(conference.getConductorName());
                                         recording.setConferenceId(conference.getId());
                                         recording.setConferenceNo(conference.getResId());
                                         String filename = (String) rpcRequest.getParams().get("record_file");
@@ -268,6 +265,7 @@ public class IpscUtil {
                 }
                 logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
                 addCallToConf(callId, confResId);
+
             }
 
             @Override
@@ -297,7 +295,22 @@ public class IpscUtil {
                         @Override
                         protected void onResult(Object o) {
                             logger.info(">>>>>>>>> 呼叫 {} 加入会议 {} 操作完毕", callId, conferenceId);
-                            callRepository.updateStatus(callId, 2);
+
+                            Call call = callRepository.findByResId(callId);
+                            if (call != null) {
+                                callRepository.updateStatus(callId, 2);
+                            } else {
+                                call = new Call();
+                                call.setResId(callId);
+                                call.setConfResId(conferenceId);
+                                call.setPhone("未知");
+                                call.setStatus(2);
+                                call.setVoiceMode(1);
+                                call.setName("未知");
+                                call.setDerection(1);
+                                call.setStartAt(new Date());
+                                callRepository.save(call);
+                            }
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);

@@ -13,5 +13,5 @@ public interface IRecordingService {
     int delete(int rid);
 
     Page<RecordingShow> getPage(String filename, Date createStart, Date createEnd,
-                                Integer currentPage, Integer pageSize);
+                                Integer currentPage, Integer pageSize, String conductorName);
 }

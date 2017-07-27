@@ -38,4 +38,7 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
     @Modifying
     @Query("update Call c set c.voiceMode = ?2 where c.resId = ?1")
     int updateVoiceMode(String callId, int voiceMode);
+
+    Call findByResId(String callId);
+
 }
