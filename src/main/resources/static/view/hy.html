@@ -17,7 +17,7 @@
             <span>参会人电话：</span>
             <div class="zcchwbk">
                 <input type="text" placeholder="手机号/固定电话" ng-model="hy.phone"/>
-                <a href="" ng-click="hy.addCall(hy.phone)"></a>
+                <a href="" ng-click="hy.addTempCall(hy.phone)"></a>
             </div>
         </div>
 
@@ -84,10 +84,12 @@
 
             <table cellpadding="0" cellspacing="0" class="hyTB">
 
-                <tr style="background: #b5b5b5"> <th style="border-left: none;">姓名</th> <th>联系电话</th> <th>状态</th> <th>操作</th> </tr>
+                <tr style="background: #b5b5b5"> <th style="border-left: none;">姓名</th><th>电话</th><th>方向</th><th>状态</th><th>收放模式</th><th>操作</th> </tr>
                 <tr  ng-repeat="member in hy.members">
-                    <td></td>
+                    <td ng-bind="member.name"></td>
                     <td ng-bind="member.phone"></td>
+                    <td ng-bind="member.derection | direction"></td>
+                    <td ng-bind="member.status | status"></td>
                     <td ng-bind="member.voiceMode | voiceMode"></td>
                     <td>
                         <!-- 与会者禁音 1 放音+收音 3 放音 -->

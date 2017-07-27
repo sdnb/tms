@@ -42,4 +42,23 @@ define(['../tms'], function(module){
             return input;
         }
     });
+
+    module.filter('direction',function(){
+        return function(input){
+            if(input == 1) input = '呼入';
+            else if(input == 2) input = '呼出';
+            return input;
+        }
+    });
+
+    //与会人状态
+    module.filter('status',function(){
+        return function(input){
+            if(input == 1) input = '振铃';
+            else if(input == 2) input = '参会中';
+            else if(input == 3) input = '已离会';
+            else if(input == 4) input = '未接听';
+            return input;
+        }
+    });
 });

@@ -360,6 +360,38 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         this.phone = null;
         var phonePattern = commonService.regex('telephone');
+        //添加临时电话到会议
+        this.addTempCall = function(phone){
+            if(!phonePattern.test(phone)){
+                this.message.show = true;
+                this.message.text = '请填写正确的电话号码';
+                return;
+            }
+
+            if(!this.conference){
+                this.message.show = true;
+                this.message.text = '当前无会议';
+                return;
+            }
+
+            this.addCallShow = {
+                confResId: this.conference.resId,
+                phones:[phone]
+            };
+
+            this.loading = true;
+            conferenceService.addTempPhone(this.addCallShow,function(data){
+                if(data.status == 'true'){
+                    //webSocket自动更新与会人列表
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                    console.log(data);
+                }
+            });
+        };
+
+
         //添加到会议
         this.addCall = function(phone){
             if(!phonePattern.test(phone)){

@@ -96,7 +96,8 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
 
         this.groupFilter = {};
         this.groups = [];
-        this.getGroups = function(){
+        this.getGroups = function(type){
+            if(type == 'reload') $scope.groupPageObject.currentPage = 1;
             this.groupFilter.currentPage = $scope.groupPageObject.currentPage;
             this.groupFilter.pageSize = $scope.groupPageObject.pageSize;
             this.loading = true;
@@ -299,13 +300,47 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             });
         };
 
+        //右键菜单
+        this.rightMenuIndex = 0;
+        $scope.isFocus = false;
+        $scope.onOver = function(){
+            $scope.isFocus = true;
+        };
+
+        $scope.onLeave = function(){
+            $scope.isFocus = false;
+        };
+
+        $(document).click(function(){
+            if(!$scope.isFocus){
+                $scope.$apply(function(){
+                    _this.rightMenuIndex = 0;
+                });
+            }
+        });
+
+        this.onItemRelease = function(event,group){
+            if(event.button === 0){
+                this.selectGroup(group);
+            }else if(event.button === 2){
+                this.rightMenuIndex = group.id;
+            }
+        }
+
+
         //定义确认弹出框提示问题
-        var confirmInfo = {"delete":{tips:"请问是否删除该联系人?"}};
+        var confirmInfo = {"delete":{tips:"请问是否删除该联系人?"},"deleteGroup":{tips:"请问是否删除该分组？"}};
 
         //操作确认
         $scope.confirmDialogShow = false;
+        this.operGroup = null;
         $scope.confirmOper = function(type, obj){
-            _this.contact = obj;
+            if(type.indexOf("Group") == -1 ){
+                _this.contact = obj;
+            }else{
+                _this.rightMenuIndex = 0;
+                _this.operGroup = obj;
+            }
             $scope.confirmTips = "";
             $scope.confirmTips = confirmInfo[type].tips;
             $scope.confirmType = type;
@@ -321,6 +356,8 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             $scope.cancelConfirm();
             if(type == "delete"){
                 _this.deleteContact();
+            }else if(type == 'deleteGroup'){
+                _this.deleteGroup();
             }
         };
 
@@ -330,6 +367,20 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.getContacts();
+                }else{
+                    _this.message.show = true;
+                    _this.message.text = data.message;
+                    console.log(data);
+                }
+            });
+        };
+
+        this.deleteGroup = function(){
+            this.loading = true;
+            contactService.delete(this.operGroup.id,function(data){
+                _this.loading = false;
+                if(data.status == 'true'){
+                    _this.getGroups('reload');
                 }else{
                     _this.message.show = true;
                     _this.message.text = data.message;

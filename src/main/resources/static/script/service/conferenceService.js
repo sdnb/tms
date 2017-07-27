@@ -12,6 +12,8 @@ define([],function(){
         this.stopReordApi = $resource('/api/conference/record/stop',null,{update:{method:'PUT'}});//停止录音
         this.getPartsApi = $resource('/api/conference/parts'); //得到与会人员列表
         this.getConferencePageApi = $resource('/api/conference/page'); //查询会议列表
+
+        this.addTempPhoneApi = $resource('/api/conference/phone'); //添加临时呼叫到会议
     }
 
     ConferenceService.prototype.add = function(conference,cb){
@@ -81,6 +83,14 @@ define([],function(){
     ConferenceService.prototype.getConferencePage = function(conference,cb){
         this.getConferencePageApi.get(conference,function(data,header){
             cb(data,header);
+        },function(errData){
+            cb(errData.data.error);
+        });
+    };
+
+    ConferenceService.prototype.addTempPhone = function(phone,cb){
+        this.addTempPhoneApi.get(phone,function(data){
+            cb(data);
         },function(errData){
             cb(errData.data.error);
         });

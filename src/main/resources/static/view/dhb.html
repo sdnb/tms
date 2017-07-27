@@ -16,13 +16,16 @@
         </div>
         <div style="clear:both"></div>
 
-        <div class="fenzu" ng-show="dhb.operationPanel.show">
+        <div class="fenzu" ng-show="dhb.operationPanel.show" oncontextmenu="return false">
             <div ng-show="dhb.operationPanel.index==1">
                 <a href="" ng-click="dhb.changeView('add',null,'contact')">新建联系人</a><a href="" ng-click="dhb.changeView('import',null,'contact')">导入联系人</a><a href="" ng-click="dhb.changeView('addGroup',null,'group')">新建分组</a>
             </div>
 
             <div ng-show="dhb.operationPanel.index==2">
-                <a href="" ng-repeat="group in dhb.groups" ng-bind="group.name" ng-class="{cur:dhb.group.id==group.id}" ng-click="dhb.selectGroup(group)"></a>
+                <div ng-repeat="group in dhb.groups" style="position:relative;display:inline-block" ng-mouseover="onOver()" ng-mouseleave="onLeave()">
+                    <a href="" ng-bind="group.name" ng-class="{cur:dhb.group.id==group.id}" ng-mouseup="dhb.onItemRelease($event,group)"></a>
+                    <div style="width:100px;color:red bold;position:absolute;left:20px;top:20px;" ng-show="dhb.rightMenuIndex==group.id"><a ng-click="confirmOper('deleteGroup',group)">删除</a></div>
+                </div>
                 <a href="" class="cur" ng-hide="groupPageObject.currentPage == 1" ng-click="prev()">&lt;</a>
                 <a href="" class="cur" ng-hide="groupPageObject.currentPage==groupPageObject.totalPage || groupPageObject.totalPage==0" ng-click="next()">&gt;</a>
             </div>

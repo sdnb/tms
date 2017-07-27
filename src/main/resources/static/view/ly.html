@@ -12,6 +12,16 @@
     </div>
 
     <div class="lytLI">
+        <span>主持人：</span>
+
+        <div class="wbk3">
+            <input type="text" ng-model="ly.filter.conductorName">
+            <a href="" style="background-image: url(images/wjm.png);"></a>
+        </div>
+
+    </div>
+
+    <div class="lytLI">
 
         <span>创建开始时间：</span>
 
@@ -38,10 +48,11 @@
 
     <table cellpadding="0" cellspacing="0" class="lyTB">
 
-        <tr> <th>文件名</th> <th>所属会议室</th> <th>起始时间</th> <th>结束时间</th> <th>总时长</th> <th colspan="2">操作</th> </tr>
+        <tr> <th>文件名</th><th>主持人</th><th>所属会议室</th> <th>起始时间</th> <th>结束时间</th> <th>总时长</th> <th colspan="2">操作</th> </tr>
 
         <tr ng-repeat="record in ly.recordings">
             <td ng-bind="record.filename"></td>
+            <td ng-bind="record.conductorName"></td>
             <td ng-bind="record.roomNo"></td>
             <td ng-bind="record.startTime | date:'yyyy-MM-dd HH:mm'"></td>
             <td ng-bind="record.endTime | date:'yyyy-MM-dd HH:mm'"></td>
