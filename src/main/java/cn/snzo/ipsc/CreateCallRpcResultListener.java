@@ -25,8 +25,7 @@ public class CreateCallRpcResultListener extends SimpleRpcResultListener {
     }
 
     protected void additionExcute(){
-        logger.info("===========> excute additionExcute()");
-
+        logger.info("===========> CreateCallRpcResultListener.additionExcute()");
         String callId = (String) getRpcResult().get("res_id");
         logger.info("===========> bind call {} to conf {}", callId, call.getConfResId());
         IpscUtil.callConfMap.put(callId, call.getConfResId());
