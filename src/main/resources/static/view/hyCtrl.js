@@ -449,7 +449,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 mode = 1;
             }
             this.loading = true;
-            conferenceService.forbid(this.conference.resId,member.callId,mode,function(data){
+            conferenceService.forbid(this.conference.resId,member.resId,mode,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.getMembers();
