@@ -377,7 +377,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
 
         this.deleteGroup = function(){
             this.loading = true;
-            contactService.delete(this.operGroup.id,function(data){
+            groupService.delete(this.operGroup.id,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.getGroups('reload');
