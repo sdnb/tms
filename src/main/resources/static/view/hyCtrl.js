@@ -427,7 +427,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         //从会议移除
         this.removeCall = function(member){
             this.loading = true;
-            conferenceService.exitConf(this.conference.resId,member.callId,function(data){
+            conferenceService.exitConf(this.conference.resId,member.resId,function(data){
                 _this.loading = false;
                 if(data.status == 'true'){
                     /*var task = $interval(function(){

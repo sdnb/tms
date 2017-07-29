@@ -113,7 +113,7 @@ public class ConferenceController extends BaseController {
             LoginInfo loginInfo = tokenService.loadToken(token);
             String username = loginInfo == null ? "" : loginInfo.getUsername();
             int code = ipscService.addCallToConf(addCallShow.getPhones(), addCallShow.getConfResId(), username);
-
+            logger.info("所有参会人电话：{}", addCallShow.getPhones());
             if (code == 1) {
                 return successRes("添加呼叫成功");
             } else if (code == 2) {
