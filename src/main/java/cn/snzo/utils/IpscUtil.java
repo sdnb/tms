@@ -1,7 +1,10 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
-import cn.snzo.entity.*;
+import cn.snzo.entity.Call;
+import cn.snzo.entity.Conference;
+import cn.snzo.entity.ConferenceRoom;
+import cn.snzo.entity.Recording;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -333,22 +335,36 @@ public class IpscUtil {
     }
 
 
-    public static void callOut(List<Contact> contacts, String ip, RpcResultListener listener) throws IOException, InterruptedException {
-        for (Contact te : contacts) {
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
-            params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
-            params.put("user_data", te.getPhone()); ///用户信息
-            logger.info(">>>>>>>>> 呼叫参数： {}", params);
-            commander.createResource(
-                    busAddress,
-                    "sys.call",
-                    params,
-                    listener
-            );
-        }
-    }
+//    public static void callOut(List<Contact> contacts, String ip, RpcResultListener listener) throws IOException, InterruptedException {
+//        for (Contact te : contacts) {
+//            Map<String, Object> params = new HashMap<String, Object>();
+//            params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
+//            params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
+//            params.put("user_data", te.getPhone()); ///用户信息
+//            logger.info(">>>>>>>>> 呼叫参数： {}", params);
+//            commander.createResource(
+//                    busAddress,
+//                    "sys.call",
+//                    params,
+//                    listener
+//            );
+//        }
+//    }
 
+
+    public static void createCallRes(String phone, RpcResultListener rpcResultListener) throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("to_uri", phone + "@" + VOIP); /// 被叫号码的 SIP URI
+        params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
+        params.put("user_data", phone); ///用户信息
+        logger.info(">>>>>>>>> 呼叫参数： {}", params);
+        commander.createResource(
+                busAddress,
+                "sys.call",
+                params,
+                rpcResultListener
+        );
+    }
 
     public static void createConference(Map<String, Object> params, RpcResultListener rpcResultListener) throws IOException {
         logger.info(">>>>>>>>> createConference params {}", params);
