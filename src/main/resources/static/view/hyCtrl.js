@@ -259,6 +259,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             if(!this.confResId) {
                 console.log("conference="+_this.conference);
                 this.confResId = _this.conference.resId;
+                this.conferenceFilter.confResId = this.confResId;
             }
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
