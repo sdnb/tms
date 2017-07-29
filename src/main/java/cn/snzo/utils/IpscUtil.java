@@ -302,17 +302,18 @@ public class IpscUtil {
                             if (call != null) {
                                 callRepository.updateStatus(callId, 2);
                             }
-//                            else {
-//                                call.setResId(callId);
-//                                call.setConfResId(conferenceId);
-//                                call.setPhone("未知");
-//                                call.setStatus(2);
-//                                call.setVoiceMode(1);
-//                                call.setName("未知");
-//                                call.setDerection(1);
-//                                call.setStartAt(new Date());
-//                                callRepository.save(call);
-//                            }
+                            else {
+                                Call newCall = new Call();
+                                newCall.setResId(callId);
+                                newCall.setConfResId(conferenceId);
+                                newCall.setPhone("未知");
+                                newCall.setStatus(2);
+                                newCall.setVoiceMode(1);
+                                newCall.setName("未知");
+                                newCall.setDerection(1);
+                                newCall.setStartAt(new Date());
+                                callRepository.save(newCall);
+                            }
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
