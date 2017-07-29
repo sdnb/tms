@@ -299,18 +299,18 @@ public class IpscUtil {
                             Call call = callRepository.findByResId(callId);
                             if (call != null) {
                                 callRepository.updateStatus(callId, 2);
-                            } else {
-                                call = new Call();
-                                call.setResId(callId);
-                                call.setConfResId(conferenceId);
-                                call.setPhone("未知");
-                                call.setStatus(2);
-                                call.setVoiceMode(1);
-                                call.setName("未知");
-                                call.setDerection(1);
-                                call.setStartAt(new Date());
-                                callRepository.save(call);
                             }
+//                            else {
+//                                call.setResId(callId);
+//                                call.setConfResId(conferenceId);
+//                                call.setPhone("未知");
+//                                call.setStatus(2);
+//                                call.setVoiceMode(1);
+//                                call.setName("未知");
+//                                call.setDerection(1);
+//                                call.setStartAt(new Date());
+//                                callRepository.save(call);
+//                            }
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
