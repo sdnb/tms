@@ -4,6 +4,7 @@ import cn.snzo.entity.Call;
 import cn.snzo.entity.Log;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.LogRepository;
+import cn.snzo.utils.IpscUtil;
 
 /**
  * Created by Administrator on 2017/7/29 0029.
@@ -25,7 +26,10 @@ public class CreateCallRpcResultListener extends SimpleRpcResultListener {
 
     protected void additionExcute(){
         logger.info("===========> excute additionExcute()");
+
         String callId = (String) getRpcResult().get("res_id");
+        logger.info("===========> bind call {} to conf {}", callId, call.getConfResId());
+        IpscUtil.callConfMap.put(callId, call.getConfResId());
         call.setResId(callId);
         callRepository.save(call);
     }
