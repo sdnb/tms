@@ -249,6 +249,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         this.totalMembers = 0;
         this.conferenceFilter = {};
         this.getMembers = function(type){
+            console.log('type='+type);
             if(type == 'reload'){
                 $scope.conferencePageObject.currentPage = 1;
             }

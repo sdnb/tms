@@ -259,6 +259,7 @@ public class IpscServiceImpl implements IpscService {
 
         List<Contact> contacts = contactRepository.findByPhones(phones);
         for (Contact contact : contacts) {
+
             Log log = new Log(OperResTypeEnum.CALL.ordinal(),"创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal());
             Call call = new Call();
             call.setConductorId(conference.getConductorId());
