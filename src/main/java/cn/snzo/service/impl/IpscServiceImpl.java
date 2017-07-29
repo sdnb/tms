@@ -180,7 +180,7 @@ public class IpscServiceImpl implements IpscService {
         }
         Conductor conductor = conductorService.getOne(conferenceStartShow.getConductorId());
         if (conductor != null) {
-            conference.setConductorName(conductor.getUsername());
+            conference.setConductorName(conductor.getRealname());
         }
         conference.setStartAt(new Date());
         conference.setEndAt(new Date());
