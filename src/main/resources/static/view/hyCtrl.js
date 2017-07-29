@@ -376,7 +376,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
             this.addCallShow = {
                 confResId: this.conference.resId,
-                phones:[phone]
+                phone:[phone]
             };
 
             this.loading = true;
