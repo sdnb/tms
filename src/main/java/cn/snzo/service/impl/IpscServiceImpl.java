@@ -263,6 +263,7 @@ public class IpscServiceImpl implements IpscService {
                 OperResultEnum.SUCCESS.ordinal());
         int[] ret = new int[1];
         List<Contact> contacts = contactRepository.findByPhones(phones);
+        logger.info("***********************************contacts size:{}", contacts.size());
         IpscUtil.callOut(contacts, IpscUtil.VOIP,
                 new RpcResultListener() {
                     @Override
@@ -278,7 +279,9 @@ public class IpscServiceImpl implements IpscService {
 
                         //保存呼叫信息
                         List<Call> calls = new ArrayList<Call>();
+
                         for (Contact contact : contacts) {
+                            logger.info("***********************************addCallToConf 添加呼叫");
                             Call call = new Call();
                             call.setConductorId(conference.getConductorId());
                             call.setConfResId(conference.getResId());
@@ -292,6 +295,8 @@ public class IpscServiceImpl implements IpscService {
                             call.setVoiceMode(1);
                             calls.add(call);
                         }
+                        logger.info("***********************************calls size:{}", calls.size());
+
                         callRepository.save(calls);
                     }
 
@@ -355,6 +360,7 @@ public class IpscServiceImpl implements IpscService {
                         logRepository.save(log);
                         ret[0] = 1;
 
+                        logger.info("*******************************************addPhoneToConf 添加呼叫");
                         //保存呼叫信息
                         Call call = new Call();
                         call.setConductorId(conference.getConductorId());
