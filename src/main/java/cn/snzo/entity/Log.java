@@ -19,8 +19,7 @@ public class Log extends BaseEntity {
     public Log() {
     }
 
-    public Log(String operResId, Integer operResType, String operMethodId,
-               String operMethodName, String operator, Integer operType, Integer operResult) {
+    public Log(String operResId, Integer operResType, String operMethodId, String operMethodName, String operator, Integer operType, Integer operResult) {
         this.operResId = operResId;
         this.operResType = operResType;
         this.operMethodId = operMethodId;
@@ -28,6 +27,22 @@ public class Log extends BaseEntity {
         this.operator = operator;
         this.operType = operType;
         this.operResult = operResult;
+    }
+
+    public Log(String operResId, Integer operResType,
+               String operMethodName, String operator, Integer operType) {
+        this.operResId = operResId;
+        this.operResType = operResType;
+        this.operMethodName = operMethodName;
+        this.operator = operator;
+        this.operType = operType;
+    }
+
+    public Log(int operResType, String operMethodName, String operator, int operType) {
+        this.operResType = operResType;
+        this.operMethodName = operMethodName;
+        this.operator = operator;
+        this.operType = operType;
     }
 
     public String getOperResId() {
