@@ -257,7 +257,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
             this.conferenceFilter.confResId = this.confResId;
             if(!this.confResId) {
-                console.log("conference="+_this.conference);
                 this.confResId = _this.conference.resId;
                 this.conferenceFilter.confResId = this.confResId;
             }
@@ -516,6 +515,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 _this.confResId = event.data;
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
                     _this.getMembers('reload');
+                    _this.getConferences(_this.conductor.id);
                 }
             };
 
