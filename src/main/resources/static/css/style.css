@@ -306,7 +306,7 @@ a.topExit img { float: left; margin:8px 5px 0 0; }
 
 .hyblT { font-size:18px; }
 
-.hyblCon { border:solid 1px #ccc; background: #fff; margin-top:20px; height: 535px; }
+.hyblCon { border:solid 1px #ccc; background: #fff; margin-top:20px; height: 535px;position: relative }
 
 .hyblH li { float: left; text-align: center; line-height: 50px; color:#fff; font-size:14px; background: #b5b5b5; }
 
@@ -342,8 +342,8 @@ a.btn-fqhy {
 	display: block;
 	transition: background-color .2s;
 	position: absolute;
-	left: 238px;
-	bottom: 80px;
+	left: 24px;
+	bottom: 20px;
 }
 
 a.btn-fqhy:hover { background-color: #2966a7 }
