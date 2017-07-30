@@ -343,7 +343,7 @@ a.btn-fqhy {
 	transition: background-color .2s;
 	position: absolute;
 	left: 238px;
-	bottom: 100px;
+	bottom: 80px;
 }
 
 a.btn-fqhy:hover { background-color: #2966a7 }

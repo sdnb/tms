@@ -1,6 +1,7 @@
 package cn.snzo.common;
 
 import cn.snzo.entity.BaseEntity;
+import cn.snzo.utils.DateUtil;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -13,13 +14,13 @@ public class EntityListener {
 
     @PrePersist
     public void prePersist(BaseEntity baseEntity){
-        baseEntity.setCreateDate(new Date());
-        baseEntity.setModifyDate(new Date());
+        baseEntity.setCreateDate(DateUtil.transServerTimeToBeiJingTime(new Date()));
+        baseEntity.setModifyDate(DateUtil.transServerTimeToBeiJingTime(new Date()));
     }
 
 
     @PreUpdate
     public void preUpdate(BaseEntity baseEntity){
-        baseEntity.setModifyDate(new Date());
+        baseEntity.setModifyDate(DateUtil.transServerTimeToBeiJingTime(new Date()));
     }
 }

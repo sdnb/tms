@@ -16,6 +16,7 @@ public class DateUtil {
 
     public static Calendar calendar = null;
 
+    public static final int OFFSET_MILL_SECONDS = 8 * 60 * 60 * 1000;
     /**
      * 功能描述：
      * @param date 日期
@@ -31,5 +32,10 @@ public class DateUtil {
         } catch (Exception e) {
         }
         return result;
+    }
+
+
+    public static Date transServerTimeToBeiJingTime(Date date) {
+        return new Date(date.getTime() - OFFSET_MILL_SECONDS);
     }
 }

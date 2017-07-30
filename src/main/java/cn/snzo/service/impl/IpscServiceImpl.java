@@ -10,6 +10,7 @@ import cn.snzo.service.IConferenceRoomService;
 import cn.snzo.service.ISysSettingService;
 import cn.snzo.service.IpscService;
 import cn.snzo.utils.CommonUtils;
+import cn.snzo.utils.DateUtil;
 import cn.snzo.utils.IpscUtil;
 import cn.snzo.vo.*;
 import cn.snzo.ws.ChangeReminder;
@@ -143,7 +144,7 @@ public class IpscServiceImpl implements IpscService {
                         ret[0] = 1;
 
                         log.setOperResId(conferenceId);
-                        log.setOperResType(OperResultEnum.SUCCESS.ordinal());
+                        log.setOperResult(OperResultEnum.SUCCESS.ordinal());
                         logRepository.save(log);
                     }
 
@@ -195,8 +196,7 @@ public class IpscServiceImpl implements IpscService {
         if (conductor != null) {
             conference.setConductorName(conductor.getRealname());
         }
-        conference.setStartAt(new Date());
-        conference.setEndAt(new Date());
+        conference.setStartAt(DateUtil.transServerTimeToBeiJingTime(new Date()));
         conference.setStatus(1);
         conference.setIsInRecording(isInRecording);
         return conferenceRepository.save(conference);
@@ -304,7 +304,7 @@ public class IpscServiceImpl implements IpscService {
                 call.setDerection(2);
                 call.setRoomId(conference.getRoomId());
                 call.setStatus(1);
-                call.setStartAt(new Date());
+                call.setStartAt(DateUtil.transServerTimeToBeiJingTime(new Date()));
                 call.setPhone(contact.getPhone());
                 call.setName(contact.getName());
                 call.setVoiceMode(1);

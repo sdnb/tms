@@ -242,8 +242,8 @@ public class IpscUtil {
 
                                         Integer start = (Integer) rpcRequest.getParams().get("begin_time");
                                         Integer end = (Integer) rpcRequest.getParams().get("end_time");
-                                        recording.setStartTime(new Date((long)start * 1000));
-                                        recording.setEndTime(new Date((long)end * 1000));
+                                        recording.setStartTime(DateUtil.transServerTimeToBeiJingTime(new Date((long)start * 1000)));
+                                        recording.setEndTime(DateUtil.transServerTimeToBeiJingTime(new Date((long)end * 1000)));
                                         recording.setRoomId(conference.getRoomId());
                                         recording.setRoomNo(conference.getRoomNo());
                                         recordingRepository.save(recording);
