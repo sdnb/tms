@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 
 /**
@@ -41,4 +42,11 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
 
     Call findByResId(String callId);
 
+
+    @Query("select c.phone from Call c where c.confResId=?1 and c.phone in (?2) and c.status=?3")
+    List<String> findPhoneByConfResIdAndPhonesAndStatus(String conferenceId, List<String> phones, int status);
+
+
+    @Query("select c from Call c where c.confResId=?1 and c.phone in (?2) and c.status=?3")
+    List<Call> findCallByConfResIdAndPhoneAndStatus(String conferenceId, String phone, int status);
 }

@@ -258,21 +258,36 @@ public class IpscServiceImpl implements IpscService {
 
 
         List<Contact> contacts = contactRepository.findByPhones(phones);
+        List<String> exsistPhones = callRepository.findPhoneByConfResIdAndPhonesAndStatus(conferenceId, phones, 3);
         for (Contact contact : contacts) {
 
-            Log log = new Log(OperResTypeEnum.CALL.ordinal(),"创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal());
-            Call call = new Call();
-            call.setConductorId(conference.getConductorId());
-            call.setConfResId(conference.getResId());
-            call.setDerection(2);
-            call.setRoomId(conference.getRoomId());
-            call.setStatus(1);
-            call.setStartAt(new Date());
-            call.setPhone(contact.getPhone());
-            call.setName(contact.getName());
-            call.setVoiceMode(1);
-            RpcResultListener rpcResultListener = new CreateCallRpcResultListener(log, logRepository, "sys.call.construct", call, callRepository);
-            IpscUtil.createCallRes(contact.getPhone(), rpcResultListener);
+            if (!exsistPhones.isEmpty()) {
+                if (exsistPhones.contains(contact.getPhone())) {
+                    List<Call> calls = callRepository.findCallByConfResIdAndPhoneAndStatus(conferenceId, contact.getPhone(), 3);
+                    if (calls.size() == 1) {
+                        Log log = new Log(OperResTypeEnum.CALL.ordinal(), "二次呼叫", tokenName, OperTypeEnum.CREATE.ordinal());
+                        Call call = calls.get(0);
+                        call.setStatus(1);
+                        callRepository.save(call);
+                        RpcResultListener rpcResultListener = new CreateCallRpcResultListener(log, logRepository, "sys.call.construct", call, callRepository, true);
+                        IpscUtil.createCallRes(contact.getPhone(), rpcResultListener);
+                    }
+                }
+            } else {
+                Log log = new Log(OperResTypeEnum.CALL.ordinal(), "创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal());
+                Call call = new Call();
+                call.setConductorId(conference.getConductorId());
+                call.setConfResId(conference.getResId());
+                call.setDerection(2);
+                call.setRoomId(conference.getRoomId());
+                call.setStatus(1);
+                call.setStartAt(new Date());
+                call.setPhone(contact.getPhone());
+                call.setName(contact.getName());
+                call.setVoiceMode(1);
+                RpcResultListener rpcResultListener = new CreateCallRpcResultListener(log, logRepository, "sys.call.construct", call, callRepository, false);
+                IpscUtil.createCallRes(contact.getPhone(), rpcResultListener);
+            }
         }
 
         return 1;
@@ -307,7 +322,7 @@ public class IpscServiceImpl implements IpscService {
         call.setPhone(phone);
         call.setVoiceMode(1);
         call.setName("临时参会人");
-        RpcResultListener listener = new CreateCallRpcResultListener(log, logRepository, "sys.call", call, callRepository);
+        RpcResultListener listener = new CreateCallRpcResultListener(log, logRepository, "sys.call", call, callRepository, false);
         IpscUtil.createCallRes(phone, listener);
         return 1;
     }
