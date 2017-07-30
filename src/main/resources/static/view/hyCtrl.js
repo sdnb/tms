@@ -295,6 +295,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                         _this.conference = _this.conferences[0];
                         _this.getMembers('reload');
                     }else{
+                        _this.onlineMembers = 0;
+                        _this.totalMembers = 0;
                         _this.conference = null;
                         _this.members = [];
                     }
