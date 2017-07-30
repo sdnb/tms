@@ -4,9 +4,6 @@ package cn.snzo.common;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -96,18 +93,6 @@ public class CommonRepository {
     }
 
 
-
-    public <T> Page<T> queryPage(String querySql, String countSql,
-                                 Map<String, Object> params,
-                                 Class<T> tClass, Pageable pageable) {
-
-        @SuppressWarnings("unchecked")
-        List<T> ts =(List<T>) queryResultToBeanPage(querySql, params, tClass, pageable.getPageNumber(), pageable.getPageSize());
-
-        Integer count = getCountBy(countSql,params);
-
-        return new PageImpl<T>(ts, pageable, count);
-    }
 
     private List<Object> convert(Class<?> clazz, List<Map<String, Object>> list) {
         List<Object> result;

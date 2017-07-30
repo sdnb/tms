@@ -45,7 +45,7 @@ public class ContactService implements IContactService {
     private ContactGroupRelativeRepository contactGroupRelativeRepository;
 
     @Autowired
-    private ConductorRepository       conductorRepository;
+    private ConductorRepository conductorRepository;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -53,7 +53,7 @@ public class ContactService implements IContactService {
     @Override
     public Page<ContactShow> getPage(Integer groupId, Integer bookId, String name, String phone,
                                      Integer bookType, Boolean addSysBook, Integer currentPage, Integer pageSize) {
-        Pageable            p      = CommonUtils.createPage(currentPage, pageSize);
+        Pageable p = CommonUtils.createPage(currentPage, pageSize);
         Map<String, Object> params = new HashMap<>();
         params.put("name", CommonUtils.fuzzyString(name));
         params.put("phone", CommonUtils.fuzzyString(phone));
@@ -85,7 +85,11 @@ public class ContactService implements IContactService {
                 " (:name is null or c.name like :name) and" +
                 " (:phone is null or c.phone like :phone) and " +
                 " (:bookType is null or pb.type = :bookType) " ;
-        return commonRepository.queryPage(pageSql, countSql, params, ContactShow.class, p);
+        @SuppressWarnings("unchecked")
+        List<ContactShow> ts =(List<ContactShow>) commonRepository.queryResultToBeanPage(pageSql, params, ContactShow.class, currentPage, pageSize);
+
+        Integer count = commonRepository.getCountBy(countSql, params);
+        return new PageImpl<ContactShow>(ts, p, count);
     }
 
 
@@ -250,7 +254,11 @@ public class ContactService implements IContactService {
                 " FROM" +
                 "  t_contact c" +
                 " where book_id=1) temp " ;
-        return commonRepository.queryPage(pageSql, countSql, params, ContactShow.class, p);
+        @SuppressWarnings("unchecked")
+        List<ContactShow> ts =(List<ContactShow>) commonRepository.queryResultToBeanPage(pageSql, params, ContactShow.class, currentPage, pageSize);
+
+        Integer count = commonRepository.getCountBy(countSql, params);
+        return new PageImpl<ContactShow>(ts, p, count);
     }
 
 }

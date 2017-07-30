@@ -385,6 +385,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
             this.loading = true;
             conferenceService.addTempPhone(this.addCallShow,function(data){
+                _this.loading = false;
                 if(data.status == 'true'){
                     //webSocket自动更新与会人列表
                 }else{
