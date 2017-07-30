@@ -20,7 +20,7 @@ public class SimpleRpcResultListener extends RpcResultListener {
 
     private Log log;
     private LogRepository logRepository;
-    private String rpcMethodName;
+    protected String rpcMethodName;
     private Map<String, Object> rpcResult;
 
     public SimpleRpcResultListener(Log log, LogRepository logRepository, String rpcMethodName) {
@@ -30,6 +30,10 @@ public class SimpleRpcResultListener extends RpcResultListener {
     }
 
     public SimpleRpcResultListener() {
+    }
+
+    public SimpleRpcResultListener(String rpcMethodName) {
+        this.rpcMethodName = rpcMethodName;
     }
 
     @Override
