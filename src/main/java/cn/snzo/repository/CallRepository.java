@@ -53,4 +53,7 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
 
     @Query("select  c.phone from  Call c where c.phone in (?1) and (c.status=1 or c.status=2)")
     List<String> findCallIsOnByPhone(List<String> phone);
+
+    @Query("select count(c) from Call c where c.status=?2 and c.confResId = ?1")
+    Integer getCountByStatus(String confResId, int status);
 }

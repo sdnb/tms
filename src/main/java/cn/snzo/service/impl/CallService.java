@@ -29,4 +29,10 @@ public class CallService implements ICallService {
         name = CommonUtils.fuzzyString(name);
         return callRepository.findPage(confResId, roomId, phone, status, name, p);
     }
+
+    @Override
+    public Integer getCountOnline(String confResId) {
+        Integer count = callRepository.getCountByStatus(confResId, 2);
+        return count;
+    }
 }

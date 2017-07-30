@@ -266,7 +266,6 @@ public class IpscUtil {
                     logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
                 }
 
-                //检查
                 logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
                 addCallToConf(callId, confResId);
 
@@ -287,10 +286,10 @@ public class IpscUtil {
     public static void addCallToConf(String callId, String conferenceId) {
         try {
 
-            if (!callExist(callId)) {
-                logger.info(">>>>>>>>> 呼叫{}不存在或已释放", callId);
-                return;
-            }
+//            if (!callExist(callId)) {
+//                logger.info(">>>>>>>>> 呼叫{}不存在或已释放", callId);
+//                return;
+//            }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);

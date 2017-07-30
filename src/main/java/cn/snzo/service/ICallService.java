@@ -8,4 +8,6 @@ import org.springframework.data.domain.Page;
  */
 public interface ICallService {
     Page<Call> findPage(String confResId, Integer roomId, String phone, Integer status, String name, Integer currentPage, Integer pageSize);
+
+    Integer getCountOnline(String confResId);
 }

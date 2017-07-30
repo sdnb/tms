@@ -71,7 +71,7 @@
 
     <div class="hyb-right">
 
-        <div class="hyblT" style="float: left;">已参会人数<font style="font-size:14px">（<font color="#3686dc" ng-bind="hy.totalMembers"></font>）</font></div>
+        <div class="hyblT" style="float: left;">总参会人数<font style="font-size:14px">（<font color="#3686dc" ng-bind="hy.onlineMembers"></font>/<font color="#3686dc" ng-bind="hy.totalMembers"></font>）</font></div>
 
         <form><input type="text" class="schwbk" placeholder="联系电话" ng-model="hy.conferenceFilter.phone"/><input type="submit" value="" class="btn-sch2" ng-click="hy.getMembers('reload')"/></form>
 

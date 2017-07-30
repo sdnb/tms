@@ -355,6 +355,9 @@ public class ConferenceController extends BaseController {
         try {
             Page<Call> calls = callService.findPage(confResId, roomId, phone, status, name, currentPage, pageSize);
             CommonUtils.setResponseHeaders(calls.getTotalElements(),  calls.getTotalPages(), calls.getNumber(), response);
+            //得到在线人数
+            int onlineCount = callService.getCountOnline(confResId);
+            response.addHeader("online_count", onlineCount+"");
             return successRes(calls.getContent());
         } catch (ServiceException e) {
             return failureRes(e.getMessage());

@@ -247,6 +247,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
         this.members = [];
         this.totalMembers = 0;
+        this.onlineMembers = 0;
         this.conferenceFilter = {};
         this.getMembers = function(type){
             console.log('type='+type);
@@ -264,6 +265,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 if(data.status == 'true'){
                     _this.members = data.message;
                     _this.totalMembers = header('page_total');
+                    _this.onlineMembers = header('online_count');
                     $scope.conferencePageObject.totalPage = header('page_count');
                     $scope.conferencePageObject.pages = [];
                     for(var i=1;i<=$scope.conferencePageObject.totalPage;i++){
@@ -512,7 +514,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             };
 
             //接收到消息的回调方法
-            $rootScope.socket.onmessage = function(event){
+            $rootScope.socket.onmessage = function(even){
                 _this.confResId = event.data;
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
                     //_this.getMembers('reload');
