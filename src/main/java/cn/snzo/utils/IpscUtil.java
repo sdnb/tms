@@ -5,6 +5,7 @@ import cn.snzo.entity.Call;
 import cn.snzo.entity.Conference;
 import cn.snzo.entity.ConferenceRoom;
 import cn.snzo.entity.Recording;
+import cn.snzo.ipsc.CallExistRpcResultListener;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
@@ -284,6 +285,12 @@ public class IpscUtil {
 
     public static void addCallToConf(String callId, String conferenceId) {
         try {
+            CallExistRpcResultListener rpcResultListener = new CallExistRpcResultListener();
+            checkCall(callId, rpcResultListener);
+            if (!rpcResultListener.isExist()) {
+                logger.info(">>>>>>>>> 呼叫资源{}不存在", callId);
+                return;
+            }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);

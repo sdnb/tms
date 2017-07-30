@@ -29,6 +29,9 @@ public class SimpleRpcResultListener extends RpcResultListener {
         this.rpcMethodName = rpcMethodName;
     }
 
+    public SimpleRpcResultListener() {
+    }
+
     @Override
     protected void onResult(Object o) {
         @SuppressWarnings("unchecked")
