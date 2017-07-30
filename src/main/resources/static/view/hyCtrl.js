@@ -518,7 +518,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             $rootScope.socket.onmessage = function(even){
                 _this.confResId = event.data;
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
-                    _this.getMembers('reload');
+                    //_this.getMembers('reload');
                     _this.getConferences(_this.conductor.id);
                 }
             };
