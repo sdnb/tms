@@ -260,11 +260,13 @@ public class IpscUtil {
         playContent(callId, Constants.READY_VOICE, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
-//                try {
-//                    Thread.sleep(6000);
-//                } catch (InterruptedException e) {
-//                    logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
-//                }
+                try {
+                    Thread.sleep(6000);
+                } catch (InterruptedException e) {
+                    logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
+                }
+
+                //检查
                 logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
                 addCallToConf(callId, confResId);
 
@@ -284,12 +286,10 @@ public class IpscUtil {
 
     public static void addCallToConf(String callId, String conferenceId) {
         try {
-//            CallExistRpcResultListener rpcResultListener = new CallExistRpcResultListener("sys.call.exists", false);
-//            checkCall(callId, rpcResultListener);
-//            if (!rpcResultListener.isExist()) {
-//                logger.info(">>>>>>>>> 呼叫资源{}不存在", callId);
-//                return;
-//            }
+
+            if (!callExist(callId)) {
+                logger.info(">>>>>>>>> 呼叫{}不存在或已释放", callId);
+            }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);
@@ -342,6 +342,17 @@ public class IpscUtil {
     }
 
 
+    static boolean callExist(String callId) {
+        Call call = callRepository.findByResId(callId);
+        if (call == null) {
+            return false;
+        } else {
+            if (call.getStatus() == 3 || call.getStatus() == 4) {
+                return false;
+            }
+            return true;
+        }
+    }
 //    public static void callOut(List<Contact> contacts, String ip, RpcResultListener listener) throws IOException, InterruptedException {
 //        for (Contact te : contacts) {
 //            Map<String, Object> params = new HashMap<String, Object>();
