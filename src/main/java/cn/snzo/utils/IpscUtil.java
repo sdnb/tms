@@ -289,6 +289,7 @@ public class IpscUtil {
 
             if (!callExist(callId)) {
                 logger.info(">>>>>>>>> 呼叫{}不存在或已释放", callId);
+                return;
             }
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("res_id", callId);
