@@ -21,7 +21,7 @@ public class Call extends BaseEntity{
     private Date endAt;                 //结束时间
     private String name;                //名字
     private String phone;               //电话
-    private Integer voiceMode;           //声音收放模式 1 放音+收音 2 收音 3 放音  4 无
+    private Integer voiceMode;          //声音收放模式 1 放音+收音 2 收音 3 放音  4 无
 
     public String getResId() {
         return resId;

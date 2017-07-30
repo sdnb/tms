@@ -97,9 +97,19 @@ public class IpscServiceImpl implements IpscService {
                 throw new ServiceException("请设置录音存放路径");
             }
         }
+
+        //判断电话是否正在参加会议
+        List<String> ps = conferenceStartShow.getPhones();
+        List<String> phoneInConf = getPhoneIsInUsing(ps.toArray(new String[ps.size()]));
+        if (!phoneInConf.isEmpty()) {
+            logger.info("=>>>>>>>>> 电话{}正在参会", phoneInConf);
+            throw new ServiceException("电话:"+phoneInConf+"正在参会中");
+        }
+
+
         logger.info("=>>>>>>>>> 创建会议资源参数 {}", params);
         List<Conference> conferences = new ArrayList<>();
-        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"创建会议", tokenName, OperTypeEnum.CREATE.ordinal());
+        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.construct", "创建会议", tokenName, OperTypeEnum.CREATE.ordinal());
 
         int[] ret = new int[1];
         IpscUtil.createConference(
@@ -111,8 +121,7 @@ public class IpscServiceImpl implements IpscService {
                         Map<String, Object> result = (Map<String, Object>) o;
                         String conferenceId = (String) result.get("res_id");
                         logger.info("=>>>>>>>>> 会议资源建立成功：confId={}", conferenceId);
-                        log.setOperResId(conferenceId);
-                        logRepository.save(log);
+
 
                         int isInRecording = 0;
                         //会议正在录音
@@ -132,6 +141,10 @@ public class IpscServiceImpl implements IpscService {
                         }
                         changeReminder.sendMessageToAll(conferenceId);
                         ret[0] = 1;
+
+                        log.setOperResId(conferenceId);
+                        log.setOperResType(OperResultEnum.SUCCESS.ordinal());
+                        logRepository.save(log);
                     }
 
                     @Override
@@ -207,7 +220,7 @@ public class IpscServiceImpl implements IpscService {
             return 4;
         }
 
-        Log log = new Log(resId, OperResTypeEnum.CONFERENCE.ordinal(),"删除会议", tokenName, OperTypeEnum.OPERATE.ordinal());
+        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.delete", "删除会议", tokenName, OperTypeEnum.OPERATE.ordinal());
         int[] ret = new int[1];
         IpscUtil.stopConference(resId, new RpcResultListener() {
             @Override
@@ -216,7 +229,11 @@ public class IpscServiceImpl implements IpscService {
                 Conference conference = conferenceRepository.findByResId(resId);
                 conference.setStatus(2);
                 conferenceRepository.save(conference);
+
+                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
+                log.setOperResId(resId);
                 logRepository.save(log);
+
                 ret[0] = 1;
 
             }
@@ -225,6 +242,7 @@ public class IpscServiceImpl implements IpscService {
             protected void onError(RpcError rpcError) {
                 logger.error("=>>>>>>>>> 结束会议{}失败", resId);
                 log.setOperResult(OperResultEnum.ERROR.ordinal());
+                log.setOperResId(resId);
                 logRepository.save(log);
                 ret[0] = 2;
             }
@@ -255,7 +273,12 @@ public class IpscServiceImpl implements IpscService {
             logger.info("=>>>>>>>>> 会议 {} 不存在", conferenceId);
             return 4;
         }
-
+        //判断电话是否正在参加会议
+        List<String> phoneInConf = getPhoneIsInUsing(phones.toArray(new String[phones.size()]));
+        if (!phoneInConf.isEmpty()) {
+            logger.info("=>>>>>>>>> 电话{}正在参会", phoneInConf);
+            throw new ServiceException("电话:"+phoneInConf+"正在参会中");
+        }
 
         List<Contact> contacts = contactRepository.findByPhones(phones);
         List<String> exsistPhones = callRepository.findPhoneByConfResIdAndPhonesAndStatus(conferenceId, phones, 3);
@@ -311,6 +334,13 @@ public class IpscServiceImpl implements IpscService {
             logger.info("=>>>>>>>>> 会议 {} 不存在", conferenceId);
             return 4;
         }
+        //判断电话是否正在参加会议
+        List<String> phoneInConf = getPhoneIsInUsing(phone);
+        if (!phoneInConf.isEmpty()) {
+            logger.info("=>>>>>>>>> 电话{}正在参会", phoneInConf);
+            throw new ServiceException("电话:"+phoneInConf+"正在参会中");
+        }
+
         Log log = new Log(OperResTypeEnum.CALL.ordinal(), "创建呼叫资源", tokenName, OperTypeEnum.CREATE.ordinal());
         Call call = new Call();
         call.setConductorId(conference.getConductorId());
@@ -326,6 +356,20 @@ public class IpscServiceImpl implements IpscService {
         IpscUtil.createCallRes(phone, listener);
         return 1;
     }
+
+
+    /**
+     * 查询正在会议中的电话
+     * @param phone
+     * @return
+     */
+    private List<String> getPhoneIsInUsing(String... phone){
+
+        List<String> phones = new ArrayList<>(Arrays.asList(phone));
+        return callRepository.findCallIsOnByPhone(phones);
+    }
+
+
 
     @Override
     public int startRecord(String conferenceId, String tokenName) throws IOException, InterruptedException {
@@ -350,12 +394,14 @@ public class IpscServiceImpl implements IpscService {
         }
 
         String filename = CommonUtils.getRecordFileName(path);
-        Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(),"开始录音", tokenName, OperTypeEnum.OPERATE.ordinal());
+        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.record_start", "开始录音", tokenName, OperTypeEnum.OPERATE.ordinal());
         int[] ret = new int[1];
         IpscUtil.startRecord(conferenceId, filename, new RpcResultListener() {
             @Override
             protected void onResult(Object o) {
                 logger.info("会议{}开始录音", conferenceId);
+                log.setOperResId(conferenceId);
+                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
                 logRepository.save(log);
                 conference.setIsInRecording(1);
                 conferenceRepository.save(conference);
@@ -366,6 +412,7 @@ public class IpscServiceImpl implements IpscService {
             protected void onError(RpcError rpcError) {
                 logger.info("会议{}开始录音失败, errorMsg={}", conferenceId, rpcError.getMessage());
                 log.setOperResult(OperResultEnum.ERROR.ordinal());
+                log.setOperResId(conferenceId);
                 logRepository.save(log);
                 ret[0] = 2;
             }
@@ -374,6 +421,7 @@ public class IpscServiceImpl implements IpscService {
             protected void onTimeout() {
                 logger.info("会议{}开始录音超时", conferenceId);
                 log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+                log.setOperResId(conferenceId);
                 logRepository.save(log);
                 ret[0] = 3;
             }
@@ -387,7 +435,7 @@ public class IpscServiceImpl implements IpscService {
 
     @Override
     public int stopRecord(String conferenceId, String tokenName) throws IOException, InterruptedException {
-        Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(), "停止录音", tokenName, OperTypeEnum.OPERATE.ordinal());
+        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(), "sys.conf.record_stop", "停止录音", tokenName, OperTypeEnum.OPERATE.ordinal());
         Conference conference = conferenceRepository.findByResId(conferenceId);
         //会议不存在
         if (checkConfExist(conferenceId) != 1 || conference == null) {
@@ -403,7 +451,10 @@ public class IpscServiceImpl implements IpscService {
             @Override
             protected void onResult(Object o) {
                 logger.info("会议{}已结束录音", conferenceId);
+                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
+                log.setOperResId(conferenceId);
                 logRepository.save(log);
+
                 //将会议是否录音状态改为没有录音
                 conference.setIsInRecording(0);
                 conferenceRepository.save(conference);
@@ -414,6 +465,7 @@ public class IpscServiceImpl implements IpscService {
             protected void onError(RpcError rpcError) {
                 logger.info("会议{}结束录音失败, errorMsg={}", conferenceId, rpcError.getMessage());
                 log.setOperResult(OperResultEnum.ERROR.ordinal());
+                log.setOperResId(conferenceId);
                 logRepository.save(log);
                 ret[0] = 2;
             }
@@ -421,6 +473,7 @@ public class IpscServiceImpl implements IpscService {
             @Override
             protected void onTimeout() {
                 log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+                log.setOperResId(conferenceId);
                 logRepository.save(log);
                 logger.info("会议{}结束录音超时", conferenceId);
                 ret[0] = 3;
@@ -436,7 +489,7 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public int removeCallFromConf(String callId, String conferenceId, String tokenName) throws IOException, InterruptedException {
         logger.info("=>>>>>>>>> 从会议 {} 移除呼叫{}", callId, conferenceId);
-        Log log = new Log(callId, OperResTypeEnum.CALL.ordinal(),"挂断呼叫", tokenName, OperTypeEnum.OPERATE.ordinal());
+        Log log = new Log(OperResTypeEnum.CALL.ordinal(),"sys.call.drop", "挂断呼叫", tokenName, OperTypeEnum.OPERATE.ordinal());
 
         //会议不存在
         if (checkConfExist(conferenceId) != 1) {
@@ -453,8 +506,9 @@ public class IpscServiceImpl implements IpscService {
             @Override
             protected void onResult(Object o) {
                 logger.info("=>>>>>>>>> 离开会议成功，confId={},callId={}", conferenceId, callId);
+                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
+                log.setOperResId(callId);
                 logRepository.save(log);
-
                 //修改状态
                 callRepository.updateStatus(callId, 3);
 
@@ -465,6 +519,7 @@ public class IpscServiceImpl implements IpscService {
 
             @Override
             protected void onError(RpcError rpcError) {
+                log.setOperResId(callId);
                 log.setOperResult(OperResultEnum.ERROR.ordinal());
                 logger.info("=>>>>>>>>> 离开会议错误，confId={},callId={}, errorMsg={}", conferenceId, callId, rpcError.getMessage());
 
@@ -473,6 +528,7 @@ public class IpscServiceImpl implements IpscService {
 
             @Override
             protected void onTimeout() {
+                log.setOperResId(callId);
                 log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
                 logger.info("=>>>>>>>>> 离开会议超时，confId={},callId={}", conferenceId, callId);
                 ret[0] = 3;
@@ -488,7 +544,7 @@ public class IpscServiceImpl implements IpscService {
     @Override
     public int changeCallMode(String callId, String conferenceId, int mode, String tokenName) throws IOException, InterruptedException {
         logger.info("=>>>>>>>>> 改变与会者声音模式，callId={},confId={},mode={}", callId, conferenceId, mode);
-        Log log = new Log(conferenceId, OperResTypeEnum.CONFERENCE.ordinal(),
+        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.set_part_voice_mode",
                 "改变与会者的声音收放模式", tokenName, OperTypeEnum.OPERATE.ordinal());
         int[] ret = new int[1];
         //会议不存在
@@ -504,6 +560,8 @@ public class IpscServiceImpl implements IpscService {
             @Override
             protected void onResult(Object o) {
                 logger.info("=>>>>>>>>> 修改与会者声音模式成功，confId={},callId={},mode={}", conferenceId, callId, mode);
+                log.setOperResId(callId);
+                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
                 logRepository.save(log);
 
                 //修改声音收放模式
@@ -518,6 +576,7 @@ public class IpscServiceImpl implements IpscService {
             protected void onError(RpcError rpcError) {
                 logger.error("=>>>>>>>>> 修改与会者声音模式失败，confId={},callId={},mode={} , errorMsg={}", conferenceId, callId, mode, rpcError.getMessage());
                 log.setOperResult(OperResultEnum.ERROR.ordinal());
+                log.setOperResId(callId);
                 logRepository.save(log);
                 ret[0] = 2;
             }
@@ -526,6 +585,7 @@ public class IpscServiceImpl implements IpscService {
             protected void onTimeout() {
                 logger.error("=>>>>>>>>> 修改与会者声音模式超时，confId={},callId={},mode={}", conferenceId, callId, mode);
                 log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+                log.setOperResId(callId);
                 logRepository.save(log);
                 ret[0] = 3;
             }

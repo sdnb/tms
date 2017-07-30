@@ -38,6 +38,16 @@ public class Log extends BaseEntity {
         this.operType = operType;
     }
 
+    public Log(Integer operResType, String operMethodId,
+               String operMethodName, String operator, Integer operType) {
+        this.operMethodId = operMethodId;
+        this.operResType = operResType;
+        this.operMethodName = operMethodName;
+        this.operator = operator;
+        this.operType = operType;
+    }
+
+
     public Log(int operResType, String operMethodName, String operator, int operType) {
         this.operResType = operResType;
         this.operMethodName = operMethodName;
