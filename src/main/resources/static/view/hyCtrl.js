@@ -1,6 +1,6 @@
 define(['../script/tms', 'jquery','../script/service/loginService','../script/service/conferenceService','../script/service/conferenceRoomService','../script/service/conductorService','../script/service/contactService','./pagination'],
     function(module, $, LoginService, ConferenceService, ConferenceRoomService, ConductorService, ContactService){
-    module.controller('hyCtrl', function($rootScope, $scope, $location,$resource,$interval,commonService){
+    module.controller('hyCtrl', function($rootScope, $scope, $location,$resource,$interval,commonService,paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -157,6 +157,10 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
         });
 
+        $scope.$watch('contactPageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.contactPageObject,1);
+        });
+
         $scope.selectPage = function(page){
             $scope.contactPageObject.currentPage = page;
         };
@@ -250,7 +254,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         this.onlineMembers = 0;
         this.conferenceFilter = {};
         this.getMembers = function(type){
-            console.log('type='+type);
             if(type == 'reload'){
                 $scope.conferencePageObject.currentPage = 1;
             }
@@ -284,6 +287,10 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             if(_this.confResId){
                 _this.getMembers();
             }
+        });
+
+        $scope.$watch('conferencePageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.conferencePageObject,1);
         });
 
          //获取会议

@@ -1,5 +1,5 @@
 define(['../../script/tms', 'jquery', '../../script/service/conductorService','md5', '../pagination'], function(module, $, ConductorService,MD5){
-    module.controller('zcrCtrl', function($scope, $resource, $location, commonService){
+    module.controller('zcrCtrl', function($scope, $resource, $location, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -84,6 +84,10 @@ define(['../../script/tms', 'jquery', '../../script/service/conductorService','m
 
         $scope.$watch('pageObject.currentPage', function(){
             _this.getConductors();
+        });
+
+        $scope.$watch('pageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.pageObject,1);
         });
 
 

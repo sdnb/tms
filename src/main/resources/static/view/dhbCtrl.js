@@ -1,6 +1,6 @@
 define(['../script/tms', 'jquery', '../script/service/groupService', '../script/service/contactService',
     '../script/service/phoneBookService', './pagination', 'ajaxfileupload'], function(module, $, GroupService, ContactService, PhoneBookService){
-    module.controller('dhbCtrl', function($scope, $location, $resource, commonService){
+    module.controller('dhbCtrl', function($scope, $location, $resource, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -258,6 +258,9 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             _this.getContacts();
         });
 
+        $scope.$watch('pageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.pageObject,1);
+        });
 
         this.namePattern = commonService.regex('chinese');
         this.phonePattern = commonService.regex('telephone');
