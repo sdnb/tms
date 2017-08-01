@@ -1,5 +1,7 @@
 package cn.snzo.common;
 
+import java.io.File;
+
 /**
  * Created by Administrator on 2017/2/26 0026.
  */
@@ -20,13 +22,17 @@ public class Constants {
 
     public static final int     MAX_ANSWER_SECONDS          = 3600;
     public static final String  RECORD_FILE_SUFFIX          = ".wav";
-    public static final String  WRONG_PASSWORD              = "/root/tms/tms/file/wrong_passwd.wav";
-    public static final String  FINAL_WRONG_PASSWORD        = "/root/tms/tms/file/final_wrong_passwd.wav";
-    public static final String  WELCOME_VOICE               = "/root/tms/tms/file/welcome.wav";
+    public static final String  WRONG_PASSWORD              = "file/wrong_passwd.wav";
+    public static final String  FINAL_WRONG_PASSWORD        = "/file/final_wrong_passwd.wav";
+    public static final String  WELCOME_VOICE               = "../file/welcome.wav";
     public static final int     PARTS_THRESHOLD             = 0;
     public static final String  CLOSED_VOICE                = "/root/tms/tms/file/closed.wav" ;
     public static final String  READY_VOICE                 = "/root/tms/tms/file/ready.wav" ;
     public static final String  COME_IN_TICK                = "/root/tms/tms/file/come_in_warn.wav";
     public static       Integer MAX_CONF_PARTS              = 1000;
     public static       String  SFTP_PATH                   = "/data/sftp/mysftp";
+
+    public static void main(String[] args) {
+        System.out.println(new File("").getAbsolutePath());
+    }
 }
