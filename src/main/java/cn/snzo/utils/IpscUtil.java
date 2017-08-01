@@ -294,6 +294,7 @@ public class IpscUtil {
             params.put("res_id", callId);
             params.put("conf_res_id", conferenceId);
             params.put("max_seconds", Constants.MAX_CONF_SECONDS);
+            params.put("play_file", Constants.COME_IN_TICK);
             commander.operateResource(
                     busAddress,
                     callId,

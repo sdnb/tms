@@ -220,46 +220,58 @@ public class IpscServiceImpl implements IpscService {
             return 4;
         }
 
-        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.delete", "删除会议", tokenName, OperTypeEnum.OPERATE.ordinal());
-        int[] ret = new int[1];
-        IpscUtil.stopConference(resId, new RpcResultListener() {
-            @Override
-            protected void onResult(Object o) {
-                logger.info("=>>>>>>>>> 结束会议{}成功", resId);
-                Conference conference = conferenceRepository.findByResId(resId);
-                conference.setStatus(2);
-                conferenceRepository.save(conference);
-
-                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
-                log.setOperResId(resId);
-                logRepository.save(log);
-
-                ret[0] = 1;
-
-            }
-
-            @Override
-            protected void onError(RpcError rpcError) {
-                logger.error("=>>>>>>>>> 结束会议{}失败", resId);
-                log.setOperResult(OperResultEnum.ERROR.ordinal());
-                log.setOperResId(resId);
-                logRepository.save(log);
-                ret[0] = 2;
-            }
-
-            @Override
-            protected void onTimeout() {
-                logger.info("=>>>>>>>>> 结束会议{}超时", resId);
-                log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
-                logRepository.save(log);
-                ret[0] = 3;
-            }
-        });
-        //等待1s
-        if (ret[0] == 0) {
-            sleepMillSeconds(1000);
+        //将所有电话挂断
+        List<Integer> status = new ArrayList<>();
+        status.add(1);
+        status.add(2);
+        List<Call> calls = callRepository.findCallByConfResIdAndStatus(resId, status);
+        for (Call call : calls) {
+            IpscUtil.drop(call.getResId());
+            callRepository.updateStatus(call.getResId(), 3);
         }
-        return ret[0];
+
+        Log log = new Log(OperResTypeEnum.CONFERENCE.ordinal(),"sys.conf.release", "删除会议", tokenName, OperTypeEnum.OPERATE.ordinal());
+        logRepository.save(log);
+//        int[] ret = new int[1];
+//        IpscUtil.stopConference(resId, new RpcResultListener() {
+//            @Override
+//            protected void onResult(Object o) {
+//                logger.info("=>>>>>>>>> 结束会议{}成功", resId);
+//                Conference conference = conferenceRepository.findByResId(resId);
+//                conference.setStatus(2);
+//                conferenceRepository.save(conference);
+//
+//                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
+//                log.setOperResId(resId);
+//                logRepository.save(log);
+//
+//                ret[0] = 1;
+//
+//            }
+//
+//            @Override
+//            protected void onError(RpcError rpcError) {
+//                logger.error("=>>>>>>>>> 结束会议{}失败", resId);
+//                log.setOperResult(OperResultEnum.ERROR.ordinal());
+//                log.setOperResId(resId);
+//                logRepository.save(log);
+//                ret[0] = 2;
+//            }
+//
+//            @Override
+//            protected void onTimeout() {
+//                logger.info("=>>>>>>>>> 结束会议{}超时", resId);
+//                log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+//                logRepository.save(log);
+//                ret[0] = 3;
+//            }
+//        });
+//        //等待1s
+//        if (ret[0] == 0) {
+//            sleepMillSeconds(1000);
+//        }
+//        return ret[0];
+        return 1;
     }
 
 

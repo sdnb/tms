@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ThomasC on 2017/6/29 0029.
  */
@@ -29,7 +32,10 @@ public class TestController {
 
     @RequestMapping("/hwe")
     public Object twe(){
-        callRepository.updateStatus("0.0.0-sys.call-10000030669412110", 1);
+        List<Integer> status = new ArrayList<>();
+        status.add(1);
+        status.add(2);
+        callRepository.findCallByConfResIdAndStatus(null, status);
         return 1;
     }
 
