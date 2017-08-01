@@ -268,7 +268,11 @@ public class IpscUtil {
 
                 logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
                 addCallToConf(callId, confResId);
-
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    logger.error(">>>>>>>>>播放滴声语音{}被中断", Constants.READY_VOICE);
+                }
             }
 
             @Override
