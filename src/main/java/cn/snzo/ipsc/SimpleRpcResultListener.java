@@ -42,25 +42,31 @@ public class SimpleRpcResultListener extends RpcResultListener {
         Map<String, Object> ret = (Map<String, Object>)o;
         rpcResult = ret;
         logger.info("===========> 调用rpc方法：{} 成功, resId={}！", rpcMethodName, ret.get("res_id"));
-        log.setOperResult(OperResultEnum.SUCCESS.ordinal());
-        log.setOperResId((String) ret.get("res_id"));
-        log.setOperMethodId(rpcMethodName);
-        logRepository.save(log);
+        if (log != null) {
+            log.setOperResult(OperResultEnum.SUCCESS.ordinal());
+            log.setOperResId((String) ret.get("res_id"));
+            log.setOperMethodId(rpcMethodName);
+            logRepository.save(log);
+        }
         additionExcute();
     }
 
     @Override
     protected void onError(RpcError rpcError) {
         logger.info("===========> 调用rpc方法：{} 失败！code= {}, msg={}", rpcMethodName, rpcError.getCode(), rpcError.getMessage());
-        log.setOperResult(OperResultEnum.ERROR.ordinal());
-        logRepository.save(log);
+        if (log != null) {
+            log.setOperResult(OperResultEnum.ERROR.ordinal());
+            logRepository.save(log);
+        }
     }
 
     @Override
     protected void onTimeout() {
         logger.info("===========> 调用rpc方法：{} 超时！", rpcMethodName);
-        log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
-        logRepository.save(log);
+        if (log != null) {
+            log.setOperResult(OperResultEnum.TIMEOUT.ordinal());
+            logRepository.save(log);
+        }
     }
 
     protected void additionExcute(){

@@ -5,6 +5,7 @@ import cn.snzo.entity.Call;
 import cn.snzo.entity.Conference;
 import cn.snzo.entity.ConferenceRoom;
 import cn.snzo.entity.Recording;
+import cn.snzo.ipsc.SimpleRpcResultListener;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
@@ -268,11 +269,6 @@ public class IpscUtil {
 
                 logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
                 addCallToConf(callId, confResId);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    logger.error(">>>>>>>>>播放滴声语音{}被中断", Constants.READY_VOICE);
-                }
             }
 
             @Override
@@ -328,6 +324,8 @@ public class IpscUtil {
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
+
+                            playConfVoice(conferenceId, Constants.COME_IN_TICK);
                         }
 
                         @Override
@@ -347,17 +345,22 @@ public class IpscUtil {
     }
 
 
-    static boolean callExist(String callId) {
-        Call call = callRepository.findByResId(callId);
-        if (call == null) {
-            return false;
-        } else {
-            if (call.getStatus() == 3 || call.getStatus() == 4) {
-                return false;
-            }
-            return true;
+    public static void playConfVoice(String confResId, String fileName) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("res_id", confResId);
+        params.put("content", fileName);
+        try {
+            commander.operateResource(
+                    busAddress,
+                    confResId,
+                    "sys.call.play_start",
+                    params,
+                    new SimpleRpcResultListener("sys.call.play_start"));
+        } catch (IOException e) {
+            logger.error("播放会议{}声音文件{}异常", confResId, fileName);
         }
     }
+
 //    public static void callOut(List<Contact> contacts, String ip, RpcResultListener listener) throws IOException, InterruptedException {
 //        for (Contact te : contacts) {
 //            Map<String, Object> params = new HashMap<String, Object>();
