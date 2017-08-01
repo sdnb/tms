@@ -1,5 +1,6 @@
 package cn.snzo.controller;
 
+import cn.snzo.common.Constants;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.ConductorRepository;
 import cn.snzo.repository.ContactRepository;
@@ -36,7 +37,7 @@ public class TestController {
         status.add(1);
         status.add(2);
         callRepository.findCallByConfResIdAndStatus(null, status);
-        return 1;
+        return Constants.VOICE_PATH;
     }
 
     @RequestMapping(value = {"/ws1"},method = RequestMethod.GET)
