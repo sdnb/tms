@@ -353,7 +353,7 @@ public class IpscUtil {
             commander.operateResource(
                     busAddress,
                     confResId,
-                    "sys.call.play_start",
+                    "sys.conf.play_start",
                     params,
                     new SimpleRpcResultListener("sys.call.play_start"));
         } catch (IOException e) {
