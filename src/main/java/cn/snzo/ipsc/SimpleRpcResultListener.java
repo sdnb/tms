@@ -41,12 +41,14 @@ public class SimpleRpcResultListener extends RpcResultListener {
         @SuppressWarnings("unchecked")
         Map<String, Object> ret = (Map<String, Object>)o;
         rpcResult = ret;
-        logger.info("===========> 调用rpc方法：{} 成功, resId={}！", rpcMethodName, ret.get("res_id"));
-        if (log != null) {
-            log.setOperResult(OperResultEnum.SUCCESS.ordinal());
-            log.setOperResId((String) ret.get("res_id"));
-            log.setOperMethodId(rpcMethodName);
-            logRepository.save(log);
+        if (ret != null) {
+            logger.info("===========> 调用rpc方法：{} 成功, resId={}！", rpcMethodName, ret.get("res_id"));
+            if (log != null) {
+                log.setOperResult(OperResultEnum.SUCCESS.ordinal());
+                log.setOperResId((String) ret.get("res_id"));
+                log.setOperMethodId(rpcMethodName);
+                logRepository.save(log);
+            }
         }
         additionExcute();
     }

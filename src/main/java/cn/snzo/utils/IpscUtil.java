@@ -355,7 +355,7 @@ public class IpscUtil {
                     confResId,
                     "sys.conf.play_start",
                     params,
-                    new SimpleRpcResultListener("sys.call.play_start"));
+                    new SimpleRpcResultListener("sys.conf.play_start"));
         } catch (IOException e) {
             logger.error("播放会议{}声音文件{}异常", confResId, fileName);
         }
