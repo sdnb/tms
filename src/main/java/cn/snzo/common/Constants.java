@@ -1,7 +1,5 @@
 package cn.snzo.common;
 
-import java.io.File;
-
 /**
  * Created by Administrator on 2017/2/26 0026.
  */
@@ -31,8 +29,4 @@ public class Constants {
     public static final String  COME_IN_TICK                = "/root/tms/tms/file/come_in_warn.wav";
     public static       Integer MAX_CONF_PARTS              = 1000;
     public static       String  SFTP_PATH                   = "/data/sftp/mysftp";
-
-    public static void main(String[] args) {
-        System.out.println(new File("").getAbsolutePath());
-    }
 }
