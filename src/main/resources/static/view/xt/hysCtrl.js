@@ -1,6 +1,6 @@
 define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomService', '../../script/service/conductorService', '../../view/pagination'],
     function(module, $, ConferenceRoomService, ConductorService){
-    module.controller('hysCtrl', function($scope, $location, $resource, commonService){
+    module.controller('hysCtrl', function($scope, $location, $resource, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -86,6 +86,10 @@ define(['../../script/tms', 'jquery', '../../script/service/conferenceRoomServic
 
         $scope.$watch('pageObject.currentPage', function(){
             _this.getAllRooms();
+        });
+
+        $scope.$watch('pageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.pageObject,1);
         });
 
         this.ivrPattern = commonService.regex('ivr'); //ivr

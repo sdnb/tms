@@ -1,5 +1,5 @@
 define(['../script/tms', 'jquery', '../script/service/recordingService', './pagination'], function(module, $, RecordingService){
-    module.controller('lyCtrl', function($scope, $resource, $location, commonService){
+    module.controller('lyCtrl', function($scope, $resource, $location, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -68,6 +68,10 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
 
         $scope.$watch('pageObject.currentPage',function(){
             _this.getRecordings();
+        });
+
+        $scope.$watch('pageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.pageObject,1);
         });
 
         //定义确认弹出框提示问题

@@ -1,10 +1,10 @@
 <div class="fenye">
-    <a href="" style="color:#3686dc; width:35px; border-radius: 4px 0 0 4px" ng-click="selectFirstPage()">首页</a>
+    <a href="" style="color:#3686dc; width:35px; border-radius: 4px 0 0 4px" ng-click="selectFirstPage()" ng-class="{enable:pageObject.totalPage<=1 || pageObject.currentPage==1}">首页</a>
     <a href="" style="color:#3686dc; width:45px;" ng-click="changePage('prev')" ng-class="{enable:pageObject.currentPage==1}"
        ng-disabled="pageObject.currentPage==1">上一页</a>
     <a href="" ng-repeat="page in pageObject.pages" ng-bind="page" ng-class="{fyCur:page==pageObject.currentPage}"
        ng-show="page > upLimit && page < downLimit" ng-click="selectPage(page)"></a>
     <a href="" style="color:#3686dc; width:45px;" ng-click="changePage('next')" ng-class="{enable:pageObject.currentPage==pageObject.totalPage || pageObject.totalPage==0}"
        ng-disabled="pageObject.currentPage==pageObject.totalPage">下一页</a>
-    <a href="" style="color:#3686dc; width:35px; border-radius: 0 4px 4px 0; border-right: solid 1px #ccc;" ng-click="selectLastPage()">尾页</a>
+    <a href="" style="color:#3686dc; width:35px; border-radius: 0 4px 4px 0; border-right: solid 1px #ccc;" ng-click="selectLastPage()" ng-class="{enable:pageObject.totalPage<=1 || pageObject.currentPage==pageObject.totalPage}">尾页</a>
 </div>

@@ -1,5 +1,5 @@
 define(['../../script/tms', 'jquery', '../../script/service/systemService', '../pagination'], function(module, $, SystemService){
-    module.controller('rzCtrl', function($scope, $location, $resource, commonService){
+    module.controller('rzCtrl', function($scope, $location, $resource, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -57,6 +57,10 @@ define(['../../script/tms', 'jquery', '../../script/service/systemService', '../
 
         $scope.$watch('pageObject.currentPage',function(){
             _this.getLogs();
+        });
+
+        $scope.$watch('pageObject.totalPage',function(){
+            paginationService.showFirstPageContent($scope.pageObject,1);
         });
     });
 });
