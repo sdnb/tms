@@ -1,13 +1,15 @@
 package cn.snzo.controller;
 
 import cn.snzo.common.BaseController;
-import cn.snzo.entity.Conductor;
-import cn.snzo.repository.ConductorRepository;
-import cn.snzo.utils.CommonUtils;
 import cn.snzo.common.Constants;
 import cn.snzo.common.ObjectResult;
+import cn.snzo.entity.Conductor;
+import cn.snzo.entity.Permission;
+import cn.snzo.repository.ConductorRepository;
+import cn.snzo.repository.PermissionRepository;
 import cn.snzo.service.IAccountService;
 import cn.snzo.service.ITokenService;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.AccountShow;
 import cn.snzo.vo.LoginInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/1 0001.
@@ -33,6 +36,11 @@ public class LoginController extends BaseController{
 
     @Autowired
     private ConductorRepository conductorRepository;
+
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     /**
      * 管理员密码登录
      * @param validateInfo
@@ -60,6 +68,7 @@ public class LoginController extends BaseController{
             if (conductor != null) {
                 loginInfo.setConductorId(conductor.getId());
             }
+            loginInfo.setRole(accountShow.getRole());
             tokenService.saveToken(token, loginInfo, expireTime);
             return successRes(loginInfo);
         }
@@ -108,5 +117,21 @@ public class LoginController extends BaseController{
             return  successRes( "登出成功");
         }
         return failureRes("登出失败");
+    }
+
+
+
+    /**
+     * 管理员登出
+     * @param role
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/menu/{role}",method = RequestMethod.GET)
+    public ObjectResult getMenu(@PathVariable("role")Integer role,
+                                @RequestParam(required = false) Integer parentId,
+                               HttpServletResponse response){
+        List<Permission> permissions = permissionRepository.findByKeys(role, 1, parentId);
+        return successRes(permissions);
     }
 }

@@ -319,6 +319,7 @@ public class IpscServiceImpl implements IpscService {
                 call.setStartAt(DateUtil.transServerTimeToBeiJingTime(new Date()));
                 call.setPhone(contact.getPhone());
                 call.setName(contact.getName());
+                call.setContactId(contact.getId());
                 call.setVoiceMode(1);
                 RpcResultListener rpcResultListener = new CreateCallRpcResultListener(log, logRepository, "sys.call.construct", call, callRepository, false);
                 IpscUtil.createCallRes(contact.getPhone(), rpcResultListener);

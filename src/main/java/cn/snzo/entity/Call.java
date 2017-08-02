@@ -22,7 +22,7 @@ public class Call extends BaseEntity{
     private String name;                //名字
     private String phone;               //电话
     private Integer voiceMode;          //声音收放模式 1 放音+收音 2 收音 3 放音  4 无
-
+    private Integer contactId;          //联系人id
     public String getResId() {
         return resId;
     }
@@ -109,5 +109,13 @@ public class Call extends BaseEntity{
 
     public void setVoiceMode(Integer voiceMode) {
         this.voiceMode = voiceMode;
+    }
+
+    public Integer getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(Integer contactId) {
+        this.contactId = contactId;
     }
 }

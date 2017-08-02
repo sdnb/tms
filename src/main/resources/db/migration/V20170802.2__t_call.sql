@@ -1,0 +1,1 @@
+ALTER TABLE t_call ADD COLUMN contact_id INT(11) COMMENT '联系人id';

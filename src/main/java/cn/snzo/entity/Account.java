@@ -17,7 +17,7 @@ public class Account extends BaseEntity{
     @NotBlank(message = "密码不能为空")
     private String   password;
     private String   salt;
-
+    private Integer role; //1 管理员 2 主持人
     public String getUsername() {
         return username;
     }
@@ -40,5 +40,13 @@ public class Account extends BaseEntity{
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

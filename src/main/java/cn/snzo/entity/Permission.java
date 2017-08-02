@@ -1,11 +1,14 @@
 package cn.snzo.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Created by Administrator on 2017/6/29 0029.
  */
-//@Entity
-//@Table(name = "t_permission")
-public class Permission {
+@Entity
+@Table(name = "t_permission")
+public class Permission extends BaseEntity {
 
     private String   url;              //资源路径
     private String   name;             //资源名称

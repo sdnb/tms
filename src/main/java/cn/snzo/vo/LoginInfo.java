@@ -11,7 +11,7 @@ public class LoginInfo implements Serializable{
     private String username;
     private String password;
     private Integer conductorId;
-
+    private Integer role;   // 1管理员 2 主持人
     public Integer getId() {
         return id;
     }
@@ -42,5 +42,13 @@ public class LoginInfo implements Serializable{
 
     public void setConductorId(Integer conductorId) {
         this.conductorId = conductorId;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }
