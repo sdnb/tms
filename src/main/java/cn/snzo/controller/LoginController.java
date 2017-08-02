@@ -122,7 +122,7 @@ public class LoginController extends BaseController{
 
 
     /**
-     * 管理员登出
+     * 查询当前用户菜单
      * @param role
      * @param response
      * @return
