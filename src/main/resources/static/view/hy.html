@@ -51,10 +51,10 @@
 
         <div class="hyblCon">
 
-            <div class="hyblH"> <li style="width:144px; border-right: solid 1px #fff">姓名</li> <li style="width:203px">联系电话</li> </div>
+            <div class="hyblH"> <li style="width:144px; border-right: solid 1px #fff">姓名</li> <li style="width:203px">联系电话</li> <li>电话簿</li> </div>
 
             <div class="drhchr">
-                <li ng-repeat="contact in hy.contacts"> <input type="checkbox" ng-model="contact.isChecked" ng-change="hy.selectContact(contact)"/> <span ng-bind="contact.name"></span> <font ng-bind="contact.phone"></font> </li>
+                <li ng-repeat="contact in hy.contacts"> <input type="checkbox" ng-model="contact.isChecked" ng-change="hy.selectContact(contact)"/> <span ng-bind="contact.name"></span> <font ng-bind="contact.phone"></font> <font ng-bind="contact.bookId"></font></li>
             </div>
 
             <div class="fenye2">
