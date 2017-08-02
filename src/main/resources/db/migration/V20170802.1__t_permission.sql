@@ -32,7 +32,5 @@ INSERT INTO t_role_permission (role_id, permission_id)
  (2, 4),
  (2, 5),
  (2, 6),
- (2, 9),
- (2, 10),
- (2, 11);
+ (2, 9);
 
