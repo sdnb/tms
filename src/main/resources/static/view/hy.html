@@ -4,10 +4,10 @@
     <div class="hyt-left">
 
         <div class="zcchr">
-            <span>主持人电话：</span>
+            <span>主持人姓名：</span>
             <div class="zcchwbk" style="background: #fff url(images/select.png) no-repeat right 10px center;">
-                <input type="text" ng-model="hy.conductor.phone" placeholder="手机号/固定电话" style="z-index: 2; position: relative;"  readonly/>
-                <select ng-model="hy.conductor" ng-options="conductor as conductor.phone for conductor in hy.conductors" ng-change="hy.selectConductor()">
+                <input type="text" ng-model="hy.conductor.realname" placeholder="主持人" style="z-index: 2; position: relative;"  readonly/>
+                <select ng-model="hy.conductor" ng-options="conductor as conductor.realname for conductor in hy.conductors" ng-change="hy.selectConductor()">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -37,7 +37,7 @@
             <!--<a href="">全部静音</a>-->
             <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="!hy.conference || hy.conference.isInRecording==0"  ng-click="hy.startRecord()">开始录音</a>
             <a href="" style="background-image: url(images/icon-hykz2.png);" ng-show="hy.conference && hy.conference.isInRecording==1" ng-click="hy.endRecord()">停止录音</a>
-            <!--<a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>-->
+            <a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>
         </div>
 
         <img src="images/line.png" width="435" style="margin-left:80px"  />
@@ -51,10 +51,20 @@
 
         <div class="hyblCon">
 
-            <div class="hyblH"> <li style="width:144px; border-right: solid 1px #fff">姓名</li> <li style="width:203px">联系电话</li> </div>
+            <div class="hyblH"> <li style="width:116px; border-right: solid 1px #fff">姓名</li> <li style="width:154px; border-right: solid 1px #fff">联系电话</li> <li style="width: 77px">电话簿</li></div>
 
             <div class="drhchr">
-                <li ng-repeat="contact in hy.contacts"> <input type="checkbox" ng-model="contact.isChecked" ng-change="hy.selectContact(contact)"/> <span ng-bind="contact.name"></span> <font ng-bind="contact.phone"></font> </li>
+                <li ng-repeat="contact in hy.contacts">
+                    <span style="width:105px;text-align:center">
+                        <input type="checkbox" style="margin-right:5px;" ng-model="contact.isChecked" ng-change="hy.selectContact(contact)"/> <span style="width:50px;" ng-bind="contact.name"></span>
+                    </span>
+                    <span style="width:154px;text-align:center">
+                        <font ng-bind="contact.phone"></font>
+                    </span>
+                    <span style="width: 69px;text-align:center">
+                        <font ng-bind="contact.bookId"></font>
+                    </span>
+                </li>
             </div>
 
             <div class="fenye2">

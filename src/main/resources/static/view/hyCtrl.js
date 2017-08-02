@@ -131,7 +131,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.contacts = data.message;
-                    console.log(_this.contacts);
                     _this.totalContacts = header('page_total');
                     $scope.contactPageObject.totalPage = header('page_count');
                     $scope.contactPageObject.pages = [];
