@@ -39,6 +39,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }else{ //非主持人直接获取联系人
                         _this.conductor = {};
                         _this.conductor.id = $scope.loginUser.conductorId;
+                        _this.conductor.realname = $scope.loginUser.realname;
                         _this.getRooms(_this.conductor.id);
                         _this.getConferences(_this.conductor.id);
                         _this.getContacts('reload');
@@ -479,15 +480,15 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
 
         //定义确认弹出框提示问题
-        var confirmInfo = {"end":{tips:"是否对此次会议进行录音?"}};
+        var confirmInfo = {"end":{tips:"结束后所有人员将强制离开会议室"}};
 
         //操作确认
         $scope.confirmDialogShow = false;
-        $scope.confirmOper = function(type, obj){
-            _this.recording = obj;
+        $scope.confirmOper = function(type){
             $scope.confirmTips = "";
             $scope.confirmTips = confirmInfo[type].tips;
             $scope.confirmType = type;
+            $scope.confirmDialogShow = true;
         };
 
         $scope.cancelConfirm = function(){
@@ -497,8 +498,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         //操作提交
         $scope.confirmCommit = function(type){
             $scope.cancelConfirm();
-            if(type == "delete"){
-                _this.deleteRecording();
+            if(type == "end"){
+                _this.endConference();
             }
         };
 

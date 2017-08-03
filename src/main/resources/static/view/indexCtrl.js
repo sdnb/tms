@@ -9,7 +9,6 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
             loginService.loginToken(function(data){
                 if(data.status == 'true'){
                     $rootScope.loginUser = data.message;
-                    console.log($rootScope.loginUser);
                     _this.getRoleMenu($rootScope.loginUser);
                 }else{
                     console.log(data);

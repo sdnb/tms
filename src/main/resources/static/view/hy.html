@@ -7,7 +7,7 @@
             <span>主持人姓名：</span>
             <div class="zcchwbk" style="background: #fff url(images/select.png) no-repeat right 10px center;">
                 <input type="text" ng-model="hy.conductor.realname" placeholder="主持人" style="z-index: 2; position: relative;"  readonly/>
-                <select ng-model="hy.conductor" ng-options="conductor as conductor.realname for conductor in hy.conductors" ng-change="hy.selectConductor()">
+                <select ng-model="hy.conductor" ng-options="conductor as conductor.realname for conductor in hy.conductors" ng-change="hy.selectConductor()" ng-disabled="loginUser.role!=1">
                     <option value="">请选择</option>
                 </select>
             </div>
@@ -37,7 +37,7 @@
             <!--<a href="">全部静音</a>-->
             <a href="" style="background-image: url(images/icon-jy2.png);" ng-show="!hy.conference || hy.conference.isInRecording==0"  ng-click="hy.startRecord()">开始录音</a>
             <a href="" style="background-image: url(images/icon-hykz2.png);" ng-show="hy.conference && hy.conference.isInRecording==1" ng-click="hy.endRecord()">停止录音</a>
-            <a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="hy.endConference()">结束会议</a>
+            <a href="" style="background-image: url(images/icon-hykz3.png);" ng-click="confirmOper('end')">结束会议</a>
         </div>
 
         <img src="images/line.png" width="435" style="margin-left:80px"  />
@@ -74,8 +74,8 @@
                 <a href=""><img src="images/arrow-r.png" ng-click="hy.changePage('next')"/></a>
             </div>
 
-            <a href="" class="btn-fqhy" ng-show="hy.conference" ng-click="hy.confirmAdd()">发起会议</a>
-            <a href="" class="btn-fqhy" ng-show="!hy.conference" ng-click="hy.confirmAdd()">新增参会</a>
+            <a href="" class="btn-fqhy" ng-show="!hy.conference" ng-click="hy.confirmAdd()">发起会议</a>
+            <a href="" class="btn-fqhy" ng-show="hy.conference" ng-click="hy.confirmAdd()">新增参会</a>
         </div>
 
     </div>
@@ -156,7 +156,7 @@
             <span class="lyClose" ng-click="cancelConfirm()"></span>
             <div style="clear: both;"></div>
 
-            <div class="lyCen" ng-bind="confirmTips"></div>
+            <div class="lyCen"  ng-bind="confirmTips"></div>
 
             <div class="lyBtn">
                 <a href="" style="margin-left:135px;" ng-click="cancelConfirm()"><img src="images/qx.png" /></a>
