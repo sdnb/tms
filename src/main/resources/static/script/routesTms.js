@@ -1,5 +1,6 @@
 define([], function(){
     return {
+        defaultRoutePath: '/tms/notFound',
         routes: {
             '/': {
                 templateUrl: '/view/hy.html',
@@ -9,6 +10,11 @@ define([], function(){
             '/tms': {
                 templateUrl: '/view/hy.html',
                 dependencies: ['../view/hyCtrl']
+            },
+
+            '/tms/notFound': {
+                templateUrl: '/view/notFound.html',
+                dependencies: ['../view/notFoundCtrl']
             },
 
             '/tms/hy': {
@@ -27,8 +33,8 @@ define([], function(){
             },
 
             '/tms/xt': {
-                templateUrl: '/view/xt/zcr.html',
-                dependencies: ['../view/xt/zcrCtrl']
+                templateUrl: '/view/xt.html',
+                dependencies: ['../view/xtCtrl']
             },
 
             '/tms/xt/zcr': {
