@@ -6,6 +6,7 @@ define(['../../script/tms', 'jquery', '../../script/service/conductorService','m
         }
 
         var _this = this;
+        this.url = $location.path();
         this.isNull = false;
         this.loading = false;
         this.message = {

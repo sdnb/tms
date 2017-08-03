@@ -1,8 +1,9 @@
 define([], function(){
     function LoginService($resource){
-        this.loinApi = $resource('/api/admin/login'); //账户密码登录
+        this.loginApi = $resource('/api/admin/login'); //账户密码登录
         this.loginTokenApi = $resource('/api/admin/login/token'); //令牌登录
         this.logoutApi = $resource('/api/admin/logout/token'); //登出
+        this.roleMenuApi = $resource('/api/menu/:role'); //角色菜单
     }
 
     LoginService.prototype.login = function(loginData, cb){
@@ -25,6 +26,14 @@ define([], function(){
         this.logoutApi.save(function(data){
             cb(data);
         }, function(errData){
+            cb(errData.data.error);
+        });
+    };
+
+    LoginService.prototype.roleMenu = function(filter,cb){
+        this.roleMenuApi.get(filter,function(data){
+            cb(data);
+        },function(errData){
             cb(errData.data.error);
         });
     };

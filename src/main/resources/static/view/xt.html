@@ -1,0 +1,22 @@
+
+<style type="text/css">
+    body {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-orient: vertical;-moz-box-orient: vertical;-o-box-orient: vertical;-ms-box-orient: vertical;
+    }
+
+    .glyCon {
+        display: -webkit-box;display: -moz-box;display: -o-box;display: -ms-box;
+        -webkit-box-flex:1;-moz-box-flex:1;-o-box-flex:1;-ms-box-flex:1;
+    }
+</style>
+<div class="w1000 glyCon" ng-controller="xtCtrl as xt">
+
+    <div class="glyLeft">
+        <a ng-repeat="menu in menus.secondMenu"  ng-href="{{menu.url}}" ng-bind="menu.name"></a>
+    </div>
+
+    <div class="glyRight">
+        <h1 style="text-align: center; margin-top: 150px;">系统管理</h1>
+    </div>
+</div>

@@ -9,11 +9,42 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
             loginService.loginToken(function(data){
                 if(data.status == 'true'){
                     $rootScope.loginUser = data.message;
+                    _this.getRoleMenu($rootScope.loginUser);
                 }else{
                     console.log(data);
                 }
             });
         };
+        //获取角色菜单
+        /**
+         *菜单应有lvl,parentId属性，无lvl暂用parentId代替菜单层级
+         */
+        $rootScope.menus = {
+            firstMenu: [],
+            secondMenu: []
+        };
+        this.getRoleMenu = function(currentUser){
+            this.filter = {
+                role: 2
+            };
+            loginService.roleMenu(this.filter,function(data){
+                if(data.status == 'true'){
+                    var menus  = data.message;
+                    menus.forEach(function(menu){
+                        if(menu.parentId == 1){
+                            $rootScope.menus.firstMenu.push(menu);
+                        }else if(menu.parentId == 2){
+                            $rootScope.menus.secondMenu.push(menu);
+                        }
+                    });
+                    _this.activeMenuByRoute($rootScope.menus.firstMenu);
+                }else{
+                    $rootScope.menus = [];
+                    console.log(data);
+                }
+            });
+        };
+
         if(loginCookie == ''){
             window.location.href = '/login';
         }else{
@@ -41,21 +72,21 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
             $route.reload();
         };
 
-        $rootScope.activeIndex = 0;
-        this.activeMenu = function(index){
-            $rootScope.activeIndex = index;
+        $rootScope.activeMenuId = 0;
+        this.activeMenu = function(id){
+            $rootScope.activeMenuId = id;
         };
 
-        var url = $location.url();
-        this.activeMenuByRoute = function(){
-            $("#menu > a").each(function(){
-               if(url.indexOf($(this).attr('href')) > -1){
-                   $rootScope.activeIndex = $(this).index();
-               }
-            });
-        }
-
-        this.activeMenuByRoute();
+        this.activeMenuByRoute = function(menus){
+            var url = $location.url();
+            if(url == '/' || url == '/tms') url = '/tms/hy';
+            for(var i=0;i<menus.length;i++){
+                if(url.indexOf(menus[i].url) != -1){
+                    $rootScope.activeMenuId = menus[i].id;
+                    break;
+                }
+            }
+        };
 
         //登出
         this.logout = function(){

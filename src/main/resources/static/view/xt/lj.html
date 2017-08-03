@@ -12,11 +12,7 @@
 <div class="w1000 glyCon" ng-controller="ljCtrl as lj">
 
     <div class="glyLeft">
-        <a href="/tms/xt/zcr">会议主持人管理</a>
-        <a href="/tms/xt/hys">会议室管理</a>
-        <a href="/tms/xt/gly">管理员密码修改</a>
-        <a href="/tms/xt/rz">系统日志</a>
-        <a href="/tms/xt/lj" class="glyCur">系统设置</a>
+        <a ng-repeat="menu in menus.secondMenu" ng-href="{{menu.url}}" ng-class="{true:'glyCur',false:''}[menu.url==lj.url]" ng-bind="menu.name"></a>
     </div>
 
     <div class="glyRight">

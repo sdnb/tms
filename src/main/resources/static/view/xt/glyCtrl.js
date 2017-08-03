@@ -14,6 +14,8 @@ define(['../../script/tms', 'jquery', '../../script/service/loginService', '../.
             text: null
         };
 
+        this.url = $location.path();
+
         this.hideMessage = function(){
             this.message.show = false;
         };
