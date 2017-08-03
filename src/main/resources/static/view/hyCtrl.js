@@ -502,6 +502,8 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
         };
 
+        var media = document.getElementById('media');
+
         $rootScope.socket = null;
         function initWebSocket(){
             //判断当前浏览器是否支持WebSocket
@@ -525,6 +527,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             //接收到消息的回调方法
             $rootScope.socket.onmessage = function(event){
                 _this.confResId = event.data;
+                media.play();
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
                     //_this.getMembers('reload');
                     _this.getConferences(_this.conductor.id);
