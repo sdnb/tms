@@ -77,7 +77,7 @@ public class ConferenceController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/conference/end", method = RequestMethod.PUT)
-    public ObjectResult end(@RequestParam(value = "confId", required = true) String confId,
+    public ObjectResult end(@RequestParam(value = "confId", required = true) Integer confId,
                             @CookieValue(value = Constants.STAFF_TOKEN, required = false)String token) {
         try {
             LoginInfo loginInfo = tokenService.loadToken(token);

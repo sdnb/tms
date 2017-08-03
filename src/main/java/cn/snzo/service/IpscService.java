@@ -17,7 +17,7 @@ public interface IpscService {
 
     Conference startConference(ConferenceStartShow conferenceStartShow, String tokenName) throws InterruptedException, IOException;
 
-    int stopConference(String confResId, String tokenName) throws IOException, InterruptedException;
+    int stopConference(Integer confId, String tokenName) throws IOException, InterruptedException;
 
     int addCallToConf(List<String> phones, String conferenceId, String tokenName) throws IOException, InterruptedException;
 
