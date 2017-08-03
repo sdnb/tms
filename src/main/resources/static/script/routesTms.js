@@ -17,6 +17,11 @@ define([], function(){
                 dependencies: ['../view/notFoundCtrl']
             },
 
+            '/tms/noAuthority': {
+                templateUrl: '/view/noAuthority.html',
+                dependencies: ['../view/noAuthorityCtrl']
+            },
+
             '/tms/hy': {
                 templateUrl: '/view/hy.html',
                 dependencies: ['../view/hyCtrl']

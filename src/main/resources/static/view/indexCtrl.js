@@ -9,6 +9,7 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
             loginService.loginToken(function(data){
                 if(data.status == 'true'){
                     $rootScope.loginUser = data.message;
+                    console.log($rootScope.loginUser);
                     _this.getRoleMenu($rootScope.loginUser);
                 }else{
                     console.log(data);
@@ -20,16 +21,18 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
          *菜单应有lvl,parentId属性，无lvl暂用parentId代替菜单层级
          */
         $rootScope.menus = {
+            allMenu: [],
             firstMenu: [],
             secondMenu: []
         };
         this.getRoleMenu = function(currentUser){
             this.filter = {
-                role: 2
+                role: currentUser.role
             };
             loginService.roleMenu(this.filter,function(data){
                 if(data.status == 'true'){
                     var menus  = data.message;
+                    $rootScope.menus.allMenu = menus;
                     menus.forEach(function(menu){
                         if(menu.parentId == 1){
                             $rootScope.menus.firstMenu.push(menu);
@@ -38,11 +41,31 @@ define(['../script/tms', 'jquery', '../script/service/loginService'], function(m
                         }
                     });
                     _this.activeMenuByRoute($rootScope.menus.firstMenu);
+                    _this.checkAuthority($rootScope.menus.allMenu);
                 }else{
                     $rootScope.menus = [];
                     console.log(data);
+                    $location.path('/tms/notFound');
                 }
             });
+        };
+
+        this.checkAuthority = function(menus){
+            var path = $location.path();
+            if(menus.length > 0){
+                var hasAuthority = false;
+                for(var i=0;i<menus.length;i++){
+                    if(menus[i].url == path){
+                        hasAuthority = true;
+                        break;
+                    }
+                }
+                if(!hasAuthority && path != '/tms/notFound'){
+                    $location.path('/tms/noAuthority');
+                }
+            }else{
+                $location.path('/tms/notFound');
+            }
         };
 
         if(loginCookie == ''){
