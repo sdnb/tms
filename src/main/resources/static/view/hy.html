@@ -62,7 +62,8 @@
                         <font ng-bind="contact.phone"></font>
                     </span>
                     <span style="width: 69px;text-align:center">
-                        <font ng-bind="contact.bookId"></font>
+                        <font ng-if="contact.bookId==1">系统</font>
+                        <font ng-if="contact.bookId>1">会议室</font>
                     </span>
                 </li>
             </div>
