@@ -28,12 +28,12 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         //获取当前会议主持人及对应的会议室电话簿
         this.conductor = null; //选中主持人
         this.conductors = []; //主持人列表
-        //获取用户信息 判断角色如果是管理员允许选择会议主持人，如果是普通会议主持人不允许更改会议主持人（待API完善）
+        //获取用户信息 判断角色如果是管理员允许选择会议主持人，如果是普通会议主持人不允许更改会议主持人
         this.getLoginUser = function(){
             loginService.loginToken(function(data){
                 if(data.status == 'true'){
                     $scope.loginUser = data.message;
-                    if($scope.loginUser.username == 'admin'){//系统管理员可更换主持人
+                    if($scope.loginUser.role == 1){//系统管理员可更换主持人
                         //获取主持人
                         _this.getConductors();
                     }else{ //非主持人直接获取联系人
@@ -138,10 +138,14 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     for(var i=1;i<=$scope.contactPageObject.totalPage;i++){
                         $scope.contactPageObject.pages.push(i);
                     }
+                    //检查联系人是否在会议中
+                    _this.checkInConference();
                     angular.forEach(_this.contacts,function(contact){
-                        contact.isChecked = false;
-                        if(_this.checkedContacts.commonIndexOf('id',contact) != -1)
-                            contact.isChecked = true;
+                        if(!contact.isDisable || contact.isDisable==undefined){
+                            contact.isChecked = false;
+                            if(_this.checkedContacts.commonIndexOf('id',contact) != -1)
+                                contact.isChecked = true;
+                        }
                     });
                     $scope.checkLimit($scope.contactPageObject.currentPage);
                 }else{
@@ -218,6 +222,11 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         };
 
         this.addConference = function(){
+            if(this.checkedContacts.length == 0){
+                this.message.show = true;
+                this.message.text = '请选择联系人后再添加会议';
+                return;
+            }
             //this.conference.roomId = this.rooms[0].id;
             this.conference.conductorId = this.conductor.id;
             var phoneArray =  [];
@@ -230,6 +239,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 _this.loading = false;
                 if(data.status == 'true'){
                     _this.conference = data.message;
+                    _this.checkedContacts = [];
                     /*var timer = $interval(function(){
                         _this.getMembers('reload');
                     },3000,10);*/
@@ -293,6 +303,41 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             paginationService.showFirstPageContent($scope.conferencePageObject,1);
         });
 
+        //获取当前会议所有与会人 不分页
+        this.allMembers = [];
+        this.getAllMembers = function(){
+            var filter = {};
+            filter.currentPage = 1;
+            filter.pageSize = 6000;
+            filter.confResId = this.confResId;
+            if(!this.confResId) {
+                filter.confResId = _this.conference.resId;
+            }
+            conferenceService.getParts(filter,function(data,header){
+                if(data.status == 'true'){
+                    _this.allMembers = data.message;
+                    _this.checkInConference();
+                }else{
+                    _this.allMembers = [];
+                    console.log(data);
+                }
+            });
+        };
+
+        //检查会议是否在联系人中
+        this.checkInConference = function(){
+            if(this.allMembers.length > 0 && this.contacts.length > 0){
+                for(var i=0;i<this.contacts.length;i++){
+                    this.contacts[i].contactId = this.contacts[i].id;
+                    this.contacts[i].isDisable = false;
+                    if(this.allMembers.commonIndexOf('contactId',this.contacts[i]) != -1){
+                        this.contacts[i].isChecked = true;
+                        this.contacts[i].isDisable = true;
+                    }
+                }
+            }
+        };
+
          //获取会议
         this.getConferences = function(conductorId){
             conferenceService.getConferencePage({currentPage:1,pageSize:6000,conductorId:conductorId,status:1},function(data){
@@ -301,6 +346,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     if(_this.conferences.length > 0){
                         _this.conference = _this.conferences[0];
                         _this.getMembers('reload');
+                        _this.getAllMembers();
                     }else{
                         _this.onlineMembers = 0;
                         _this.totalMembers = 0;

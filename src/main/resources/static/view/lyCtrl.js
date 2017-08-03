@@ -58,7 +58,6 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
                     for(var i=1;i<=$scope.pageObject.totalPage;i++){
                         $scope.pageObject.pages.push(i);
                     }
-                    console.log(_this.recordings);
                 }else{
                     _this.recordings = []
                     console.log(data);
