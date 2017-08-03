@@ -12,6 +12,7 @@ public class LoginInfo implements Serializable{
     private String password;
     private Integer conductorId;
     private Integer role;   // 1管理员 2 主持人
+    private String realname;
     public Integer getId() {
         return id;
     }
@@ -50,5 +51,13 @@ public class LoginInfo implements Serializable{
 
     public void setRole(Integer role) {
         this.role = role;
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 }

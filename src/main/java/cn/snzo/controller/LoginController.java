@@ -67,6 +67,7 @@ public class LoginController extends BaseController{
             Conductor conductor = conductorRepository.findByAccountid(accountShow.getId());
             if (conductor != null) {
                 loginInfo.setConductorId(conductor.getId());
+                loginInfo.setRealname(conductor.getRealname());
             }
             loginInfo.setRole(accountShow.getRole());
             tokenService.saveToken(token, loginInfo, expireTime);
