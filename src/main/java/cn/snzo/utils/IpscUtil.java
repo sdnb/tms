@@ -267,8 +267,8 @@ public class IpscUtil {
                     logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
                 }
 
-                logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
-                addCallToConf(callId, confResId);
+//                logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
+//                addCallToConf(callId, confResId);
             }
 
             @Override
@@ -326,6 +326,7 @@ public class IpscUtil {
                             changeReminder.sendMessageToAll(conferenceId);
 
                             logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
+                            playReadyVoice(callId, conferenceId);
                             playConfVoice(conferenceId, Constants.COME_IN_TICK);
                             try {
                                 Thread.sleep(1000);
@@ -362,26 +363,13 @@ public class IpscUtil {
                     "sys.conf.play_start",
                     params,
                     new SimpleRpcResultListener("sys.conf.play_start"));
+            Thread.sleep(1000);
         } catch (IOException e) {
             logger.error("播放会议{}声音文件{}异常", confResId, fileName);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
-
-//    public static void callOut(List<Contact> contacts, String ip, RpcResultListener listener) throws IOException, InterruptedException {
-//        for (Contact te : contacts) {
-//            Map<String, Object> params = new HashMap<String, Object>();
-//            params.put("to_uri", te.getPhone()+"@"+ip); /// 被叫号码的 SIP URI
-//            params.put("max_answer_seconds", Constants.MAX_ANSWER_SECONDS); /// 该呼叫最长通话允许时间
-//            params.put("user_data", te.getPhone()); ///用户信息
-//            logger.info(">>>>>>>>> 呼叫参数： {}", params);
-//            commander.createResource(
-//                    busAddress,
-//                    "sys.call",
-//                    params,
-//                    listener
-//            );
-//        }
-//    }
 
 
     public static void createCallRes(String phone, RpcResultListener rpcResultListener) throws IOException {
