@@ -325,8 +325,10 @@ public class IpscUtil {
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
 
-                            logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
+
+                            logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.WELCOME_VOICE);
                             playReadyVoice(callId, conferenceId);
+                            logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
                             playConfVoice(conferenceId, Constants.COME_IN_TICK);
                             try {
                                 Thread.sleep(1000);
