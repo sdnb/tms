@@ -456,10 +456,10 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
 
 
         //添加到会议
-        this.addCall = function(phone){
-            if(!phonePattern.test(phone)){
+        this.addCall = function(contacts){
+            if(contacts.length < 1){
                 this.message.show = true;
-                this.message.text = '请填写正确的电话号码';
+                this.message.text = '请选择联系人';
                 return;
             }
 
@@ -468,10 +468,13 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 this.message.text = '当前无会议';
                 return;
             }
-
+            var phones = [];
+            contacts.forEach(function(contact){
+                phones.push(contact.phone);
+            });
             this.addCallShow = {
                 confResId: this.conference.resId,
-                phones:[phone]
+                phones:phones
             };
             this.loading = true;
             conferenceService.addCall(this.addCallShow,function(data){
