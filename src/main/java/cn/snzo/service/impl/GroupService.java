@@ -1,10 +1,14 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.CommonRepository;
+import cn.snzo.entity.ConferenceRoom;
 import cn.snzo.entity.ContactGroupRelative;
 import cn.snzo.entity.Group;
+import cn.snzo.entity.PhoneBook;
+import cn.snzo.repository.ConferenceRoomRepository;
 import cn.snzo.repository.ContactGroupRelativeRepository;
 import cn.snzo.repository.GroupRepository;
+import cn.snzo.repository.PhoneBookRepository;
 import cn.snzo.service.IGroupService;
 import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.ContactGroupRelativeShow;
@@ -39,6 +43,14 @@ public class GroupService implements IGroupService {
 
     @Autowired
     private CommonRepository commonRepository;
+
+
+    @Autowired
+    private ConferenceRoomRepository conferenceRoomRepository;
+
+
+    @Autowired
+    private PhoneBookRepository phoneBookRepository;
     @Override
     public int add(GroupShow groupShow) {
         Group groupCheck = groupRepository.findByNameAndBookId(groupShow.getName(), groupShow.getBookId());
@@ -46,8 +58,18 @@ public class GroupService implements IGroupService {
         if (groupCheck != null) {
             return 2;
         }
+        ConferenceRoom conferenceRoom = conferenceRoomRepository.findByNumber(groupShow.getConfRoomNo());
+
+        //会议室不存在
+        if (conferenceRoom == null) {
+            return 3;
+        }
+        PhoneBook phoneBook = phoneBookRepository.findByRoomId(conferenceRoom.getId());
+        if (phoneBook == null) {
+            return 4;
+        }
         Group group = new Group();
-        group.setBookId(groupShow.getBookId());
+        group.setBookId(phoneBook.getId());
         group.setName(groupShow.getName());
 
         groupRepository.save(group);

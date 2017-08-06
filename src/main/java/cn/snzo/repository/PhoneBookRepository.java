@@ -22,4 +22,7 @@ public interface PhoneBookRepository extends JpaRepository<PhoneBook, Integer> {
     @Query("select p from PhoneBook p where (?1 is null or p.type =?1) " +
             " and (?2 is null or p.roomId = ?2)")
     List<PhoneBook> findByTypeAndRoomId(Integer type, Integer roomId);
+
+
+    PhoneBook findByRoomId(Integer id);
 }

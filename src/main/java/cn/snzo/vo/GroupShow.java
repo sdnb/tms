@@ -5,8 +5,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Created by Administrator on 2017/7/1 0001.
  */
@@ -16,9 +14,11 @@ public class GroupShow {
     @NotBlank(message = "组名不能为空")
     private String  name;     //名称
 
-    @NotNull(message = "所在电话簿")
+
     private Integer bookId;  //所在电话簿
 
+    @NotBlank(message = "会议室不能为空")
+    private String confRoomNo;  //会议室编号
     public GroupShow() {
     }
 
@@ -49,5 +49,13 @@ public class GroupShow {
 
     public void setBookId(Integer bookId) {
         this.bookId = bookId;
+    }
+
+    public String getConfRoomNo() {
+        return confRoomNo;
+    }
+
+    public void setConfRoomNo(String confRoomNo) {
+        this.confRoomNo = confRoomNo;
     }
 }
