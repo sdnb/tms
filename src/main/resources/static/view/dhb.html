@@ -23,7 +23,7 @@
 
             <div ng-show="dhb.operationPanel.index==2">
                 <div ng-repeat="group in dhb.groups" style="position:relative;display:inline-block" ng-mouseover="onOver()" ng-mouseleave="onLeave()">
-                    <a href="" ng-bind="group.name" ng-class="{cur:dhb.group.id==group.id}" ng-mouseup="dhb.onItemRelease($event,group)"></a>
+                    <a ng-bind="group.name" href="javascript:void(0)" ng-class="{cur:dhb.group.id==group.id}" ng-mouseup="dhb.onItemRelease($event,group)"></a>
                     <div style="width:100px;color:red bold;position:absolute;left:20px;top:20px;" ng-show="dhb.rightMenuIndex==group.id"><a ng-click="confirmOper('deleteGroup',group)">删除</a></div>
                 </div>
                 <a href="" class="cur" ng-hide="groupPageObject.currentPage == 1" ng-click="prev()">&lt;</a>

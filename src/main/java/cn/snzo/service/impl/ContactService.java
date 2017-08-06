@@ -223,37 +223,73 @@ public class ContactService implements IContactService {
             return new PageImpl<ContactShow>(new ArrayList<>(), p, 0);
         }
         params.put("conId", conductor.getId());
-        String pageSql = "select c.* " +
-                " FROM" +
-                "  t_contact c" +
-                "  INNER JOIN t_phone_book pb ON pb.id = c.book_id" +
-                "  inner JOIN t_conference_room cr ON cr.id = pb.room_id" +
-                "  INNER JOIN t_conductor cd ON cd.id = cr.conductor_id" +
-                " WHERE" +
-                "  cd.id = :conId" +
-                " UNION" +
-                " SELECT" +
-                "  c.* " +
-                " FROM" +
-                "  t_contact c" +
-                " where book_id=1" ;
+        String pageSql = " " +
+                "SELECT " +
+                "  ct.* " +
+                "FROM " +
+                "  ( " +
+                "    SELECT " +
+                "      c.* " +
+                "    FROM " +
+                "      t_contact c " +
+                "    INNER JOIN t_phone_book pb ON pb.id = c.book_id " +
+                "    INNER JOIN t_conference_room cr ON cr.id = pb.room_id " +
+                "    INNER JOIN t_conductor cd ON cd.id = cr.conductor_id " +
+                "    WHERE " +
+                "      cd.id = :conId " +
+                "    UNION " +
+                "      SELECT " +
+                "        c.* " +
+                "      FROM " +
+                "        t_contact c " +
+                "      WHERE " +
+                "        book_id = 1 " +
+                "  ) ct " +
+                "WHERE " +
+                "  ct.id NOT IN ( " +
+                "    SELECT " +
+                "      c.contact_id " +
+                "    FROM " +
+                "      t_call c " +
+                "    INNER JOIN t_conference cf ON cf.res_id = c.conf_res_id " +
+                "    WHERE " +
+                "      c. STATUS = 1 " +
+                "    AND c.conductor_id = :conId " +
+                "  )" ;
 
 
-        String countSql = "SELECT count(*) from (" +
-                "  select c.*" +
-                " FROM" +
-                "  t_contact c" +
-                "  INNER JOIN t_phone_book pb ON pb.id = c.book_id" +
-                "  inner JOIN t_conference_room cr on cr.id = pb.room_id" +
-                "  INNER JOIN t_conductor cd ON cd.id = cr.conductor_id" +
-                " WHERE" +
-                "  cd.id = :conId" +
-                " UNION" +
-                " SELECT" +
-                "  c.*" +
-                " FROM" +
-                "  t_contact c" +
-                " where book_id=1) temp " ;
+        String countSql = "SELECT " +
+                "  count(*) " +
+                "FROM " +
+                "  ( " +
+                "    SELECT " +
+                "      c.* " +
+                "    FROM " +
+                "      t_contact c " +
+                "    INNER JOIN t_phone_book pb ON pb.id = c.book_id " +
+                "    INNER JOIN t_conference_room cr ON cr.id = pb.room_id " +
+                "    INNER JOIN t_conductor cd ON cd.id = cr.conductor_id " +
+                "    WHERE " +
+                "      cd.id = :conId " +
+                "    UNION " +
+                "      SELECT " +
+                "        c.* " +
+                "      FROM " +
+                "        t_contact c " +
+                "      WHERE " +
+                "        book_id = 1 " +
+                "  ) ct " +
+                "WHERE " +
+                "  ct.id NOT IN ( " +
+                "    SELECT " +
+                "      c.contact_id " +
+                "    FROM " +
+                "      t_call c " +
+                "    INNER JOIN t_conference cf ON cf.res_id = c.conf_res_id " +
+                "    WHERE " +
+                "      c. STATUS = 1 " +
+                "    AND c.conductor_id = :conId " +
+                "  )" ;
         @SuppressWarnings("unchecked")
         List<ContactShow> ts =(List<ContactShow>) commonRepository.queryResultToBeanPage(pageSql, params, ContactShow.class, currentPage, pageSize);
 
