@@ -143,8 +143,8 @@ public class IpscUtil {
                                     String confId = callConfMap.get(callId);
                                     if (confId != null) {
                                         logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
-//                                        playReadyVoice(callId, confId);
-                                        addCallToConf(callId, confId);
+                                        playReadyVoice(callId, confId);
+//                                        addCallToConf(callId, confId);
 //
 //                                        logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
 //                                        playConfVoice(confId, Constants.COME_IN_TICK);
@@ -191,9 +191,9 @@ public class IpscUtil {
                                     if (isRightAndOpen) {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
 //                                        playReadyVoice(callId, conference.getResId());
-                                        addCallToConf(callId, conference.getResId());
-//                                        logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.WELCOME_VOICE);
-//                                        playReadyVoice(callId, conference.getResId());
+//                                        addCallToConf(callId, conference.getResId());
+                                        logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.WELCOME_VOICE);
+                                        playReadyVoice(callId, conference.getResId());
 //                                        logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
 //                                        playConfVoice(conference.getResId(), Constants.COME_IN_TICK);
                                     } else {
@@ -270,14 +270,19 @@ public class IpscUtil {
             @Override
             protected void onResult(Object o) {
                 logger.info(">>>>>>>>> 播放欢迎语音{}成功", Constants.READY_VOICE);
-//                try {
-//                    Thread.sleep(6000);
-//                } catch (InterruptedException e) {
-//                    logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
-//                }
+                try {
+                    Thread.sleep(6000);
+                } catch (InterruptedException e) {
+                    logger.error(">>>>>>>>>播放欢迎语音{}被中断", Constants.READY_VOICE);
+                }
 
-//                logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
-//                addCallToConf(callId, confResId);
+                logger.info(">>>>>>>>>将该呼叫{}加入会议{}", callId, confResId);
+                addCallToConf(callId, confResId);
+                logger.info(">>>>>>>>>将该呼叫{}加入会议{}完毕", callId, confResId);
+                logger.info(">>>>>>>>> 播放滴声{}", Constants.COME_IN_TICK);
+                playConfVoice(confResId, Constants.COME_IN_TICK);
+
+                logger.info(">>>>>>>>> 播放滴声完毕{}", Constants.COME_IN_TICK);
             }
 
             @Override
@@ -334,22 +339,11 @@ public class IpscUtil {
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
 
-                            logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.READY_VOICE);
-                            playReadyVoice(callId, conferenceId);
-                            try {
-                                Thread.sleep(6000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            logger.info(">>>>>>>>> 播放欢迎语音{}完毕", Constants.READY_VOICE);
-                            logger.info(">>>>>>>>> 播放滴声{}", Constants.COME_IN_TICK);
-                            playConfVoice(conferenceId, Constants.COME_IN_TICK);
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            logger.info(">>>>>>>>> 播放滴声完毕{}", Constants.COME_IN_TICK);
+//                            logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.READY_VOICE);
+//                            playReadyVoice(callId, conferenceId);
+//
+//                            logger.info(">>>>>>>>> 播放欢迎语音{}完毕", Constants.READY_VOICE);
+
                         }
 
                         @Override
@@ -380,6 +374,11 @@ public class IpscUtil {
                     "sys.conf.play_start",
                     params,
                     new SimpleRpcResultListener("sys.conf.play_start"));
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             logger.error("播放会议{}声音文件{}异常", confResId, fileName);
         }
