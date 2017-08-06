@@ -120,6 +120,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         this.contacts = [];
         this.checkedContacts = [];
         this.totalContacts = 0;
+        this.isAllChecked = false;
         this.getContacts = function(type){
             if(type == 'reload'){
                 $scope.contactPageObject.currentPage = 1;
@@ -138,18 +139,23 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     for(var i=1;i<=$scope.contactPageObject.totalPage;i++){
                         $scope.contactPageObject.pages.push(i);
                     }
-                    //检查联系人是否在会议中
-                    _this.checkInConference();
+                    var count = 0;
                     angular.forEach(_this.contacts,function(contact){
-                        if(!contact.isDisable || contact.isDisable==undefined){
-                            contact.isChecked = false;
-                            if(_this.checkedContacts.commonIndexOf('id',contact) != -1)
-                                contact.isChecked = true;
+                        contact.isChecked = false;
+                        if(_this.checkedContacts.commonIndexOf('id',contact) != -1){
+                            contact.isChecked = true;
+                            count ++;
                         }
                     });
+                    if(count == _this.contacts.length){
+                        _this.isAllChecked = true;
+                    }else{
+                        _this.isAllChecked = false;
+                    }
                     $scope.checkLimit($scope.contactPageObject.currentPage);
                 }else{
                     _this.contracts = [];
+                    _this.isAllChecked = false;
                     console.log(data);
                 }
             });
@@ -199,6 +205,22 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             console.log(this.checkedContacts);
         };
 
+        //全选列表联系人
+        this.checkAllContacts = function(){
+            console.log(this.isAllChecked);
+            if(this.isAllChecked){
+                this.contacts.forEach(function(contact){
+                    contact.isChecked = true;
+                    _this.selectContact(contact);
+                });
+            }else{
+                _this.contacts.forEach(function(contact){
+                    contact.isChecked = false;
+                    _this.selectContact(contact);
+                });
+            }
+        };
+
         //发起会议
         this.showRecord = false;
         this.confirmAdd = function(){
@@ -243,6 +265,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     /*var timer = $interval(function(){
                         _this.getMembers('reload');
                     },3000,10);*/
+                    _this.getContacts('reload');
                     _this.getRooms(_this.conductor.id);
                 }else{
                     _this.message.show = true;
@@ -304,7 +327,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
         });
 
         //获取当前会议所有与会人 不分页
-        this.allMembers = [];
+        /*this.allMembers = [];
         this.getAllMembers = function(){
             var filter = {};
             filter.currentPage = 1;
@@ -316,16 +339,15 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             conferenceService.getParts(filter,function(data,header){
                 if(data.status == 'true'){
                     _this.allMembers = data.message;
-                    _this.checkInConference();
                 }else{
                     _this.allMembers = [];
                     console.log(data);
                 }
             });
-        };
+        };*/
 
         //检查会议是否在联系人中
-        this.checkInConference = function(){
+        /*this.checkInConference = function(){
             if(this.allMembers.length > 0 && this.contacts.length > 0){
                 for(var i=0;i<this.contacts.length;i++){
                     this.contacts[i].contactId = this.contacts[i].id;
@@ -336,7 +358,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     }
                 }
             }
-        };
+        };*/
 
          //获取会议
         this.getConferences = function(conductorId){
@@ -346,7 +368,6 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                     if(_this.conferences.length > 0){
                         _this.conference = _this.conferences[0];
                         _this.getMembers('reload');
-                        _this.getAllMembers();
                     }else{
                         _this.onlineMembers = 0;
                         _this.totalMembers = 0;
@@ -581,6 +602,7 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
                 if(_this.conference != undefined && _this.conference.resId == _this.confResId){
                     //_this.getMembers('reload');
                     _this.getConferences(_this.conductor.id);
+                    _this.getContacts('reload');
                 }
             };
 
