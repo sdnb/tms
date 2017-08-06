@@ -76,8 +76,10 @@ public class GroupController extends BaseController{
     public ObjectResult getGroups( @RequestParam(value = "name", required = false)String name,
                                    @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                    @RequestParam(value = "pageSize", required = false)Integer pageSize,
-                                  HttpServletResponse response) {
-        Page<GroupShow> page = groupService.getPage(name, currentPage, pageSize);
+                                   @RequestParam(value = "conductorId", required = false)Integer conductorId,
+                                   @RequestParam(value = "bookId", required = false)Integer bookId,
+                                   HttpServletResponse response) {
+        Page<GroupShow> page = groupService.getPage(name, conductorId, bookId, currentPage, pageSize);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
         return new ObjectResult("true", page.getContent());
     }

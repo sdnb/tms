@@ -22,7 +22,7 @@ public interface IContactService {
      * @param pageSize   @return
      */
     Page<ContactShow> getPage(Integer groupId, Integer bookId,
-                              String name, String phone, Integer bookType, Boolean sysBookId,
+                              String name, String phone, Integer bookType, Boolean sysBookId, Integer conductorId,
                               Integer currentPage, Integer pageSize);
 
 

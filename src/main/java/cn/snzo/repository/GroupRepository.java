@@ -19,8 +19,15 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     Group findByNameAndBookId(String name, Integer bookId);
 
 
-    @Query("select xc from Group xc where (?1 is null or xc.name like ?1)")
-    Page<Group> findPage(String name, Pageable p);
+//    @Query(value = "select xc from t_group xc " +
+//            " inner join t_phone_book pb on pb.id = xc.book_id " +
+//            " inner join t_conference_room cr on cr.id = pb.room_id" +
+//            " left join t_conductor cd on cd.room_id = cr.id" +
+//            " where (?1 is null or xc.name like ?1)" +
+//            " and (?2 is null or cd.id = ?2)" +
+//            " and (?3 is null or cx.book_id = ?3)" +
+//            " ", nativeQuery = true)
+//    Page<Group> findPage(String name, Integer conductorId, Integer bookId, Pageable p);
 
     @Query("select xc from Group xc")
     List<Group> findTotal();

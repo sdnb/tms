@@ -110,10 +110,11 @@ public class ContactController extends BaseController {
                                      @RequestParam(value = "sysBookId", required = false)Boolean addSysBookId,
                                      @RequestParam(value = "bookType", required = false)Integer bookType,
                                      @RequestParam(value = "groupId", required = false)Integer groupId,
+                                     @RequestParam(value = "conductorId", required = false)Integer conductorId,
                                      @RequestParam(value = "currentPage", required = false)Integer currentPage,
                                      @RequestParam(value = "pageSize", required = false)Integer pageSize,
                                      HttpServletResponse response) {
-        Page<ContactShow> page = contactService.getPage( groupId, bookId, name, phone, bookType, addSysBookId, currentPage, pageSize);
+        Page<ContactShow> page = contactService.getPage( groupId, bookId, name, phone, bookType, addSysBookId, conductorId, currentPage, pageSize);
         CommonUtils.setResponseHeaders(page.getTotalElements(), page.getTotalPages(), page.getNumber(), response);
         return new ObjectResult("true", page.getContent());
     }

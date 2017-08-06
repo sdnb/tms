@@ -32,7 +32,7 @@ public interface IGroupService {
      * @param pageSize
      * @return
      */
-    Page<GroupShow> getPage(String name, Integer currentPage, Integer pageSize);
+    Page<GroupShow> getPage(String name, Integer conductorId, Integer bookId, Integer currentPage, Integer pageSize);
 
     /**
      * 查询所有分组

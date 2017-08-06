@@ -1,11 +1,12 @@
 package cn.snzo.service.impl;
 
-import cn.snzo.utils.CommonUtils;
+import cn.snzo.common.CommonRepository;
 import cn.snzo.entity.ContactGroupRelative;
 import cn.snzo.entity.Group;
 import cn.snzo.repository.ContactGroupRelativeRepository;
 import cn.snzo.repository.GroupRepository;
 import cn.snzo.service.IGroupService;
+import cn.snzo.utils.CommonUtils;
 import cn.snzo.vo.ContactGroupRelativeShow;
 import cn.snzo.vo.GroupShow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,6 +36,9 @@ public class GroupService implements IGroupService {
     @Autowired
     private ContactGroupRelativeRepository contactGroupRelativeRepository;
 
+
+    @Autowired
+    private CommonRepository commonRepository;
     @Override
     public int add(GroupShow groupShow) {
         Group groupCheck = groupRepository.findByNameAndBookId(groupShow.getName(), groupShow.getBookId());
@@ -59,17 +65,37 @@ public class GroupService implements IGroupService {
     }
 
     @Override
-    public Page<GroupShow> getPage( String name, Integer currentPage, Integer pageSize) {
+    public Page<GroupShow> getPage( String name,Integer conductorId, Integer bookId, Integer currentPage, Integer pageSize) {
         name = CommonUtils.fuzzyString(name);
         Pageable p = CommonUtils.createPage(currentPage, pageSize);
-        Page<Group> groups = groupRepository.findPage(name, p);
-        List<Group> groupsList = groups.getContent();
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("conductorId", conductorId);
+        params.put("bookId", bookId);
+        String querySql = "select xc.* from t_group xc " +
+                " inner join t_phone_book pb on pb.id = xc.book_id " +
+                " left join t_conference_room cr on cr.id = pb.room_id" +
+                " left join t_conductor cd on cd.id = cr.conductor_id" +
+                " where (:name is null or xc.name like :name)" +
+                " and (:conductorId is null or cd.id = :conductorId)" +
+                " and (:bookId is null or xc.book_id = :bookId)" ;
+        String countSql = "select count(*) from t_group xc " +
+                " inner join t_phone_book pb on pb.id = xc.book_id " +
+                " left join t_conference_room cr on cr.id = pb.room_id" +
+                " left join t_conductor cd on cd.id = cr.conductor_id" +
+                " where (:name is null or xc.name like :name)" +
+                " and (:conductorId is null or cd.id = :conductorId)" +
+                " and (:bookId is null or xc.book_id = :bookId)" ;
+        @SuppressWarnings("unchecked")
+        List<Group> groups = (List<Group>) commonRepository.queryResultToBeanList(querySql, params, Group.class);
+
         List<GroupShow> groupsShowList = new ArrayList<>();
-        for (Group group : groupsList) {
+        for (Group group : groups) {
             GroupShow groupShow = new GroupShow(group);
             groupsShowList.add(groupShow);
         }
-        return new PageImpl<GroupShow>(groupsShowList, p, groups.getTotalElements());
+        int count = commonRepository.getCountBy(countSql, params);
+        return new PageImpl<GroupShow>(groupsShowList, p, count);
     }
 
     @Override
