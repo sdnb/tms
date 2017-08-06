@@ -253,7 +253,7 @@ public class ContactService implements IContactService {
                 "      t_call c " +
                 "    INNER JOIN t_conference cf ON cf.res_id = c.conf_res_id " +
                 "    WHERE " +
-                "      c. STATUS = 1 " +
+                "      cf. STATUS = 1 " +
                 "    AND c.conductor_id = :conId " +
                 "  )" ;
 
@@ -287,7 +287,7 @@ public class ContactService implements IContactService {
                 "      t_call c " +
                 "    INNER JOIN t_conference cf ON cf.res_id = c.conf_res_id " +
                 "    WHERE " +
-                "      c. STATUS = 1 " +
+                "      cf. STATUS = 1 " +
                 "    AND c.conductor_id = :conId " +
                 "  )" ;
         @SuppressWarnings("unchecked")
