@@ -5,7 +5,6 @@ import cn.snzo.entity.Call;
 import cn.snzo.entity.Conference;
 import cn.snzo.entity.ConferenceRoom;
 import cn.snzo.entity.Recording;
-import cn.snzo.ipsc.SimpleRpcResultListener;
 import cn.snzo.repository.CallRepository;
 import cn.snzo.repository.ConferenceRepository;
 import cn.snzo.repository.ConferenceRoomRepository;
@@ -373,12 +372,28 @@ public class IpscUtil {
                     confResId,
                     "sys.conf.play_start",
                     params,
-                    new SimpleRpcResultListener("sys.conf.play_start"));
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                    new RpcResultListener() {
+                        @Override
+                        protected void onResult(Object o) {
+                            logger.error("播放滴声会议{}滴声", confResId, fileName);
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        protected void onError(RpcError rpcError) {
+
+                        }
+
+                        @Override
+                        protected void onTimeout() {
+
+                        }
+                    });
+
         } catch (IOException e) {
             logger.error("播放会议{}声音文件{}异常", confResId, fileName);
         }
