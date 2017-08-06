@@ -116,9 +116,9 @@
                     <td ng-bind="member.voiceMode | voiceMode"></td>
                     <td>
                         <!-- 与会者禁音 1 放音+收音 3 放音 -->
-                        <a href="" style="margin-right:18px" ng-show="member.voiceMode==1 || member.voiceMode==3" ng-click="hy.changeVoiceMode(member)"><img src="images/close_voice.png" /></a>
+                        <a href="" ng-show="member.voiceMode==1 || member.voiceMode==3" ng-click="hy.changeVoiceMode(member)"><img src="images/close_voice.png" style="width: 26px"/></a>
                         <!-- 与会者 2收音-->
-                        <a href="" style="margin-right:18px" ng-show="member.voiceMode==2" ng-click="hy.changeVoiceMode(member)"><img src="images/open_voice.png"/></a>
+                        <a href=""  ng-show="member.voiceMode==2" ng-click="hy.changeVoiceMode(member)"><img src="images/open_voice.png" style="width: 26px"/></a>
                         <!-- 移出与会者 -->
                         <a href="" ng-click="hy.removeCall(member)"><img src="images/exit2.png"/></a>
                         <!-- 重新呼叫 -->

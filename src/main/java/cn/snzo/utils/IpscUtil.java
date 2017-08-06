@@ -102,7 +102,7 @@ public class IpscUtil {
             }
         });
 
-        Thread.sleep(10000);
+        Thread.sleep(20000);
         //创建commander
         logger.info(">>>>>>>>> 初始化commander");
         createCommander();
