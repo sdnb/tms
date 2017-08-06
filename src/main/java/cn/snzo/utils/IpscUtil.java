@@ -145,6 +145,10 @@ public class IpscUtil {
                                         logger.info(">>>>>>>>> 呼叫 {} 拨号成功，操作呼叫资源，让它加入会议 {} ...", callId, confId);
 //                                        playReadyVoice(callId, confId);
                                         addCallToConf(callId, confId);
+                                        logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.WELCOME_VOICE);
+                                        playReadyVoice(callId, confId);
+                                        logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
+                                        playConfVoice(confId, Constants.COME_IN_TICK);
                                         //设置为参会中
                                         callRepository.updateStatus(callId, 2);
                                         changeReminder.sendMessageToAll(confId);
@@ -189,6 +193,10 @@ public class IpscUtil {
                                         logger.info(">>>>>>>>>接收到的dtmf码与会议室ivr码相同,播放欢迎语音{}", Constants.READY_VOICE);
 //                                        playReadyVoice(callId, conference.getResId());
                                         addCallToConf(callId, conference.getResId());
+                                        logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.WELCOME_VOICE);
+                                        playReadyVoice(callId, conference.getResId());
+                                        logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
+                                        playConfVoice(conference.getResId(), Constants.COME_IN_TICK);
                                     } else {
                                         logger.info(">>>>>>>>>接收到的dtmf码错误，播放错误提示音");
                                         Integer count = callEnterDtfmCount.get(callId);
@@ -325,12 +333,6 @@ public class IpscUtil {
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
                             changeReminder.sendMessageToAll(conferenceId);
-
-
-                            logger.info(">>>>>>>>> 播放欢迎语音{}", Constants.WELCOME_VOICE);
-                            playReadyVoice(callId, conferenceId);
-                            logger.info(">>>>>>>>> 播放会议进入提示音{}", Constants.COME_IN_TICK);
-                            playConfVoice(conferenceId, Constants.COME_IN_TICK);
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
