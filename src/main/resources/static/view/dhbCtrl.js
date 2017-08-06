@@ -1,10 +1,12 @@
 define(['../script/tms', 'jquery', '../script/service/groupService', '../script/service/contactService',
     '../script/service/phoneBookService', './pagination', 'ajaxfileupload'], function(module, $, GroupService, ContactService, PhoneBookService){
-    module.controller('dhbCtrl', function($scope, $location, $resource, commonService, paginationService){
+    module.controller('dhbCtrl', function($rootScope, $scope, $location, $resource, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
         }
+
+        console.log($rootScope.loginUser);
 
         var _this = this;
         this.isNull = false;
@@ -23,6 +25,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
         var phoneBookService = new PhoneBookService($resource);
 
         this.type = 1; //1系统电话簿 2会议室电话簿
+        this.type = $rootScope.loginUser.role;
         this.operationPanel = { //操作面板
             show: false,
             index: 0
@@ -100,6 +103,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             if(type == 'reload') $scope.groupPageObject.currentPage = 1;
             this.groupFilter.currentPage = $scope.groupPageObject.currentPage;
             this.groupFilter.pageSize = $scope.groupPageObject.pageSize;
+            this.groupFilter.conductorId = $rootScope.loginUser.conductorId;
             this.loading = true;
             groupService.pageList(this.groupFilter,function(data,header){
                 _this.loading = false;
@@ -227,6 +231,8 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             }
             this.filter.currentPage = $scope.pageObject.currentPage;
             this.filter.pageSize = $scope.pageObject.pageSize;
+            this.filter.conductorId = $rootScope.loginUser.conductorId;
+            this.filter.bookType = _this.type;
             if(this.group) {
                 this.filter.groupId = this.group.id;
             }else{

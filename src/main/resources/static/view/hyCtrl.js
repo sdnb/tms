@@ -292,11 +292,12 @@ define(['../script/tms', 'jquery','../script/service/loginService','../script/se
             }
             this.conferenceFilter.currentPage = $scope.conferencePageObject.currentPage;
             this.conferenceFilter.pageSize = $scope.conferencePageObject.pageSize;
-            this.conferenceFilter.confResId = this.confResId;
-            if(!this.confResId) {
+            if(!this.confResId && _this.conference) {
                 this.confResId = _this.conference.resId;
                 this.conferenceFilter.confResId = this.confResId;
             }
+            this.conferenceFilter.confResId = this.confResId;
+            if(!this.conferenceFilter.confResId) return;
             conferenceService.getParts(this.conferenceFilter,function(data,header){
                 if(data.status == 'true'){
                     _this.members = data.message;

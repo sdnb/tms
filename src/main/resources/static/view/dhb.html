@@ -3,7 +3,7 @@
 
     <script type="text/ng-template" id="listTemplate">
         <div class="dhb-top">
-            <a href="" ng-class="{cur2:dhb.type==1}" ng-click="dhb.changeType(1)">系统电话簿</a>
+            <a href="" ng-class="{cur2:dhb.type==1}" ng-show="loginUser.role==1" ng-click="dhb.changeType(1)">系统电话簿</a>
             <a href="" ng-class="{cur2:dhb.type==2}" ng-click="dhb.changeType(2)">会议电话簿</a>
         </div>
         <div style="clear:both"></div>

@@ -1,5 +1,5 @@
 define(['../script/tms', 'jquery', '../script/service/recordingService', './pagination'], function(module, $, RecordingService){
-    module.controller('lyCtrl', function($scope, $resource, $location, commonService, paginationService){
+    module.controller('lyCtrl', function($rootScope, $scope, $resource, $location, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
             window.location.href = '/login';
@@ -42,7 +42,7 @@ define(['../script/tms', 'jquery', '../script/service/recordingService', './pagi
 
             this.filter.currentPage = $scope.pageObject.currentPage;
             this.filter.pageSize = $scope.pageObject.pageSize;
-
+            this.filter.conductorId = $rootScope.loginUser.conductorId;
 
             for(var k in this.filter){
                 if(!this.filter[k]) this.filter[k] = null;
