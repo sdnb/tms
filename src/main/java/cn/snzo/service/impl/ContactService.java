@@ -68,7 +68,7 @@ public class ContactService implements IContactService {
                 " c.id = cg.contact_id " +
                 " left join t_group g on cg.group_id = g.id" +
                 " inner join t_phone_book pb on pb.id = c.book_id" +
-                " inner join t_conference_room cr on cr.id = pb.room_id" +
+                " left join t_conference_room cr on cr.id = pb.room_id" +
                 " left join t_conductor cd on cd.id = cr.conductor_id" +
                 " where (:groupId is null or cg.group_id = :groupId) and" +
                 " (:bookId is null or c.book_id = :bookId) and" +
@@ -84,7 +84,7 @@ public class ContactService implements IContactService {
                 " c.id = cg.contact_id " +
                 " left join t_group g on cg.group_id = g.id" +
                 " inner join t_phone_book pb on pb.id = c.book_id" +
-                " inner join t_conference_room cr on cr.id = pb.room_id" +
+                " left join t_conference_room cr on cr.id = pb.room_id" +
                 " left join t_conductor cd on cd.id = cr.conductor_id" +
                 " where (:groupId is null or cg.group_id = :groupId) and" +
                 " (:bookId is null or c.book_id = :bookId) and" +
