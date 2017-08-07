@@ -5,6 +5,7 @@
 - [Git 1.9+](http://git-scm.com/downloads)
 - [JDK 1.8+](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 - [maven 3.3+](http://maven.apache.org/download.cgi/)
+- [nvm 1.1+](https://github.com/creationix/nvm)
 
 ### 前提条件 - 环境配置
 执行以下命令,确认版本符合前提条件中指定的要求
@@ -12,9 +13,41 @@
 git --version
 java -version
 mvn --version
+nvm version
 ```
 
 
+
+### 前提条件 - node
+从 http://coreybutler.github.io/nodedistro/ 查询可供使用的node版本(建议使用node 4.2+)
+执行以下命令配置node环境
+```SHELL
+nvm install 4.2.4
+nvm use 4.2.4
+nvm on
+```
+
+### 前提条件 - 依赖组件
+执行以下命令安装依赖组件
+```SHELL
+npm install -g bower gulp karma-cli
+npm install
+bower install
+gulp
+```
+提示: 在中国内地可以使用--registry参数来指定taobao的镜像来执行npm组件的安装
+```SHELL
+npm install -g bower gulp karma-cli --registry=http://registry.npm.taobao.org
+npm install --registry=http://registry.npm.taobao.org
+```
+
+### 检测是否缺少依赖组件
+随着开发的进展,其它开发人员会添加新的依赖项,如果缺少依赖项,程序就无法正常工作
+执行以下命令检测是否缺少依赖项
+```SHELL
+npm ls --depth=0 #检测packages.json依赖
+bower ls -o #检测boweer.json依赖
+```
 
 
 ## 配置文件
