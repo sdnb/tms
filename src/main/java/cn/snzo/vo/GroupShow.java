@@ -17,7 +17,6 @@ public class GroupShow {
 
     private Integer bookId;  //所在电话簿
 
-    @NotBlank(message = "会议室不能为空")
     private String confRoomNo;  //会议室编号
     public GroupShow() {
     }

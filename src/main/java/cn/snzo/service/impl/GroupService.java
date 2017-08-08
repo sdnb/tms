@@ -58,20 +58,27 @@ public class GroupService implements IGroupService {
         if (groupCheck != null) {
             return 2;
         }
-        ConferenceRoom conferenceRoom = conferenceRoomRepository.findByNumber(groupShow.getConfRoomNo());
-
-        //会议室不存在
-        if (conferenceRoom == null) {
-            return 3;
-        }
-        PhoneBook phoneBook = phoneBookRepository.findByRoomId(conferenceRoom.getId());
-        if (phoneBook == null) {
-            return 4;
-        }
         Group group = new Group();
-        group.setBookId(phoneBook.getId());
         group.setName(groupShow.getName());
+        if (groupShow.getConfRoomNo() != null) {
+            ConferenceRoom conferenceRoom = conferenceRoomRepository.findByNumber(groupShow.getConfRoomNo());
 
+            //会议室不存在
+            if (conferenceRoom == null) {
+                return 3;
+            }
+            PhoneBook phoneBook = phoneBookRepository.findByRoomId(conferenceRoom.getId());
+            if (phoneBook == null) {
+                return 4;
+            }
+
+            group.setBookId(phoneBook.getId());
+
+
+        } else {
+            group.setBookId(groupShow.getBookId());
+
+        }
         groupRepository.save(group);
         return 1;
     }

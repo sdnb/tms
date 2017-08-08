@@ -1,5 +1,5 @@
 define(['../script/tms', 'jquery', '../script/service/groupService', '../script/service/contactService',
-    '../script/service/phoneBookService', './pagination', 'ajaxfileupload'], function(module, $, GroupService, ContactService, PhoneBookService){
+    '../script/service/phoneBookService', '../script/service/conferenceRoomService','./pagination', 'ajaxfileupload'], function(module, $, GroupService, ContactService, PhoneBookService, ConferenceRoomService){
     module.controller('dhbCtrl', function($rootScope, $scope, $location, $resource, commonService, paginationService){
         var loginCookie = commonService.getCookie('staff_token');
         if(loginCookie == ''){
@@ -23,6 +23,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
         var groupService = new GroupService($resource);
         var contactService = new ContactService($resource);
         var phoneBookService = new PhoneBookService($resource);
+        var conferenceRoomService = new ConferenceRoomService($resource);
 
         this.type = 1; //1系统电话簿 2会议室电话簿
         this.type = $rootScope.loginUser.role;
@@ -453,5 +454,24 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
                 });
             }
         };
+
+        //------------------------------查询所有的会议室--------------------------
+        this.rooms = [];
+
+        var getRooms = function() {
+            var roomPageObj = {currentPage: 1,
+                pageSize:10000};
+            conferenceRoomService.pageList(roomPageObj,function(data){
+                if(data.status == 'true'){
+                    _this.rooms = data.message;
+                } else{
+                    _this.rooms = [];
+                    console.log(data);
+                }
+            });
+        }
+        getRooms();
     });
+
+
 });
