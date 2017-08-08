@@ -30,14 +30,14 @@
 
             <table cellpadding="0" cellspacing="0" class="hysTB">
 
-                <tr> <th>主持人</th> <th>IVR参会密码</th> <th>参会人数</th> <th colspan="2">是否录音</th> <th colspan="2">操作</th> </tr>
+                <tr> <th>主持人</th><th>编号</th> <th>IVR参会密码</th> <th>参会人数</th>  <th colspan="2">操作</th> </tr>
 
                 <tr ng-repeat="room in hys.rooms">
                     <td ng-bind="room.conductorName"></td>
+                    <td ng-bind="room.number"></td>
                     <td ng-bind="room.ivrPassword"></td>
                     <td ng-bind="room.maxParticipant"></td>
-                    <td><a href="" ng-class="{cur:room.isRecordEnable===1}">是</a></td>
-                    <td><a href="" ng-class="{cur:room.isRecordEnable===0}">否</a></td>
+                    <!--<td ng-if="room.isRecordEnable===1">是</td><td ng-if="room.isRecordEnable===2">否</td>-->
                     <td><a href="" ng-click="hys.changeView('update', room)"><img src="images/icon-edit.png"/></a></td>
                     <td><a href="" ng-click="confirmOper('delete', room)"><img src="images/icon-del.png" /></a></td>
                 </tr>
