@@ -161,7 +161,7 @@
                 <i class="mgr-x-tips" ng-show="addGroupForm.name.$error.required && dhb.isNull">分组名不能为空</i>
             </div>
 
-            <div class="xjLI" ng-if="dhb.type==2">电话簿：<select ng-model="dhb.group.bookId" name="bookId" ng-options="phoneBook.id as phoneBook.id for phoneBook in dhb.phoneBooks" required><option value="">请选择</option></select>
+            <div class="xjLI" ng-if="dhb.type==2">电话簿：<select ng-model="dhb.group.bookId" name="bookId" ng-options="phoneBook.id as phoneBook.roomId for phoneBook in dhb.phoneBooks" required><option value="">请选择</option></select>
                 <i class="mgr-x-tips" ng-show="addGroupForm.bookId.$error.required && dhb.isNull">电话簿不能为空</i>
             </div>
 

@@ -34,6 +34,7 @@ define(['../script/tms', 'jquery', '../script/service/groupService', '../script/
             this.type = type;
             this.operationPanel.show = false;
             this.operationPanel.index = 0;
+            this.getContacts('reload');
         };
 
         this.showPanel = function(index){
