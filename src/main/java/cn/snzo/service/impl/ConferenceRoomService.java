@@ -1,7 +1,6 @@
 package cn.snzo.service.impl;
 
 import cn.snzo.common.CommonRepository;
-import cn.snzo.common.NumberGenerator;
 import cn.snzo.entity.Conductor;
 import cn.snzo.entity.ConferenceRoom;
 import cn.snzo.entity.PhoneBook;
@@ -53,7 +52,7 @@ public class ConferenceRoomService implements IConferenceRoomService {
 
         conferenceRoom = new ConferenceRoom(conferenceRoomShow);
         conferenceRoom.setIsInUse(0);
-        conferenceRoom.setNumber(NumberGenerator.randomNumber());
+
 
         //主持人不为空
         Integer conductId = conferenceRoomShow.getConductorId();
@@ -69,6 +68,8 @@ public class ConferenceRoomService implements IConferenceRoomService {
             }
         }
         conferenceRoom = conferenceRoomRepository.save(conferenceRoom);
+        conferenceRoom.setNumber(10000 + conferenceRoom.getId() + "");
+        conferenceRoomRepository.save(conferenceRoom);
         //新增电话簿
         PhoneBook phoneBook = new PhoneBook();
         phoneBook.setRoomId(conferenceRoom.getId());
