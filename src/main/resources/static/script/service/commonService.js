@@ -11,7 +11,7 @@ define(['../tms', 'jquery', 'angular'], function(module, $, angular){
         CommonService.prototype.regex = function(type){
             var regex ;
             if(type == 'phone'){
-                regex = /^(13[0-9]|14[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}|\d{12}|(\d{5}|\d{4}|\d{11}|\d{8}|\d{11})$/; //定义手机phone的正则表达式
+                regex = /^(13[0-9]|14[0-9]|15[0-9]|17[0-9]|18[0-9])\d{8}$/; //定义手机phone的正则表达式
             }else if(type == 'password'){
                 regex = /^[a-zA-Z].{5,33}$/;//定义密码password的正则表达式
             }else if(type=='date'){
@@ -70,7 +70,7 @@ define(['../tms', 'jquery', 'angular'], function(module, $, angular){
             }else if(type == 'authCode'){  //授权码
                 regex = /^\d{6}$/;
             }else if(type == 'telephone'){
-                regex = /^(0[0-9]{2,3}(\-)?)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$|(^(13[0-9]|15[0-9]|18[0-9]|17[0-9])\d{8}$)/;
+                regex = /^(0[0-9]{2,3}(\-)?)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$|(^(13[0-9]|15[0-9]|18[0-9]|17[0-9])\d{8}$)|(^(\d{12}|\d{5}|\d{4}|\d{11}|\d{8}|\d{11})$)/;
             }else if(type == 'postCode'){
                 regex = /^[1-9]\d{5}$/;
             }else if(type=="intFloatNUm"){
