@@ -24,7 +24,7 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
             " (?2 is null or c.roomId = ?2) and" +
             " (?3 is null or c.phone like ?3) and " +
             " (?4 is null or c.status = ?4) and " +
-            " (?5 is null or c.name like ?5)")
+            " (?5 is null or c.name like ?5) ")
     Page<Call> findPage(String confResId, Integer roomId, String phone, Integer status,
                         String name, Pageable p);
 

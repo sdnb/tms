@@ -112,7 +112,8 @@
                     <td ng-bind="member.name"></td>
                     <td ng-bind="member.phone"></td>
                     <td ng-bind="member.derection | direction"></td>
-                    <td ng-bind="member.status | status"></td>
+                    <td ng-bind="member.status | status" ng-if="member.status==3" ng-style="{color: gray;}"></td>
+                    <td ng-bind="member.status | status" ng-if="member.status!=3" ng-style="{color: rgb(0, 0, 0);}"></td>
                     <td ng-bind="member.voiceMode | voiceMode"></td>
                     <td>
                         <!-- 与会者禁音 1 放音+收音 3 放音 -->

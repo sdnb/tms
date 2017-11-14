@@ -1,14 +1,8 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
-import cn.snzo.entity.Call;
-import cn.snzo.entity.Conference;
-import cn.snzo.entity.ConferenceRoom;
-import cn.snzo.entity.Recording;
-import cn.snzo.repository.CallRepository;
-import cn.snzo.repository.ConferenceRepository;
-import cn.snzo.repository.ConferenceRoomRepository;
-import cn.snzo.repository.RecordingRepository;
+import cn.snzo.entity.*;
+import cn.snzo.repository.*;
 import cn.snzo.ws.ChangeReminder;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
@@ -31,6 +25,7 @@ public class IpscUtil {
 
     private static ConferenceRepository conferenceRepository;
 
+    private static ContactRepository contactRepository;
 
     @Autowired
     public void setConferenceRepository(ConferenceRepository conferenceRepository) {
@@ -58,6 +53,11 @@ public class IpscUtil {
         IpscUtil.changeReminder = changeReminder;
     }
 
+
+    @Autowired
+    public static void setContactRepository(ContactRepository contactRepository) {
+        IpscUtil.contactRepository = contactRepository;
+    }
 
     private static CallRepository callRepository;
 
@@ -173,7 +173,12 @@ public class IpscUtil {
                                     newCall.setPhone(phone);
                                     newCall.setStatus(2);
                                     newCall.setVoiceMode(1);
+                                    Contact contact = contactRepository.findByPhone(phone);
                                     newCall.setName(phone);
+                                    if (contact != null) {
+                                        newCall.setName(contact.getName());
+                                    }
+
                                     newCall.setDerection(1);
                                     int beginTime =  (int) rpcRequest.getParams().get("begin_time");
                                     newCall.setStartAt(DateUtil.transServerTimeToBeiJingTime(new Date(beginTime * 1000)));
