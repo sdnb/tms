@@ -795,10 +795,10 @@ public class IpscUtil {
         );
     }
 
-    public static void main(String[] args) {
-        String f = "sip:18627720789@10.1.2.152";
-        System.out.println(f.substring(f.indexOf(":")+1, f.indexOf("@")));
-    }
+//    public static void main(String[] args) {
+//        String f = "sip:18627720789@10.1.2.152";
+//        System.out.println(f.substring(f.indexOf(":")+1, f.indexOf("@")));
+//    }
 
 
 }
