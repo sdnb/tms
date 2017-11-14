@@ -164,7 +164,20 @@ public class IpscUtil {
                                 if (error != null) {
                                     logger.error(">>>>>>>>> 呼入呼叫错误，callId ={}", callId);
                                 } else {
-                                    logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
+                                    logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams());
+                                    Call newCall = new Call();
+                                    newCall.setResId(callId);
+                                    String fromUri = (String) rpcRequest.getParams().get("from_uri");
+                                    //fromuri 格式 sip:18627720789:@10.1.2.152
+                                    String phone = fromUri.substring(4, 15);
+                                    newCall.setPhone(phone);
+                                    newCall.setStatus(2);
+                                    newCall.setVoiceMode(1);
+                                    newCall.setName(phone);
+                                    newCall.setDerection(1);
+                                    int beginTime =  (int) rpcRequest.getParams().get("begin_time");
+                                    newCall.setStartAt(DateUtil.transServerTimeToBeiJingTime(new Date(beginTime * 1000)));
+                                    callRepository.save(newCall);
                                     answer(callId);
                                 }
 
@@ -311,19 +324,9 @@ public class IpscUtil {
 
                             Call call = callRepository.findByResId(callId);
                             if (call != null) {
-                                callRepository.updateStatus(callId, 2);
-                            }
-                            else {
-                                Call newCall = new Call();
-                                newCall.setResId(callId);
-                                newCall.setConfResId(conferenceId);
-                                newCall.setPhone("未知");
-                                newCall.setStatus(2);
-                                newCall.setVoiceMode(1);
-                                newCall.setName("未知");
-                                newCall.setDerection(1);
-                                newCall.setStartAt(new Date());
-                                callRepository.save(newCall);
+                                call.setStatus(2);
+                                call.setConfResId(conferenceId);
+                                callRepository.save(call);
                             }
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
@@ -785,4 +788,6 @@ public class IpscUtil {
                 rpcResultListener
         );
     }
+
+
 }
