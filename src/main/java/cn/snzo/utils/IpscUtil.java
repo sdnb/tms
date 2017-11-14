@@ -25,7 +25,7 @@ public class IpscUtil {
 
     private static ConferenceRepository conferenceRepository;
 
-    private static ContactRepository contactRepository;
+
 
     @Autowired
     public void setConferenceRepository(ConferenceRepository conferenceRepository) {
@@ -53,9 +53,10 @@ public class IpscUtil {
         IpscUtil.changeReminder = changeReminder;
     }
 
+    private static ContactRepository contactRepository;
 
     @Autowired
-    public static void setContactRepository(ContactRepository contactRepository) {
+    public void setContactRepository(ContactRepository contactRepository) {
         IpscUtil.contactRepository = contactRepository;
     }
 
