@@ -169,8 +169,8 @@ public class IpscUtil {
                                     Call newCall = new Call();
                                     newCall.setResId(callId);
                                     String fromUri = (String) rpcRequest.getParams().get("from_uri");
-                                    //fromuri 格式 sip:18627720789:@10.1.2.152
-                                    String phone = fromUri.substring(4, 15);
+                                    //fromuri 格式 sip:18627720789@10.1.2.152
+                                    String phone = fromUri.substring(fromUri.indexOf(":")+1, fromUri.indexOf("@"));
                                     newCall.setPhone(phone);
                                     newCall.setStatus(2);
                                     newCall.setVoiceMode(1);
@@ -793,6 +793,11 @@ public class IpscUtil {
                 params,
                 rpcResultListener
         );
+    }
+
+    public static void main(String[] args) {
+        String f = "sip:18627720789@10.1.2.152";
+        System.out.println(f.substring(f.indexOf(":")+1, f.indexOf("@")));
     }
 
 
