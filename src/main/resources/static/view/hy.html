@@ -52,7 +52,7 @@
         <div class="hyblCon">
 
             <div class="hyblH" style="width:349px; background-color:#3686dc">
-                <li style="width:30%; border-right: solid 1px #fff;">
+                <li style="width:40%; border-right: solid 1px #fff;">
 
                     <span>
                         <input type="checkbox" style="width:15px;height:15px;margin-left:15px" ng-model="hy.isAllChecked" ng-change="hy.checkAllContacts()"/>
@@ -63,14 +63,14 @@
 
                 </li>
                 <!--<li style="width:25%; border-right: solid 1px #fff">姓名</li>-->
-                <li style="width:40%; border-right: solid 1px #fff">联系电话</li> <li style="width: 30%">电话簿</li></div>
+                <li style="width:30%; border-right: solid 1px #fff">联系电话</li> <li style="width: 30%">电话簿</li></div>
 
             <div class="drhchr">
                 <li ng-repeat="contact in hy.contacts">
-                    <span style="width:30%;text-align:center">
+                    <span style="width:40%;text-align:center">
                         <input type="checkbox" style="margin-right:5px;" ng-model="contact.isChecked" ng-disabled="contact.isDisable" ng-change="hy.selectContact(contact)"/> <span style="width:50px;" ng-bind="contact.name"></span>
                     </span>
-                    <span style="width:40%;text-align:center">
+                    <span style="width:30%;text-align:center">
                         <font ng-bind="contact.phone"></font>
                     </span>
                     <span style="width: 30%;text-align:center">
