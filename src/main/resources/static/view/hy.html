@@ -67,7 +67,7 @@
 
             <div class="drhchr">
                 <li ng-repeat="contact in hy.contacts">
-                    <span style="width:40%;text-align:center">
+                    <span style="width:40%;text-align:center;white-space:nowrap;">
                         <input type="checkbox" style="margin-right:5px;" ng-model="contact.isChecked" ng-disabled="contact.isDisable" ng-change="hy.selectContact(contact)"/> <span style="width:50px;" ng-bind="contact.name"></span>
                     </span>
                     <span style="width:30%;text-align:center">
