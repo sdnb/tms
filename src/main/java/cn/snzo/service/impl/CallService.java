@@ -24,7 +24,7 @@ public class CallService implements ICallService {
 
     @Override
     public Page<Call> findPage(String confResId, Integer roomId, String phone, Integer status, String name, Integer currentPage, Integer pageSize) {
-        Pageable p = PageUtil.createPage(currentPage, pageSize);
+        Pageable p = PageUtil.createPage(currentPage, pageSize, "status", false );
         phone = CommonUtils.fuzzyString(phone);
         name = CommonUtils.fuzzyString(name);
         return callRepository.findPage(confResId, roomId, phone, status, name, p);

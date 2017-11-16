@@ -1,14 +1,8 @@
 package cn.snzo.utils;
 
 import cn.snzo.common.Constants;
-import cn.snzo.entity.Call;
-import cn.snzo.entity.Conference;
-import cn.snzo.entity.ConferenceRoom;
-import cn.snzo.entity.Recording;
-import cn.snzo.repository.CallRepository;
-import cn.snzo.repository.ConferenceRepository;
-import cn.snzo.repository.ConferenceRoomRepository;
-import cn.snzo.repository.RecordingRepository;
+import cn.snzo.entity.*;
+import cn.snzo.repository.*;
 import cn.snzo.ws.ChangeReminder;
 import com.hesong.ipsc.ccf.*;
 import org.slf4j.Logger;
@@ -30,6 +24,7 @@ public class IpscUtil {
     private static Logger logger = LoggerFactory.getLogger(IpscUtil.class);
 
     private static ConferenceRepository conferenceRepository;
+
 
 
     @Autowired
@@ -58,6 +53,12 @@ public class IpscUtil {
         IpscUtil.changeReminder = changeReminder;
     }
 
+    private static ContactRepository contactRepository;
+
+    @Autowired
+    public void setContactRepository(ContactRepository contactRepository) {
+        IpscUtil.contactRepository = contactRepository;
+    }
 
     private static CallRepository callRepository;
 
@@ -164,7 +165,25 @@ public class IpscUtil {
                                 if (error != null) {
                                     logger.error(">>>>>>>>> 呼入呼叫错误，callId ={}", callId);
                                 } else {
-                                    logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams().get("params"));
+                                    logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams());
+                                    Call newCall = new Call();
+                                    newCall.setResId(callId);
+                                    String fromUri = (String) rpcRequest.getParams().get("from_uri");
+                                    //fromuri 格式 sip:18627720789@10.1.2.152
+                                    String phone = fromUri.substring(fromUri.indexOf(":")+1, fromUri.indexOf("@"));
+                                    newCall.setPhone(phone);
+                                    newCall.setStatus(2);
+                                    newCall.setVoiceMode(1);
+                                    Contact contact = contactRepository.findByPhone(phone);
+                                    newCall.setName(phone);
+                                    if (contact != null) {
+                                        newCall.setName(contact.getName());
+                                    }
+
+                                    newCall.setDerection(1);
+                                    int beginTime =  (int) rpcRequest.getParams().get("begin_time");
+                                    newCall.setStartAt(DateUtil.transServerTimeToBeiJingTime(new Date(beginTime * 1000)));
+                                    callRepository.save(newCall);
                                     answer(callId);
                                 }
 
@@ -311,19 +330,9 @@ public class IpscUtil {
 
                             Call call = callRepository.findByResId(callId);
                             if (call != null) {
-                                callRepository.updateStatus(callId, 2);
-                            }
-                            else {
-                                Call newCall = new Call();
-                                newCall.setResId(callId);
-                                newCall.setConfResId(conferenceId);
-                                newCall.setPhone("未知");
-                                newCall.setStatus(2);
-                                newCall.setVoiceMode(1);
-                                newCall.setName("未知");
-                                newCall.setDerection(1);
-                                newCall.setStartAt(new Date());
-                                callRepository.save(newCall);
+                                call.setStatus(2);
+                                call.setConfResId(conferenceId);
+                                callRepository.save(call);
                             }
                             callConfMap.put(callId, conferenceId);
                             //往前端推送socket消息
@@ -785,4 +794,11 @@ public class IpscUtil {
                 rpcResultListener
         );
     }
+
+//    public static void main(String[] args) {
+//        String f = "sip:18627720789@10.1.2.152";
+//        System.out.println(f.substring(f.indexOf(":")+1, f.indexOf("@")));
+//    }
+
+
 }
