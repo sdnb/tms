@@ -166,11 +166,12 @@ public class IpscUtil {
                                     logger.error(">>>>>>>>> 呼入呼叫错误，callId ={}", callId);
                                 } else {
                                     logger.info(">>>>>>>>> 呼入呼叫参数:{}", rpcRequest.getParams());
-                                    Call newCall = new Call();
-                                    newCall.setResId(callId);
+
                                     String fromUri = (String) rpcRequest.getParams().get("from_uri");
                                     //fromuri 格式 sip:18627720789@10.1.2.152
                                     String phone = fromUri.substring(fromUri.indexOf(":")+1, fromUri.indexOf("@"));
+                                    Call newCall = new Call();
+                                    newCall.setResId(callId);
                                     newCall.setPhone(phone);
                                     newCall.setStatus(2);
                                     newCall.setVoiceMode(1);

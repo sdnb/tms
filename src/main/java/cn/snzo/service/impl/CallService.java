@@ -7,8 +7,11 @@ import cn.snzo.utils.CommonUtils;
 import cn.snzo.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 /**
@@ -24,10 +27,12 @@ public class CallService implements ICallService {
 
     @Override
     public Page<Call> findPage(String confResId, Integer roomId, String phone, Integer status, String name, Integer currentPage, Integer pageSize) {
-        Pageable p = PageUtil.createPage(currentPage, pageSize, "status", false );
+        Pageable p = PageUtil.createPage(currentPage, pageSize);
         phone = CommonUtils.fuzzyString(phone);
         name = CommonUtils.fuzzyString(name);
-        return callRepository.findPage(confResId, roomId, phone, status, name, p);
+        List<Call> calls = callRepository.findListByKeys(confResId, roomId, phone, status, name, p.getOffset(), p.getPageSize());
+        int count = callRepository.countCallByKeys(confResId, roomId, phone, status, name);
+        return new PageImpl<Call>(calls, p, count);
     }
 
     @Override

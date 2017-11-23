@@ -362,7 +362,7 @@ public class ConferenceController extends BaseController {
         } catch (ServiceException e) {
             return failureRes(e.getMessage());
         } catch (Exception e) {
-            logErrInfo(e, logger);
+            logger.error("查参会人异常", e);
             return failureRes("查询参会人异常");
         }
     }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -27,6 +28,38 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
             " (?5 is null or c.name like ?5) ")
     Page<Call> findPage(String confResId, Integer roomId, String phone, Integer status,
                         String name, Pageable p);
+
+
+    @Query(value = " select c.* from t_call c" +
+            "  inner join " +
+            " (select max(id) mid from t_call GROUP BY phone, conf_res_id) t " +
+            " on t.mid = c.id " +
+            " where " +
+            " (?1 is null or c.conf_res_id = ?1) and " +
+            " (?2 is null or c.room_id = ?2) and" +
+            " (?3 is null or c.phone like ?3) and " +
+            " (?4 is null or c.status = ?4) and " +
+            " (?5 is null or c.name like ?5) " +
+            " order by c.status limit ?6, ?7 "
+            , nativeQuery = true)
+    List<Call> findListByKeys(String confResId, Integer roomId, String phone, Integer status,
+                        String name, int page, int pageSize);
+
+
+    @Query(value = " select count(*) from t_call c" +
+            "  inner join " +
+            " (select max(id) mid from t_call group by phone, conf_res_id) t " +
+            " on t.mid = c.id " +
+            " where " +
+            " (?1 is null or c.conf_res_id = ?1) and " +
+            " (?2 is null or c.room_id = ?2) and" +
+            " (?3 is null or c.phone like ?3) and " +
+            " (?4 is null or c.status = ?4) and " +
+            " (?5 is null or c.name like ?5) "
+            , nativeQuery = true)
+    int countCallByKeys(String confResId, Integer roomId, String phone, Integer status,
+                        String name);
+
 
 
     @Transactional
@@ -60,4 +93,8 @@ public interface CallRepository extends JpaRepository<Call, Integer>{
 
     @Query("select c from Call c where c.confResId = ?1 and c.status in (?2)")
     List<Call> findCallByConfResIdAndStatus(String resId, List<Integer> status);
+
+
+    @Query("select c from Call c where c.phone = ?1 and c.confResId is null")
+    List<Call> findCallByPhoneAndConfIsNull(String phone);
 }
